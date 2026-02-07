@@ -1,0 +1,2 @@
+- eWPT notes: https://github.com/dev-angelist/eWPTv2-Notes/blob/main/SUMMARY.md
+- Pentest reports: https://pentestreports.com/
