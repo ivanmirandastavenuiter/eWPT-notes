@@ -1,9 +1,11 @@
-### 🗺️ 1. Security testing
-**Category:** Workflow/Methodology
-**Topic:** Web security testing guide and checklist
+## Information gathering
+
+### 🧠 1. Web security testing guide and checklist
+
+**Category:** Theory
 **Module:** Web enumeration and information gathering
 
-📌 **Web security testing guide**
+📌 **WSTG**
 
 **Guide**
 
@@ -16,10 +18,9 @@
 - Summary
 - Risk calculator
 
-### 🗺️ 2. Enumeration / fingerprinting tools
+### 🗺️ 2. Enumeration and fingerprinting with whois / netcraft / dnsrecon
 
 **Category:** Workflow/Methodology
-**Topic:** WHOIS / Netcraft / DNS
 **Module:** Finding ownership and ip addresses
 
 📌 **WHOIS**
@@ -86,10 +87,9 @@ dnsrecon -d hackersplot.org
     | **SRV** | Service records
     | **PTR** | Resolves an IP to a hostname
 
-### 🗺️ 3. Server metafiles
+### 🧠 3. Server metafiles
 
-**Category:** Workflow/Methodology
-**Topic:** Metafiles
+**Category:** Theory
 **Module:** Reviewing webserver metafiles for information leakage
 
 📌 **Robots**
@@ -100,10 +100,9 @@ dnsrecon -d hackersplot.org
   - Sitemaps
   - Folders / Directory structure
 
-### 🗺️ 4. Dorking
+### 🗺️ 4. Google dorks
 
 **Category:** Workflow/Methodology
-**Topic:** Google dorks
 **Module:** Search engine discovery
 
 📌 **Google dorks**
@@ -156,7 +155,6 @@ inurl:passwd.txt
 ### 🗺️ 5. Web app fingerprinting
 
 **Category:** Workflow/Methodology
-**Topic:**: Fingerprinting
 **Module:** Web app fingerprinting
 
 📌 **Firefox addons**
@@ -168,10 +166,9 @@ inurl:passwd.txt
 
 - CLI command that tells you the stack of a given domain
 
-### 🗺️ 6. Web app fingerprinting
+### 🗺️ 6. WAF detection
 
 **Category:** Workflow/Methodology
-**Topic:**: WAF detection
 **Module:** Web app fingerprinting
 
 📌 **Wafw00f**
@@ -184,10 +181,9 @@ inurl:passwd.txt
 wafw00f hackersploit.org
 ```
 
-### 🗺️ 7. Source code analysis
+### 🗺️ 7. Source code analysis - Copying websites with Httrack
 
 **Category:** Workflow/Methodology
-**Topic:**: Copy websites with HTTRack
 **Module:** Source code analysis
 
 📌 **HTTRack**
@@ -211,13 +207,11 @@ httrack
 4. Select option
 
 Launch
-
 ```
 
 ### 🗺️ 8. Screenshots with EyeWitness
 
 **Category:** Workflow/Methodology
-**Topic:**: Screenshots with EyeWitness
 **Module:** Source code analysis
 
 - **Description**: designed to take screenshots of websites and provide some server header info, and identity default credentials if known.
@@ -246,7 +240,6 @@ eyewitness --web -f domains.txt -d hackersploit
 ### 🗺️ 9. Passive crawling and spidering with burp suite and OWASP ZAP
 
 **Category:** Workflow/Methodology
-**Topic:**: Crawling and spidering
 **Module:** Website crawling and spidering
 
 **Burp suite**
@@ -255,7 +248,7 @@ eyewitness --web -f domains.txt -d hackersploit
   - Ensure Dashboard, capturing is on
   - As you click on different parts of the application, select target and site map, and the site maps will be constructed (proxy intercept must be off )
 
-**OWASP ZAP**
+**OWASP Zap**
 
 - Select the standard mode
 - Once site is on the screens
@@ -264,10 +257,9 @@ eyewitness --web -f domains.txt -d hackersploit
 - Browse files
   - Right click, open in browser
 
-### 🛠️ 10. Burp suite and nmap lab
+### 🗺️ 10. Burp suite and nmap lab
 
 **Category:** Workflow/Methodology
-**Topic:**: Crawling and spidering
 **Module:** Website crawling and spidering
 
 **Nmap**
@@ -283,10 +275,9 @@ nmap -sS -sV demo.ine.local
 - Navigate through the web in order to get more results
 - Http history under Proxy to view visited pages
 
-### 🗺️ 11. Web servers
+### 🗺️ 11. Web server fingerprinting
 
 **Category:** Workflow/Methodology
-**Topic:**: Web server fingerprinting
 **Module:** web servers
 
 **Nmap**
@@ -349,10 +340,9 @@ curl http://192.212.206.3
 dirb http://192.212.206.3 /user/shre/metasploit-framework/data/wordlist/directory.txt
 ```
 
-### 🛠️ 12. Apache recon lab
+### 🛠️ 12. Apache recon lab - fingerprinting
 
-**Category:** Workflow/Methodology
-**Topic:**: Web server fingerprinting
+**Category:** Exploit/payload
 **Module:** Web servers
 
 10. (Flag) Which bot is specifically banned from accessing a specific directory?
@@ -416,10 +406,9 @@ exploit
   - lynx: text browser
   - browsh: modern terminal browser
 
-### 🗺️ 13. DNS enumeration
+### 🗺️ 13. DNS enumeration and zone transfers
 
 **Category:** Workflow/Methodology
-**Topic:**: DNS zone transfers
 **Module:** DNS enumeration
 
 📌 **DNS zone transfer**
@@ -471,8 +460,7 @@ fierce -dns zonetransfer.me
 
 ### 🛠️ 14. DNS Zone transfer lab
 
-**Category:** Workflow/Methodology
-**Topic:**: DNS Zone transfer lab
+**Category:** Exploit/payload
 **Module:** DNS enumeration
 
  - **Lab**
@@ -505,7 +493,6 @@ dig axfr -x 192.168 @192.84.45.3
 ### 🗺️ 15. Subdomains
 
 **Category:** Workflow/Methodology
-**Topic:**: Subdomains
 **Module:** Subdomains
 
 📌 **Sublist3r**
@@ -530,10 +517,9 @@ sublist3r -d google.com -e google.com
 fierce --domain ine.com --subdomain-file fierce-hostlist.txt
 ```
 
-### 🗺️ 16. Web server vulnerability scanning
+### 🗺️ 16. Web server vulnerability scanning with Nikto
 
 **Category:** Workflow/Methodology
-**Topic:** Nikto
 **Module:** Web server vulnerability scanning
 
 📌 **Nikto**
@@ -546,3 +532,67 @@ fierce --domain ine.com --subdomain-file fierce-hostlist.txt
   - Vulnerabilities highlighted
   - Files: for example, passwd files
   - Additional links to analyze with Nikto. **Important**: result is not the same depending on the route analyzed
+
+  
+### 🗺️ 17. Files and directory enumeration
+
+**Category:** Workflow/Methodology
+**Module:** Files and directory enumeration
+
+📌 **Gobuster**
+
+- When you find folders in the results, you can perform searches over those folders as well (the ones with 200 http status code)
+
+**Lab**
+
+```code
+# Gobuster dir 
+
+gobuster dir -u http://192.137.160.3 -w /usr/share/wordlists/dirb/common.txt
+
+# Gobuster dir - exclude http status codes
+
+gobuster dir -u http://192.137.160.3 -w /usr/share/wordlists/dirb/common.txt -b 403,404
+
+# Gobuster dir - find file extensions (r is from redirect)
+
+gobuster dir -u http://192.137.160.3 -w /usr/share/wordlists/dirb/common.txt -b 403,404 -x .php,.txt,.xml -r 
+```
+
+### 🗺️ 18. OWASP Amass
+
+**Category:** Workflow/Methodology
+**Module:** Automated recon framework
+
+📌 **Amass**
+
+- Performs network mapping of attack surfaces and external asset discovery using open source information gathering and active reconnaissance techniques.
+
+**Lab**
+
+```code
+
+# Subdomain enumeration
+
+amass enum -d zonetransfer.me
+
+# Subdomain enumeration (passive)
+
+amass enum -passive -d zonetransfer.me
+
+# Display sources and store to directory
+
+amass enum -d zonetransfer.me -passive -src -dir /home/kali/Desktop/ZTME
+
+# Using brute force
+
+amass enum -d zonetransfer.me -src -ip -brute -dir /home/kali/Desktop/ZTME_Brute
+
+# Using intel for initial target discovery. Intel broadens the scope by finding additional root domains and infrastructure
+
+amass intel -active -whois -d zonetransfer.me -dir /home/kali/Desktop/ZTME_Intel
+
+# Visualize enumeration results (done against existing reports)
+
+amass viz -dir /home/kali/Desktop/ZTME -d3
+```
