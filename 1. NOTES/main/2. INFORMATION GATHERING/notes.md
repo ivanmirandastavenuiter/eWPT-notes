@@ -23,53 +23,41 @@
 **Category:** Workflow/Methodology
 **Module:** Finding ownership and ip addresses
 
-📌 **WHOIS**
+#### 📌 2.1. WHOIS
 
 - **Definition:**
   - Query and response protocol used to query databases that store the registered users or organizations of an internet resource like a domain name or an IP address block
 - **Tool type**: Passive
 - **Action type**: enumeration
-- **Examples**:
-
-```code
-## Help
-
-whois --help
-
-## Check domain
-
-whois hackersploit.org
-
-## Combine with host
-
-host hackersploit.org
-
-whois [ipfromresult]
-```
+- **Actions**:
+  - Check domain → ```whois hackersploit.org```
+    - Domain names, registrar urls, dates, emails, name servers, locations
+  - Dns lookup → ```host hackersploit.org```
+    - Like windows nslookup
+  - Check IP → ```whois 188.114.97.5```
+    - Person, addresses, phones, source
 
 - **Extra**:
     - whois.domaintools.com. Online tool that uses WHOIS in the background. 
     - Better format and GUI
 
-📌 **Netcraft**
+#### 📌 2.2. Netcraft
 
 - **Definition:**
   - Online tool to discover the web application underlying infrastructure details
 - **Tool type**: Passive
 - **Action type**: fingerprinting
-- **Resource**: netcraft.com
+- **Resource**: [netcraft.com](https://searchdns.netcraft.com/)
+- **Actions**:
+  - Site, hosting, ips, nameservers, domains, frameworks and stacks
 
-📌 **DNS enumeration**
+#### 📌 2.3. Dns enumeration
 
-- **Name**: dnsrecon
-- **Example**:
+- **Name**: dnsrecon. DNS enumeration and scanning tool
+- **Actions**:
+  - dnsrecon → ```dnsrecon -d hackersplot.org```
 
-```code
-## Recon a domain
-
-dnsrecon -d hackersplot.org
-```
-- **Extra**: dnsdumpser.com
+- **Extra**: dnsdumpster.com
     - Same tool type but online with better GUI
     - Graph tool
 - **Reference table**:
@@ -105,50 +93,23 @@ dnsrecon -d hackersplot.org
 **Category:** Workflow/Methodology
 **Module:** Search engine discovery
 
-📌 **Google dorks**
+#### 📌 4.1. Google dorks
 
-- **Example**:
+- **Actions**:
+  - Find by specific site / domain → ```site:ine.com```
+  - Find in url  → ```inurl:admin```
+  - Show subdomains → ```site:*.ine.com```
+  - Search in title → ```intitle:admin```
+  - Find files → ```filetype:pdf```
+  - Intitle index of (Common vulnerability) → ```intitle:index of```
+  - Cache (previous versions) → ```cache:ine.com```
+  - In url auth user details → ```inurl:auth_user_file.txt inurl:passwd.txt```
 
-```code
-## Find by specific site / domain
-
-site:ine.com
-
-## Find in url 
-
-inurl:admin
-
-## Show subdomains
-
-site:*.ine.com
-
-## Search in title
-
-intitle:admin
-
-## Find files
-
-filetype:pdf
-
-## Intitle index of (Common vulnerability)
-
-intitle:index of
-
-## Cache (previous versions)
-
-cache:ine.com
-
-## In url auth user details
-
-inurl:auth_user_file.txt
-inurl:passwd.txt
-```
-
-📌 **Wayback machine**
+#### 📌 4.2. Wayback machine
 
 - Can explore how websites looked like in the past
 
-📌 **Google hacking database**
+#### 📌 4.3. Google hacking database
 
 - Predefined google dorks
 
@@ -157,12 +118,12 @@ inurl:passwd.txt
 **Category:** Workflow/Methodology
 **Module:** Web app fingerprinting
 
-📌 **Firefox addons**
+#### 📌 5.1. Firefox addons
 
 - **BuiltWith** (website profiling and fingerprinting)
 - **Wappalyzer** (same)
 
-📌 **Whatweb**
+#### 📌 5.2. Whatweb
 
 - CLI command that tells you the stack of a given domain
 
@@ -171,43 +132,27 @@ inurl:passwd.txt
 **Category:** Workflow/Methodology
 **Module:** Web app fingerprinting
 
-📌 **Wafw00f**
+#### 📌 6.1. Wafw00f
 
-- **Example**:
-
-```code
-## Check site waf
-
-wafw00f hackersploit.org
-```
+- **Actions**:
+  - Check site waf → ```wafw00f hackersploit.org```
 
 ### 🗺️ 7. Source code analysis - Copying websites with Httrack
 
 **Category:** Workflow/Methodology
 **Module:** Source code analysis
 
-📌 **HTTRack**
+#### 📌 7.1. HTTRack
 
 - **Takeway**: see the source files
-- **Example**:
-
-```code
-## Copy website
-
-httrack --help
-httrack www.zonetransfer.me -O zonetransfer/
-
-## Doing it through the wizard
-
-httrack
-
-1. Enter project name
-2. Enter base path
-3. Enter urls
-4. Select option
-
-Launch
-```
+- **Actions**:
+  - Copy source files → ```httrack www.zonetransfer.me -O zonetransfer/```
+  - Through wizard → ```httrack www.zonetransfer.me -O zonetransfer/```
+    - httrack
+      1. Enter project name: sample
+      2. Enter base path: /home/smi/Desktop/sample
+      3. Enter urls: https://digi.ninja
+      4. Select option: 2
 
 ### 🗺️ 8. Screenshots with EyeWitness
 
@@ -216,39 +161,24 @@ Launch
 
 - **Description**: designed to take screenshots of websites and provide some server header info, and identity default credentials if known.
 - Creates report automatically
-- **Example**:
-
-```code
-## Might need to be installed
-
-## Create domains file
-
-vim domains.txt
-
-hackersploit.org
-forum.hackersploit.org
-
-## Help
-
-eyewitness --help
-
-## Take screenshots of one domain
-
-eyewitness --web -f domains.txt -d hackersploit
-```
+- **Actions**:
+  - Create domains file → ```vim domains.txt```
+    - hackersploit.org
+    - forum.hackersploit.org
+  - Take screenshots of one domain → ```eyewitness --web -f domains.txt -d hackersploit```
 
 ### 🗺️ 9. Passive crawling and spidering with burp suite and OWASP ZAP
 
 **Category:** Workflow/Methodology
 **Module:** Website crawling and spidering
 
-**Burp suite**
+#### 📌 9.1. Burp Suite
 
 - Steps
   - Ensure Dashboard, capturing is on
   - As you click on different parts of the application, select target and site map, and the site maps will be constructed (proxy intercept must be off )
 
-**OWASP Zap**
+#### 📌 9.2. OWASP Zap
 
 - Select the standard mode
 - Once site is on the screens
@@ -262,83 +192,56 @@ eyewitness --web -f domains.txt -d hackersploit
 **Category:** Workflow/Methodology
 **Module:** Website crawling and spidering
 
-**Nmap**
+#### 📌 10.1. Nmap
 
 - Run nmap scan against the target
 
-```code
-nmap -sS -sV demo.ine.local
-```
+- **Actions**:
+  - Create domains file → ```nmap -sS -sV demo.ine.local```
 
-**Burp suite**
+#### 📌 10.2. Burp Suite
 
-- Navigate through the web in order to get more results
-- Http history under Proxy to view visited pages
+- **Actions**:
+  - Navigate through the web in order to get more results → sitemap
+  - Http history under Proxy to view visited pages
 
 ### 🗺️ 11. Web server fingerprinting
 
 **Category:** Workflow/Methodology
 **Module:** web servers
 
-**Nmap**
+#### 📌 11.1. Nmap
 
 - **Tool type**: active
 - **Automated scripts**:
   - Automated scans 
   - Stored in /usr/share/nmap/scripts/
-- **Example**
+- **Actions**:
+  - Fast scan with nmap → ```nmap -sV -F 192.212.206.3```
+  - Automated script with ranged ports → ```nmap -sV -p 80 --script=http-enum 192.212.206.3```
+  - Check for banner → ```nmap -sV -script banner demo.ine.local```
 
-```code
-## Fast scan with nmap
+#### 📌 11.2. Metasploit
 
-nmap -sV -F 192.212.206.3
+- **Actions**:
+  - Metasploit console → ```msfconsole```
+  - Search module → 
+    - ```search auxiliary/scanner/http/http_version```
+    - ```use 0```
+    - ```show options```
+    - ```set RHOSTS 192.212.206.3```
+    - ```run```
 
-## Automated script with ranged ports
+#### 📌 11.3. Curl
 
-nmap -sV -p 80 --script=http-enum 192.212.206.3
+- **Actions**:
+  - Request endpoint → ```curl http://192.212.206.3```
 
-## Check for banner
+#### 📌 11.4. Dirb
 
-nmap -sV -script banner demo.ine.local
-```
-
-**Metasploit**
-
-- **Example**
-
-```code
-## Metasploit console
-
-msfconsole
-
-## Search module
-
-search auxiliary/scanner/http/http_version
-use 0
-show options
-set RHOSTS 192.212.206.3
-run
-```
-
-**Curl**
-
-- **Example**
-
-```code
-## Curl
-
-curl http://192.212.206.3
-```
-
-**Dirb**
-
-- **Example**
-
-```code
-## Use with dictionary
-
-dirb http://192.212.206.3 /user/shre/metasploit-framework/data/wordlist/directory.txt
-```
+- **Warnings**: use it like this -> ```dirb https://sharpcircles.org``` (no www)
+- **Actions**:
+  - Use with dictionary → ```dirb http://192.212.206.3 /user/share/metasploit-framework/data/wordlist/directory.txt```
 
 ### 🛠️ 12. Apache recon lab - fingerprinting
 
@@ -596,3 +499,13 @@ amass intel -active -whois -d zonetransfer.me -dir /home/kali/Desktop/ZTME_Intel
 
 amass viz -dir /home/kali/Desktop/ZTME -d3
 ```
+
+**Additional**
+
+- Summarization of main needs. Scenario / Purpose -> corresponding action
+  - Example: initial reconning -> nmap scan, burp crawling, dnsrecon (just an example)
+- Feed AI with the notes and ask to provide use case scenario bundles with these context + actions
+- More ideas: same bundles, but adding a clear reference of which command does
+  - Directory brute force -> dirb
+  - Port and version scanning -> nmap
+  - And so on
