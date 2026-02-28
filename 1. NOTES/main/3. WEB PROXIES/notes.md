@@ -74,9 +74,66 @@
     - Intruder → add position in basic authorization and use wordlist payload. Use payload processing: encoding into base64
         - Add prefix → admin:
         - Add encoding → base64
-    
 
+#### 📌 2.7. Repeater
 
-    
-    
+- **Actions**:
+    - Fuzz endpoints with custom modifications
+    - **Specially used for** → 
+        - Command injection
+        - SQLi
+        - XSS 
+ 
+### 3. OWASP ZAP
 
+#### 📌 3.1. Dashboard and UI
+
+- **Actions**:
+    - Panels → 
+        - 1. Sites / Context: narrow down the scope
+            - Site → site map or tree
+        - 2. Right panel
+            - Quick start →
+                - Active scanning
+                - Manual scanning (passive crawling)
+            - Request
+            - Response
+            - Requester → repeater
+        - 3. Bottom panel
+            - History
+            - Search: browse over results (regex options)
+            - Alerts: similar to issues in BS
+    - Attack mode
+        - Standard → not recommended, as it can be dangerous
+        - Protected → recommended
+    - Session properties → establish filters
+    - Layout options → also in toolbar
+    - Addons / Marketplace → TreeTools, Reflect, Wappalyzer (for example)
+    - Buttons
+        - Interceptor
+        - Forward
+        - Drop
+
+#### 📌 3.2. Configure OWASP ZAP Proxy
+
+- **Actions**:
+    - Options → local proxy
+        - Certificates → generate one
+            - Go firefox → add ZAP to FoxyProxy configuration
+    - Open with requester with right click (repeater)
+    - Same for fuzzer (intruder)
+    - Extra options
+        - Add alerts
+        - Highlight characters
+
+#### 📌 3.3. OWASP ZAP Context and Scope
+    
+- **Actions**:
+    - Identify site on passive crawling → include in context
+    - Bullseye → applies scope for filtering
+    - Session options → automate authentication (for example)
+    - Right click on site 
+        - Active scan
+        - Fuzzing
+        - Forced browse directory (and children)
+        - Spider
