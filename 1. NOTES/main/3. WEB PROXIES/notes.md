@@ -137,3 +137,35 @@
         - Fuzzing
         - Forced browse directory (and children)
         - Spider
+
+#### 📌 3.4. Directory enumeration
+    
+- **Actions**:
+    - Nmap fast scan → ``nmap -sV -F 192.13.236.3``
+    - Copy brute force wordlists → ``cp /usr/share/wordlists/dirb/common.txt ~/.ZAP/fuzzers/dirbuster/``
+    - Do passive crawling with manual scan
+    - Directory brute force → right click on resource / Attack / forced browse directory (and children)
+        - Below → specify the wordlist
+
+#### 📌 3.5. Web app scanning
+    
+- **Actions**:
+    - Web app scan → vulnerability scan
+    - Option in Owasp ZAP → Active scan
+        - Set automatic authentication
+            - 1. Right click → include in context → default context
+            - 2. Add the get url for the login and POST body data → form based authentication
+            - 3. Set parameters
+            - 4. Regex patterns in logout responses
+            - 5. Set the users
+        - Right click → Attack → Spider 
+            - Allows to find new urls for alerts
+        - Right click → Attack → Active scan
+
+#### 📌 3.6. Spidering with OWASP ZAP
+    
+- **Actions**:
+    - Used for → discover new resources and urls on a specific site
+        - Recursive and cyclic
+        - Identify files, folders, hidden items, hyperlinks
+    - Default options are usually good

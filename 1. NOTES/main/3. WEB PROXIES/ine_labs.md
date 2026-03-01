@@ -36,3 +36,29 @@
       - >& → redirects stdin and stdout to specific destination
       - 0>&1 → 0 (stdin) and 1 (stdout). Takes the input and sends it to the output
   - 3. Find files → ``find / -name flag 2>/dev/null``
+
+### 3.5. Directory enumeration with ZAPProxy
+
+- **Actions**:
+    - Nmap fast scan → ``nmap -sV -F 192.13.236.3``
+    - Copy brute force wordlists → ``cp /usr/share/wordlists/dirb/common.txt ~/.ZAP/fuzzers/dirbuster/``
+    - Do passive crawling with manual scan
+    - Directory brute force → right click on resource / Attack / forced browse directory (and children)
+        - Below → specify the wordlist
+
+### 3.6. Scanning web application with ZAProxy
+
+- **Actions**:
+    - Web app scan → vulnerability scan
+    - Option in Owasp ZAP → Active scan
+        - Set automatic authentication
+            - 1. Right click → include in context → default context
+            - 2. Add the get url for the login and POST body data → form based authentication
+            - 3. Set parameters
+            - 4. Regex patterns in logout responses
+            - 5. Set the users
+            - 6. Include base url and also login url
+        - Right click → Attack → Spider 
+            - Allows to find new urls for alerts
+        - Right click → Attack → Active scan
+    - In alerts → follow the urls for testing
