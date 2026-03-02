@@ -169,3 +169,11 @@
         - Recursive and cyclic
         - Identify files, folders, hidden items, hyperlinks
     - Default options are usually good
+
+#### 📌 3.7. Attacking HTTP login forms with OWASP ZAP
+    
+- **Actions**:
+    - Search POST request → right click → open Fuzz
+    - Select values and add payload 
+        - From file / strings
+        - Options → follow redirects
