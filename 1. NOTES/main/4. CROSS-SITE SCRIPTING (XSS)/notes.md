@@ -13,7 +13,8 @@
 
 - **Actions**
     - Sandbox context → JavaScript is executed by browsers in a sandbox with low privileges and it is also segregated from other programs and processes.
-    - Execution is sequential → top to bottom
+    - Execution is sequential → top to bottom 
+    - Payloads → https://github.com/payload-box/xss-payload-list
 
 ### 2. Reflected XSS
 
