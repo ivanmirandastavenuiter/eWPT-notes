@@ -47,15 +47,27 @@
 
 ### 4. DOM-Based XSS
 
-#### 📌 4.1. xx
-
-- **Actions**
-    - Check domain → export certificate from BurpSuite (DER) and import from browser 
-
 ### 5. XSS Tools
 
-#### 📌 5.1. xx
+#### 📌 5.1. XSSer 
 
 - **Actions**
-    - Check domain → export certificate from BurpSuite (DER) and import from browser 
+    - Automatic framework used to detect, exploit and report XSS vulnerabilities
+    - Contains options to bypass filters and various special techniques of code injection
+    - More than 1300 attack vectors
+- **Repo**: https://github.com/epsylon/xsser
+- **Commands**: 
+    - ```xsser --url "http://192.214.20.3/index.php?popUpNotificationCode=SL1&page=dns-lookup.php" -p "target_host=XSS&dns-lookup-php-submit-button=Lookup+DNS" --Fp "<script>alert(1)</script>"```
+    - XSS is the placeholder to place the attack
+    - More options:
+        ```--auto``` → automatic scanning
+        ```--reverse-check``` → include payload
+    - GUI
+        - ```xsser --gtk``` → invoke GUI
+        - Steps:
+            1. Set to intruder
+            2. Paste target page
+            3. Connection tab to configure method and payload
+            4. Aim
+        - Wizard: going through the steps to craft the attack
 
