@@ -28,12 +28,70 @@
     - @@variable → global variable
     - waitfor delay '00:00:10' → time delay
 
+#### 📌 3.2. SQL fundamentals
+
+- **Commands**
+    - List databases → ```show databases```
+    - Use database → ```use wpdatabase```
+    - List tables → ```show tables```
+
 ### 4. Finding SQLi Vulnerabilities
 
-#### 📌 4.1. xx
+#### 📌 4.1. Hunting SQL injection vulnerabilities
 
 - **Actions**
-    - Stored → goes to DB
+    - Common injectable fields 
+        - Login forms
+        - Search fields
+        - Url parameters
+        - Form fields
+        - Comment fields 
+        - Hidden fields
+        - Cookies
+    - Testing
+        - Manual testing
+        - Error based testing
+        - Union based testing
+        - Boolean based testing
+        - Time based testingx
+    - Input validation and sanitization → review application's code to see if proper input validation and sanitization measures are in place
+    - Automated testing
+        - sqlmap
+        - OWASP ZAP
+        - Burp Suite
+    - SQL injection testing
+        - Check for string terminators: ' or "
+        - Check for commands: SELECT, UNION, others
+        - Check for comments: #, --
+        - Check if injectable parameter is integer or string based
+    - Integer based injection
+        - Payload does not include statement termination characters
+    - String based injection
+        - Here the string termination (') is needed
+    - Database fingerprinting
+        - Cause errors in order to identify underlying RDMBS
+
+#### 📌 4.2. Finding SQL injection vulnerabilities manually
+
+- **Actions**
+    - Login page → single quote and enter to generate an error
+        - The response highlights underlying database engine and language
+    - String injection → must be closed with '
+        - Then injection + comment to invalidate remaining SQL statement
+    - If parameters are passed by the url, url encode it (Cntrl + U in BurpSuite or decoder)
+- **Payloads**: https://github.com/payload-box/sql-injection-payload-list
+- **Hidden fields**:
+    - Body parameters in POST requests that appear on BurpSuite but not in the browser
+- **Types**:
+    - String based
+    - Boolean based
+    - Union based
+        - ```' UNION SELECT * FROM accounts#```
+    - Time based
+        - ```' or sleep(5)#```
+    - **Don't forget to url encode when parameters are passed in the query**
+
+
 
 ### 5. In-Band SQL Injection
 
