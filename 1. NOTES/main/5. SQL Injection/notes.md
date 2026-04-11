@@ -21,7 +21,7 @@
     - ' OR " → character string indicator
     - /*..*/ → Multi-line comment
     - + → Addition or concatenation
-    - # or -- → single line comment
+    - '#' or -- → single line comment
     - || → double pipe
     - % → wildcard attribute indicator
     - @variable → local variable
@@ -53,7 +53,7 @@
         - Error based testing
         - Union based testing
         - Boolean based testing
-        - Time based testingx
+        - Time based testing
     - Input validation and sanitization → review application's code to see if proper input validation and sanitization measures are in place
     - Automated testing
         - sqlmap
@@ -91,11 +91,23 @@
         - ```' or sleep(5)#```
     - **Don't forget to url encode when parameters are passed in the query**
 
+#### 📌 4.3. Finding SQL injection vulnerabilities with OWASP ZAP
 
+- **Actions**
+    - Access from firefox builtin in OWASP ZAP
+    - **Fuzzer**
+        - 1. Intercept request with OWASP
+        - 2. Right click → fuzzer
+        - 3. Select blank space, add, file fuzzers (jbrofuzz), sql injection (select everything)
+        - 4. Start fuzzer
+    - State → reflected (means error based injection). This means that the attack was reflected (in-band)
+            - It could include false positives
+    - Process: intercept the request, send to fuzzer (it is per request)
+    
 
 ### 5. In-Band SQL Injection
 
-#### 📌 5.1. xx
+#### 📌 5.1. Exploiting error based sql injection vulnerabilities
 
 - **Actions**
     - Stored → goes to DB
