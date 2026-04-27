@@ -104,24 +104,40 @@
             - It could include false positives
     - Process: intercept the request, send to fuzzer (it is per request)
     
-
 ### 5. In-Band SQL Injection
 
-#### 📌 5.1. Exploiting error based sql injection vulnerabilities
+#### 📌 5.2. Exploiting union based sql injection vulnerabilities
 
-- **Actions**
-    - Stored → goes to DB
+- **Basic concepts**
+    - Definition → the result uses the same input / output channel, so the information is revealed to the user (an error is shown)
+    - Types:
+        - Error based
+        - Union based
+    - You can use union to merge columns from different tables (you need to know the database tables and columns)
 
 ### 6. Blind SQL Injection
 
-#### 📌6.1. xx
+#### 📌6.1. Introduction to Blind SQL Injections
 
-- **Actions**
-    - Stored → goes to DB
+- **Basic concepts**
+    - Definition → the result does not directly return information about the database
+    - Types:
+        - Boolean based
+        - Time based
 
 ### 7. NoSQL Injection
 
-#### 📌 7.1. xx
+#### 📌 7.1. NoSQL fundamentals
 
-- **Actions**
-    - Stored → goes to DB
+- **Basic concepts**
+    - Not only SQL → database system that provide a non-relational approach for storing and retrieving data
+    - Flexible models → unstructured, semi-structured
+    - Target → highly scalable environments, performance, and agility
+    - Types
+        - Key value pairs
+        - Documents
+        - Columnar
+    - Languages
+        - MongoDB - MQL or mongo query language
+        - Redis - Its own commands
+
