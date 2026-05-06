@@ -22,6 +22,12 @@
 
 1. Command → ```hydra -l admin -P /root/Desktop/wordlists/100-common-passwords.txt 192.152.221.3 http-get /digest/```
 
+### 6.4. Sensitive data exposure
+
+1. Directory brute force → ```dirb [url] [wordlist]```
+2. Listing directory enabled. Use nikto → ```nikto -h [url]```
+`
+
 
 
 

@@ -34,3 +34,25 @@
         4. Client crafts a response calculating a hash based on the components
         5. Server validates it
  
+### 2. Sensitive data exposure
+
+#### 📌 2.1. Sensitive data exposure vulnerabilities
+
+**Examples**
+    - Weak password storage
+    - Information disclosure of error messages
+    - Directory traversal
+    - Unencrypted backups
+
+### 3. Broken authentication
+
+#### 📌 3.1. Attacking login forms with burp suite
+
+1. Proxy request with BS
+2. Send to intruder
+3. Nmap command → ```nmap -sS -sV -p 8000 192.148.7.3```
+4. Add position in the password
+5. Set in payload options the wordlist from Desktop
+6. Start the attack
+7. Check the length of the response. If different, is valid.
+
