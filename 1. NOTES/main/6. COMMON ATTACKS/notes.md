@@ -56,3 +56,36 @@
 6. Start the attack
 7. Check the length of the response. If different, is valid.
 
+#### 📌 3.2. Attacking login forms with OTP security
+
+**Basic concepts**
+    - OTP → one time password
+    - Short life
+    - Endpoints should implement rate limiting to prevent brute force attacks
+    - Types
+        - TOTP → based on secret key and current time
+        - SOTP → OTP is sent to the mobile phone
+
+### 4. Session management
+
+#### 📌 4.1. Session IDs and cookies
+
+**Basic concepts**
+    - Session IDs are uniquely created in the web application
+    - Cookies are the mechanisms used to carry the value of the sessions
+
+#### 📌 4.2. Session fixation and session hijacking
+
+**Session hijacking**
+    - Definiton → an attacker takes over the session of the victim user
+    - Token acquisition
+        - Session prediction (poor encoding, weak/predictable code generation)
+        - Session sniffing (not very common now)
+        - XSS → steal session cookie through this attack
+**Session fixation**
+    - Definition → an attacker fixes a value for the Session ID
+    - Then the attacker tricks the victim to use this fixed session in order to gain unauthorized access
+
+### 5. CSRF (Cross site request forgery)
+
+
