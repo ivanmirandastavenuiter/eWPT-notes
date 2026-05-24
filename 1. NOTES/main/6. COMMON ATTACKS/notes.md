@@ -86,6 +86,27 @@
     - Definition → an attacker fixes a value for the Session ID
     - Then the attacker tricks the victim to use this fixed session in order to gain unauthorized access
 
-### 5. CSRF (Cross site request forgery)
+### 6. Injection and input validation
 
+#### 📌 6.1. Command injections
+
+**Definition**
+    - The ability to execute remote commands in the server through inputs of the web application
+**Causes**
+    - User input handling
+    - Lack of input sanitization
+    - Injection points
+
+#### 📌 6.2. PHP code injection
+
+**Basic concepts**
+    - Inject arbitrary php code in the web application
+    - Scoped to PHP
+**Exploitation**
+    - Attacks include php tags
+    - The malicious injection in php is executed by the application
+
+### 7. Security misconfigurations
+
+#### 📌 7.1. RCE Via MySQL
 
