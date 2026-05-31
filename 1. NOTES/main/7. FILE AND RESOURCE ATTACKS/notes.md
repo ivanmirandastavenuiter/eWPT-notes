@@ -2,7 +2,7 @@
 
 ### 1. Arbitrary file upload vulnerabilities
 
-#### 📌 1.2. 
+#### 📌 1.2. Bypassing file upload extension filters
 
 - **Basic concepts**
-    - Definition → modifying the http method in the request
+    - Definition → 

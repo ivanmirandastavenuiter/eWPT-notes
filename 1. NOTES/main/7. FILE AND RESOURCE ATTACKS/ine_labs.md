@@ -1,6 +1,6 @@
-## 7. CFILE AND RESOURCE ATTACKS
+## 7. FILE AND RESOURCE ATTACKS
 
-### 7.1. BASIC FILE UPLOAD VULNERABILITIES
+### 7.1. Basic file upload vulnerabilities
 
 - **Actions**:
   1. Upload the file and check the url with the folders → Go to gobuster
@@ -23,3 +23,14 @@
   7. Reverse shells
     - Webshells: ```cd /usr/share/webshells/php``` 
     - Change IP in target folder
+
+### 7.2. Bypassing file upload extension filters
+
+1. Intercept POST upload with BS. Check body payload
+2. Change content type to one allowed → MIME type, ```image/jpeg```
+3. If not working → change the filename extension
+4. Then execute the access get url but in the context of php → ```url/shell.jpg/shell.php?cmd=id```
+5. Repeat steps from lab 1
+5. Do it automatically
+  - Generate payload → ```weevely generate password ~/Desktop/weevely.jpg```
+  - Attack against the url → ```weevely url password```
