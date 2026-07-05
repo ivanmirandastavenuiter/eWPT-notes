@@ -45,7 +45,7 @@
 1. Username ID brute force → ```curl -s -I -X GET http://wordpress.com/?author=1```
     - Automate with burp suite and look for different http codes
 2. Enumerate users querying wordpress API on wp-json → ```curl http://wordpress.com/wp-json/wp/v2/users```
-3. Automate with burp suite and analyze response. If mentions password is wrong, means the username exists+
+3. Automate with burp suite and analyze response. If mentions password is wrong, means the username exists
     - wp-login.php
 
 **Role permissions**
@@ -92,3 +92,15 @@
     </methodCall>
     ```
     - brute force setting the position in the value of the password
+
+### 9.3. Enumerating hidden files and sensitive information
+
+1. Using gobuster → ``whatever``
+    - Use github SecLists → web content → CMS
+    - Download seclist → sudo apt-get install seclists
+        - Downloaded under → ``lsz -al /usr/share/seclists/``
+    - ``gobuster dir --url [url] --wordlist /usr/share/seclists/Discovery/Web-Content/CMS/wordpress.fuzz.txt -b '404' -t 20``
+    - Themes → ``gobuster dir --url [url] --wordlist /usr/share/seclists/Discovery/Web-Content/CMS/wp-themes.fuzz.txt -b '404' -t 20``
+    - Common → ``gobuster dir --url [url] --wordlist /usr/share/seclists/Discovery/Web-Content/common.txt -b '404' -t 20``
+2. Using wpscan
+    - ``wpscan --url [url]``

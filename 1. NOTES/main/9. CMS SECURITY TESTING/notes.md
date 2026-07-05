@@ -63,3 +63,16 @@
 5. Post exploitation
     - Establish persistence in wordpress site or server via web shells or backdoors to maintain access
     - Exfiltrate sensitive data
+
+#### 📌 1.3. Enumerating hidden files and sensitive information
+
+1. Login / Authentication
+    - ``/wp-login.php``
+    - ``/wp-admin/login.php``
+    - ``/wp-admin/wp-login.php``
+    - ``/xmlrpc.php``
+2. Directories
+    - ``/wp-content``
+    - ``/wp-content/uploads/``
+    - ``/wp-config.php``
+
