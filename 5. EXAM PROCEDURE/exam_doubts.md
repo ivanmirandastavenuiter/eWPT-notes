@@ -194,3 +194,40 @@ To prevent losing progress or having to re-exploit targets, follow this exact 3-
 3. **Execute Reset:** Once all discovered answers are submitted into the web portal, click **Reset Lab Environment**.
 
 Once the new lab loads, your previously submitted answers stay saved in the portal, and you can focus entirely on the remaining targets without repeating past work.
+
+### About structure
+
+#### Recommended Optimized Vault Structure
+
+```text
+📁 My-eWPT-Vault/
+│
+├── 📋 01-Phases-and-Checklists/         <-- (High-Level Process)
+│   ├── 01-Recon-and-Directory-Enum.md
+│   ├── 02-Authentication-and-Sessions.md
+│   ├── 03-Input-Validation-Checklist.md
+│   └── 04-CMS-and-Web-Services-Checklist.md
+│
+├── 💣 02-Vulnerabilities-and-Payloads/  <-- (Direct Access to Exploit Reference)
+│   ├── 01-SQL-Injection/                (Bypasses, sqlmap cheat sheets, UNION payloads)
+│   ├── 02-XSS-Reflected-and-Stored/     (Context bypasses, polyglots)
+│   ├── 03-File-Inclusion-LFI-RFI/       (Wrappers, path traversals, log poisoning)
+│   ├── 04-File-Upload-to-RCE/           (Bypasses, web shells: PHP, ASPX)
+│   ├── 05-IDOR-and-CSRF/                (Logic bypasses, token analysis)
+│   └── 06-CMS-WordPress/                (wpscan flags, API enumeration)
+│
+├── 🛠️ 03-Tools-and-Automation/           <-- (Commands & Scripts)
+│   ├── Burp-and-ZAP-Cheatsheet.md
+│   ├── Python-Requests-Template.py
+│   └── Fuzzing-Wordlists.md
+│
+└── 🎯 04-Exam-Workspace/                 <-- (Used on Exam Day)
+    └── Target-Scratchpad-Template.md
+
+```
+### Loose ends
+
+- Screenshots
+- Symptoms. Knowing the steps for each scenario. Identify patterns.
+- When applying WSTG, the list has 182 vulnerability scenarios. How do I adjust my usage of the guide to the questions of the exam.
+- Voucher: 6 months have passed since I subscribed. Does it affect my voucher somehow? I think the expiration starts since the confirmation of the purchase, right?
