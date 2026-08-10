@@ -12,6 +12,8 @@
 
 > **Key Takeaway:** Passing invalid data types (strings/symbols into integer fields) is a reliable method to bypass default error handlers and leak exact framework versions for CVE mapping.
 
+---
+
 ### [PS-INFO-02] Information disclosure on debug page
 
 **Scenario:** The target application contains a publicly accessible debug page left enabled in production, exposing sensitive system environment variables including the application's secret key.
@@ -25,6 +27,8 @@
 5. Copy the corresponding secret key value and submit it via the solution banner.
 
 > **Key Takeaway:** Developer debug files (e.g., `phpinfo()`, `/debug`, Django debug pages) left in production environments expose critical secrets, framework configurations, and internal file paths. Always inspect HTML source comments during initial web recon.
+
+---
 
 ### [PS-INFO-03] Source code disclosure via backup files
 
@@ -40,6 +44,8 @@
 
 > **Key Takeaway:** Text editors, deployment scripts, and manual backup routines often leave hidden or renamed files (`.bak`, `.old`, `.swp`, `~`) in web roots. Always check `/robots.txt` and fuzz for common backup extensions during directory enumeration.
 
+---
+
 ### [PS-INFO-04] Authentication bypass via information disclosure
 
 **Scenario:** The target application restricts its admin panel (`/admin`) to local users only. A front-end reverse proxy appends an internal HTTP header to validate client IP addresses, which can be disclosed using the HTTP `TRACE` method.
@@ -53,6 +59,8 @@
 5. Send the modified request to bypass authentication, access the admin panel, and delete target user `carlos`.
 
 > **Key Takeaway:** Reverse proxies and load balancers often pass client metadata via custom HTTP headers (`X-Custom-IP-Authorization`, `X-Forwarded-For`). Identifying these headers via verbose methods like `TRACE` enables header spoofing to bypass IP-based access controls.
+
+---
 
 ### [PS-INFO-05] Information disclosure in version control history
 
@@ -93,6 +101,8 @@ git show <COMMIT_HASH>
 6. Copy the exposed administrator password, log in as `administrator` in your browser, and access the admin panel to delete user `carlos`.
 
 > **Key Takeaway:** Exposing `/.git` directories allows complete reconstruction of application source code and revision history. Secrets committed to Git remain permanently accessible in past commit logs even if deleted or refactored in later updates.
+
+---
 
 ### [INE-INFO-01] Apache Web Server Fingerprinting & Reconnaissance
 
@@ -147,6 +157,8 @@ msfconsole -q -x "use auxiliary/scanner/http/robots_txt; set RHOSTS demo.ine.loc
 
 > **Key Takeaway:** Combining automated server fingerprinting (Nmap/Metasploit) with directory fuzzing (`dirb`) and `robots.txt` parsing quickly reveals web stack versions, unlinked endpoints, and crawler restrictions.
 
+---
+
 ### [INE-INFO-02] DNS Zone Transfer & Subdomain Interrogation
 
 **Scenario:** Interrogate an internal DNS server (`192.84.45.3`) hosting domain `witrap.com` to perform an unauthorized AXFR zone transfer, uncover subdomains, extract secret TXT records, and map reverse DNS entries across the internal IP subnet (`192.168.0.0/16`).
@@ -171,6 +183,8 @@ dig axfr -x 192.168 @192.84.45.3
 
 
 > **Key Takeaway:** Misconfigured DNS servers allowing unauthenticated AXFR zone transfers leak the entire internal domain topology, host IP mapping, and sensitive TXT metadata in a single query.
+
+---
 
 ### [INE-INFO-03] Directory and File Enumeration with Gobuster
 
@@ -201,6 +215,8 @@ gobuster dir -u http://192.137.160.3 -w /usr/share/wordlists/dirb/common.txt -b 
 
 
 > **Key Takeaway:** Adding file extension flags (`-x .php,.txt,.xml`) and filtering negative HTTP status codes (`-b 403,404`) during `gobuster` execution significantly increases signal-to-noise ratio when hunting for sensitive files.
+
+---
 
 ### [INE-INFO-04] Automated Attack Surface Mapping with OWASP Amass
 
