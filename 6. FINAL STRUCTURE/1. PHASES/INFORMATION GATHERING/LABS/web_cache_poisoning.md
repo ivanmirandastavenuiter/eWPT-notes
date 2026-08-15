@@ -153,3 +153,61 @@ GET /?utm_content=123'/><script>alert(1)</script> HTTP/1.1
 6. Visit the target homepage (`GET /`) in a clean browser window to confirm the poisoned response is served to organic traffic without requiring query parameters.
 
 > **Key Takeaway:** Excluding query parameters (like UTM analytics tags) from cache keys allows attackers to inject reflection payloads that poison the base URL path for all legitimate users.
+
+---
+
+### [PS-CACHE-06] Web cache poisoning via an unkeyed query parameter
+
+**Scenario:** The cache server is configured to strip specific tracking/analytics parameters (such as `utm_content`) from the cache key, while the origin server still processes and reflects the parameter's value into the response, enabling an attacker to poison the cache for legitimate users.
+
+**Solution:**
+
+1. Intercept `GET /` in Burp Repeater and run Param Miner (`Guess parameters` $\rightarrow$ `Guess GET parameters`) to identify unkeyed query parameters.
+2. Verify `utm_content` is unkeyed by sending `GET /?utm_content=test1` followed by `GET /?utm_content=test2`, observing that the second request returns `X-Cache: hit`.
+3. Locate where `utm_content` is reflected in the response body (e.g., inside a dynamic script import or link tag):
+```html
+<script src='/resources/js/tracking.js?utm_content=test1'></script>
+
+```
+
+
+4. Craft an XSS payload breaking out of the attribute context:
+```http
+GET /?utm_content=test'/><script>alert(1)</script> HTTP/1.1
+
+```
+
+
+5. Send the request repeatedly until the response header shows `X-Cache: hit`.
+6. Visit the homepage (`GET /`) in a clean tab without query parameters to verify that the unkeyed parameter payload has poisoned the main route.
+
+> **Key Takeaway:** Stripping analytics parameters (like `utm_content`) from the cache key creates an unkeyed injection vector if the origin server processes or reflects those parameters anywhere in the HTTP response.
+
+---
+
+### [PS-CACHE-07] Parameter cloaking
+
+**Scenario:** The front-end cache excludes specific analytics parameters (`utm_content`) from the cache key and treats semicolons (`;`) as part of parameter values. Meanwhile, the back-end framework uses semicolons as parameter delimiters, allowing an attacker to hide a secondary `callback` parameter inside an unkeyed parameter to poison a globally imported JavaScript file.
+
+**Solution:**
+
+1. Intercept `GET /js/geolocate.js?callback=setCountryCookie` in Burp Repeater.
+2. Verify that adding `utm_content=foo` is excluded from the cache key, allowing requests to return `X-Cache: hit`.
+3. Append a second `callback` parameter onto `utm_content` using a semicolon (`;`) as a delimiter:
+```http
+GET /js/geolocate.js?callback=setCountryCookie&utm_content=foo;callback=alert(1) HTTP/1.1
+
+```
+
+
+4. Observe that the front-end cache treats `utm_content=foo;callback=alert(1)` as one long unkeyed string and keys the request under `callback=setCountryCookie`.
+5. Observe that the back-end server parses the semicolon as a parameter separator and processes the second `callback` parameter, returning `alert(1)` in the script execution:
+```javascript
+alert(1)({"country": "United Kingdom"})
+
+```
+
+
+6. Send the request repeatedly until `X-Cache: hit` is returned to poison `/js/geolocate.js?callback=setCountryCookie` for all site visitors.
+
+> **Key Takeaway:** Parameter cloaking relies on parsing discrepancies (e.g., `;` vs `&`) between the cache and origin server, allowing attackers to hide keyed parameters inside unkeyed parameters and trigger parameter pollution without altering the cache key.
