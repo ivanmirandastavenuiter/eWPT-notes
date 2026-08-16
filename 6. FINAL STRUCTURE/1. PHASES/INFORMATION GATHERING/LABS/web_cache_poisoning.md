@@ -211,3 +211,52 @@ alert(1)({"country": "United Kingdom"})
 6. Send the request repeatedly until `X-Cache: hit` is returned to poison `/js/geolocate.js?callback=setCountryCookie` for all site visitors.
 
 > **Key Takeaway:** Parameter cloaking relies on parsing discrepancies (e.g., `;` vs `&`) between the cache and origin server, allowing attackers to hide keyed parameters inside unkeyed parameters and trigger parameter pollution without altering the cache key.
+
+---
+
+### [PS-CACHE-08] Web cache poisoning via a fat GET request
+
+**Scenario:** The front-end cache ignores request bodies for `GET` requests when constructing the cache key, while the back-end origin server processes parameters supplied in a `GET` request body and prioritizes them over URL parameters, enabling an attacker to override dynamic response functions.
+
+**Solution:**
+
+1. Intercept `GET /js/geolocate.js?callback=setCountryCookie` in Burp Repeater.
+2. Convert the request into a "fat GET" by adding a `Content-Type` header and a body containing an overriding `callback` parameter:
+```http
+GET /js/geolocate.js?callback=setCountryCookie HTTP/1.1
+Host: target.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 17
+
+callback=alert(1)
+
+```
+
+
+3. Send the request and observe that the back-end processes the request body, returning `alert(1)` in the JavaScript response while the cache key remains tied strictly to the request line (`/js/geolocate.js?callback=setCountryCookie`).
+4. Send the request repeatedly until `X-Cache: hit` is returned.
+5. In a clean browser tab, request `GET /js/geolocate.js?callback=setCountryCookie` without a body to verify that legitimate GET traffic receives the poisoned payload.
+
+> **Key Takeaway:** A "fat GET" attack takes advantage of origin servers that process HTTP request bodies on GET requests while front-end caches ignore GET bodies during key generation, allowing parameter overriding without changing the cache key.
+
+---
+
+### [PS-CACHE-09] URL normalization
+
+**Scenario:** The origin server reflects unescaped URL path segments in its 404 error responses, while the front-end cache normalizes (URL-decodes) request paths when constructing cache keys, allowing an attacker to poison cache entries for URL-encoded requests sent by standard web browsers.
+
+**Solution:**
+
+1. Intercept `GET /` in Burp Repeater and append a non-existent path containing an unencoded XSS payload:
+```http
+GET /random</script><script>alert(1)</script> HTTP/1.1
+
+```
+
+
+2. Send the request and verify that the origin server returns a `404 Not Found` response reflecting the unescaped script tag directly in the response body.
+3. Send the request repeatedly until the response header shows `X-Cache: hit`.
+4. In a victim browser, navigating to that path causes the browser to automatically URL-encode special characters before sending the request (`/%3C/script%3E...`).
+5. Because the front-end cache normalizes (URL-decodes) incoming paths when looking up cache keys, the victim's encoded request matches the unencoded cache key and executes the cached XSS payload.
+
+> **Key Takeaway:** URL normalization discrepancies occur when front-end caches decode path characters during cache key generation, allowing payloads crafted via raw HTTP requests to match and poison auto-encoded request paths sent by standard web browsers.
