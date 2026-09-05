@@ -1,13 +1,5 @@
 ### Phase 1: Information Gathering & Proxies (Exam-Optimized)
 
-**Target Scope:** `[Insert Target URL/IP]`
-
-**Assessor:** `[Your Name]`
-
-**Start Date:** `[YYYY-MM-DD]`
-
----
-
 ## 🔴 MANDATORY: ASYNCHRONOUS (Fire & Forget)
 
 *Launch these the second you receive your exam IPs. Let them run in the background while you read the exam questions and set up your proxy.*
