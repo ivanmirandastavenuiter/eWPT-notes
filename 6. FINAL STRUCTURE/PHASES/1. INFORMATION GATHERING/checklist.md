@@ -31,6 +31,7 @@
 ### WSTG-INFO-02: Fingerprint Web Server (Automated portion)
 
 * [ ] **Run Automated Detection:** Execute `whatweb http://<TARGET>` to fingerprint the technology stack.
+* [ ] **Run vulnerability scan:** Execute `nikto -h <TARGET>` to scan the web application.
 
 ---
 
