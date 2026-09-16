@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  meta2:
+    image: tleemcjr/metasploitable2:latest
+    container_name: meta2
+    # Mimics the -it flag to keep standard streams open
+    stdin_open: true 
+    tty: true        
+    # Starts the vulnerable services and keeps the container running indefinitely
+    command: sh -c "/bin/services.sh && tail -f /dev/null"
+    networks:
+      pentest_net:
+        ipv4_address: 172.20.0.2 # Your static target IP
+
+networks:
+  pentest_net:
+    driver: bridge
+    ipam:
+      config:
+        # Declares the custom 172.20.x.x subnet
+        - subnet: 172.20.0.0/16
