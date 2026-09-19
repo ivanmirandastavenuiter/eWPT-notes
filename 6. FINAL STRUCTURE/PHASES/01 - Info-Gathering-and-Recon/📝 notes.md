@@ -1,0 +1,640 @@
+# Phase 1: Information Gathering & Reconnaissance – Structured Notes
+
+These notes summarize theory, workflows, and tool usage for the Information Gathering phase of a web application assessment, based on the INE material and OWASP WSTG. [owasp](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)
+
+***
+
+## 🧠 1. Web Security Testing Guide & Checklist
+
+**Category:** Theory  
+**Module:** Web Enumeration & Information Gathering
+
+- **WSTG Guide:**  
+  - Defines the standard methodology for web application testing, including information gathering, configuration testing, and vulnerability categories. [owasp](https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/01-Information_Gathering/)
+  - Acts as a reference for what to test, why, and which techniques apply.
+
+- **Checklist:**  
+  - Summarizes steps performed, findings, affected components, and risk ratings. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  - Useful for keeping track of coverage and ensuring exam reporting is structured (findings + risk calculator + summary).
+
+**Use when (exam):** Before starting hands‑on work, skim the WSTG information‑gathering items to ensure your recon phase covers server fingerprinting, DNS, OSINT, metafiles, entry points, and execution paths. [owasp](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)
+
+***
+
+## 🗺️ 2. Target Ownership & IP Discovery (WHOIS, Netcraft, DNSrecon)
+
+**Category:** Workflow / Methodology  
+**Module:** Finding Ownership & IP Addresses
+
+### 2.1 WHOIS – Ownership & Registration
+
+- **Definition:**  
+  WHOIS is a query/response protocol used to query databases storing registered users or organizations for internet resources (domains, IP blocks). [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Tool Type:** Passive enumeration.
+
+- **Actions / Examples:**  
+  - Check domain:  
+    ```bash
+    whois hackersploit.org
+    ```  
+    Returns domain names, registrar URLs, creation/expiry dates, contact emails, name servers, and location information. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  - Check IP:  
+    ```bash
+    whois 188.114.97.5
+    ```  
+    Shows organization, addresses, phone numbers, and allocation details. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  - Basic DNS lookup:  
+    ```bash
+    host hackersploit.org
+    ```  
+    Similar to `nslookup` on Windows; resolves hostnames to IPs. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Web WHOIS:**  
+  - `whois.domaintools.com` provides a GUI over WHOIS data. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+**Use when (exam):** First step for understanding who owns the target and whether there are related domains or IP ranges that matter for scope. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+### 2.2 Netcraft – Infrastructure Fingerprinting
+
+- **Definition:** Online tool to discover underlying infrastructure (hosting, nameservers, IPs, stacks). [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Tool Type:** Passive fingerprinting.  
+- **Resource:**  
+  `https://searchdns.netcraft.com/` (Netcraft search). [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Typical Output:** Hosting provider, IP addresses, nameservers, domain relationships, and framework/stack hints.
+
+**Use when (exam):** Quickly validate hosting provider, main IP ranges, and rough stack before you start active scanning. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+### 2.3 DNSrecon & DNSdumpster – DNS Enumeration
+
+- **dnsrecon:** DNS enumeration/scanning tool.  
+  - Basic usage:  
+    ```bash
+    dnsrecon -d hackersploit.org
+    ```  
+    Enumerates records and subdomains. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **dnsdumpster.com:** Web‑based DNS enumerator.  
+  - Same purpose but with web UI and graph visualization. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **DNS Record Reference:** [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+  | Key    | Description                                |
+  |--------|--------------------------------------------|
+  | **A**  | Hostname → IPv4 address                   |
+  | **AAAA** | Hostname → IPv6 address                 |
+  | **NS** | Nameserver reference                      |
+  | **MX** | Mail server reference                     |
+  | **CNAME** | Domain alias                           |
+  | **TXT** | Text records (SPF, verification, etc.)   |
+  | **HINFO** | Host information                       |
+  | **SOA** | Start of authority (zone data)           |
+  | **SRV** | Service records                          |
+  | **PTR** | IP → hostname (reverse DNS)             |
+
+**Use when (exam):** For any domain in scope, run at least one DNS enumerator (dnsrecon or web alternative) to map records and subdomains that might host web apps. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+## 🧠 3. Webserver Metafiles (robots.txt & Friends)
+
+**Category:** Theory  
+**Module:** Webserver Metafiles & Information Leakage
+
+- **robots.txt:**  
+  - Directives to crawlers about allowed/disallowed paths. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  - Can reveal infrastructure details, sitemaps, hidden folders, and directory structures.
+
+**Use when (exam):** Always request `robots.txt`, `sitemap.xml`, and other metafiles early; add hidden paths to Burp scope and directory enumeration lists. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+## 🗺️ 4. Search Engine Discovery – Google Dorks, Wayback, GHDB
+
+**Category:** Workflow / Methodology  
+**Module:** Search Engine Discovery (OSINT)
+
+### 4.1 Google Dorks
+
+Examples from your notes: [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- Restrict to domain:  
+  ```text
+  site:ine.com
+  ```
+- Find admin URLs:  
+  ```text
+  inurl:admin
+  ```
+- Show subdomains:  
+  ```text
+  site:*.ine.com
+  ```
+- Search in title:  
+  ```text
+  intitle:admin
+  ```
+- Find file types:  
+  ```text
+  filetype:pdf
+  ```
+- Directory listings:  
+  ```text
+  intitle:index of
+  ```
+- Cached version:  
+  ```text
+  cache:ine.com
+  ```
+- Auth files:  
+  ```text
+  inurl:auth_user_file.txt inurl:passwd.txt
+  ```
+
+### 4.2 Wayback Machine
+
+- Use Wayback to see historic versions of the site, exposing old endpoints or removed features. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+### 4.3 Google Hacking Database (GHDB)
+
+- Predefined Google dorks for common misconfigurations and leaks. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+**Use when (exam):** If exam questions mention OSINT or external discovery, apply a few targeted dorks and note any discovered endpoints or files in your report. [owasp](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)
+
+***
+
+## 🗺️ 5. Web Application Fingerprinting
+
+**Category:** Workflow / Methodology  
+**Module:** Web App Fingerprinting
+
+### 5.1 Browser Extensions – Quick Stack Detection
+
+- **BuiltWith:** Website profiling and technology fingerprinting.  
+- **Wappalyzer:** Similar tech stack detection (server, language, CMS, JS libs). [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+**Use when (exam):** Passive, quick hint at server/framework/CMS before deeper fingerprinting. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+### 5.2 WhatWeb – CLI Fingerprinting
+
+- **Description:** CLI tool that identifies technologies used by a given domain. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Basic usage:**
+```bash
+whatweb http://<VHOST>/
+```
+
+**Use when (exam):** For each main host or VHost, run WhatWeb to confirm stack; combine with Nmap and headers to plan stack‑specific tests. [owasp](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)
+
+***
+
+## 🗺️ 6. WAF Detection
+
+**Category:** Workflow / Methodology  
+**Module:** Web App Fingerprinting
+
+### 6.1 wafw00f
+
+- **Action:**  
+  ```bash
+  wafw00f hackersploit.org
+  ```  
+  Detects presence and vendor of a WAF in front of the application. [darknet.org](https://www.darknet.org.uk/2016/05/wafw00f-fingerprint-identify-web-application-firewall-waf-products/)
+
+**Use when (exam):** If payloads start getting blocked or you see unusual responses, run wafw00f once and note the WAF type for your report; adapt fuzzing speed and payloads accordingly. [darknet.org](https://www.darknet.org.uk/2016/05/wafw00f-fingerprint-identify-web-application-firewall-waf-products/)
+
+***
+
+## 🗺️ 7. Source Code Analysis – Copying Sites with HTTrack
+
+**Category:** Workflow / Methodology  
+**Module:** Source Code Analysis
+
+### 7.1 HTTrack
+
+- **Takeaway:** Mirror site locally to inspect source files, HTML structure, and static assets offline. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Basic mirroring:**
+```bash
+httrack www.zonetransfer.me -O zonetransfer/
+```
+
+- **Example wizard flow:** [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  1. Enter project name: `sample`  
+  2. Base path: `/home/smi/Desktop/sample`  
+  3. URLs: `https://digi.ninja`  
+  4. Select option: `2` (follow links etc.)
+
+**Use when (exam):** If environment allows and bandwidth is acceptable, mirror small sites to quickly search for comments, hidden routes, and JS files without relying solely on Burp/ZAP. [owasp](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)
+
+***
+
+## 🗺️ 8. Visual Recon – Screenshots with EyeWitness
+
+**Category:** Workflow / Methodology  
+**Module:** Source Code Analysis / Visual Recon
+
+- **Description:** Takes automated screenshots, parses headers, identifies default credentials when known, and generates an HTML report. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Typical workflow:**
+  - Create domains file:
+    ```bash
+    vim domains.txt
+    # e.g.
+    hackersploit.org
+    forum.hackersploit.org
+    ```
+  - Run EyeWitness:
+    ```bash
+    eyewitness --web -f domains.txt -d hackersploit
+    ```
+
+**Use when (exam):** If multiple web services are exposed on different ports/IPs, EyeWitness can quickly show which ones look interesting (admin panels, default pages). [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+## 🗺️ 9. Passive Crawling & Spidering – Burp Suite & OWASP ZAP
+
+**Category:** Workflow / Methodology  
+**Module:** Website Crawling & Spidering
+
+### 9.1 Burp Suite
+
+- **Steps from notes:** [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  - Ensure Dashboard and Proxy are capturing traffic; turn Intercept **off**.  
+  - Manually browse the application; Burp’s Target → Site Map will populate.  
+  - Use Proxy → HTTP History to analyze visited pages, parameters, and responses.
+
+**Use when (exam):** Mandatory: Do a complete manual crawl early, with Burp capturing traffic, then use Site Map and HTTP History as the basis for entry‑point and workflow mapping. [owasp](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)
+
+***
+
+### 9.2 OWASP ZAP
+
+- **Note:** Comparable spidering functionality.
+
+- **Typical steps:** [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  - Set mode to **Standard**.  
+  - Add target to Sites tree.  
+  - Use Tools → Spider/Website, with recurse enabled.  
+  - Browse results; right‑click nodes to open in browser for manual inspection.
+
+**Use when (exam):** If Burp is not preferred or ZAP is specifically mentioned in a question, use its spider to complement manual crawling. [owasp](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)
+
+***
+
+## 🗺️ 10. Burp + Nmap Lab (Workflow Example)
+
+**Category:** Workflow / Methodology  
+**Module:** Website Crawling & Spidering
+
+### 10.1 Nmap
+
+- **Example from lab:**  
+  ```bash
+  nmap -sS -sV demo.ine.local
+  ```  
+  Initial port + service scan. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+### 10.2 Burp Suite
+
+- **Actions:** [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  - Navigate through the web app to enrich Site Map.  
+  - Use Proxy → HTTP History to view visited pages and analyze requests/responses.
+
+**Use when (exam):** This lab reflects a common pattern: Nmap for port/service discovery, then Burp for application‑level crawling and analysis. [adhdecode](https://adhdecode.com/articles/nmap/nmap-http-enumeration-web-discovery/)
+
+***
+
+## 🗺️ 11. Web Server Fingerprinting – Nmap, Metasploit, curl, Dirb
+
+**Category:** Workflow / Methodology  
+**Module:** Web Servers
+
+### 11.1 Nmap – Scripts & Banners
+
+- **Notes:** Nmap has many HTTP scripts under `/usr/share/nmap/scripts/`. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Actions:**  
+  - Fast version scan:  
+    ```bash
+    nmap -sV -F 192.212.206.3
+    ```  
+  - HTTP enumeration script:  
+    ```bash
+    nmap -sV -p 80 --script=http-enum 192.212.206.3
+    ```  
+  - Banner grabbing:  
+    ```bash
+    nmap -sV --script=banner demo.ine.local
+    ```  
+    (Correct syntax: `--script=banner`.) [adhdecode](https://adhdecode.com/articles/nmap/nmap-http-enumeration-web-discovery/)
+
+**Use when (exam):** Confirm server and application type and find easy metadata before deeper testing. [adhdecode](https://adhdecode.com/articles/nmap/nmap-http-enumeration-web-discovery/)
+
+***
+
+### 11.2 Metasploit Auxiliary Scanners
+
+- **HTTP version:** [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+  ```text
+  msfconsole
+  search auxiliary/scanner/http/http_version
+  use 0
+  show options
+  set RHOSTS 192.212.206.3
+  run
+  ```
+
+- Similar modules:  
+  - `auxiliary/scanner/http/robots_txt`  
+  - `auxiliary/scanner/http/brute_dirs` [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+**Use when (exam):** If Metasploit is available and allowed, these auxiliary modules give quick server and directory info; otherwise treat them as optional. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+### 11.3 curl
+
+- **Basic endpoint request:**
+```bash
+curl http://192.212.206.3
+```  
+Useful to see raw HTML and headers without a browser. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+### 11.4 Dirb
+
+- **Warning:** Use domains without `www` (e.g., `dirb https://sharpcircles.org`). [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- **Dictionary usage:**
+```bash
+dirb http://192.212.206.3 \
+     /usr/share/metasploit-framework/data/wordlists/directory.txt
+```  
+Brute‑forces directories and files using wordlists. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+**Use when (exam):** Dirb is older but still useful; today ffuf and Gobuster are generally preferred for flexibility and performance. [phrack](https://www.phrack.me/tools/2022/07/06/Ffuf-cheatsheet.html)
+
+***
+
+## 🛠️ 12. Apache Recon Lab – Fingerprinting Workflow
+
+**Category:** Exploit / Payload (Practical Lab)  
+**Module:** Web Servers
+
+From lab notes: [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+```bash
+# Check target reachability
+ping -c 4 demo.ine.local
+
+# Nmap banner check
+nmap -sV --script=banner demo.ine.local
+
+# Metasploit HTTP version scan
+msfconsole
+use auxiliary/scanner/http/http_version
+set RHOSTS demo.ine.local
+exploit
+
+# Check web app with curl
+curl http://demo.ine.local/
+
+# Check web app with wget
+wget http://demo.ine.local/index
+ls
+cat index
+
+# CLI browsers
+browsh --startup-url demo.ine.local
+lynx http://demo.ine.local
+
+# Metasploit brute_dirs
+use auxiliary/scanner/http/brute_dirs
+set RHOSTS demo.ine.local
+exploit
+
+# Dirb directory brute force
+dirb http://demo.ine.local \
+     /usr/share/metasploit-framework/data/wordlists/directory.txt
+
+# Robots.txt analysis via Metasploit
+use auxiliary/scanner/http/robots_txt
+set RHOSTS demo.ine.local
+exploit
+```
+
+**Clarifications:**  
+- `wget` – downloads files.  
+- `lynx` – text browser.  
+- `browsh` – modern CLI browser. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+## 🗺️ 13. DNS Enumeration & Zone Transfers
+
+**Category:** Workflow / Methodology  
+**Module:** DNS Enumeration
+
+### 13.1 Concepts
+
+- **DNS Interrogation:** Enumerating records to map hostnames and services.  
+- **Zone Transfer (AXFR):** Moving DNS zone data from one server to another; misconfigured AXFR can expose all records to attackers. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+### 13.2 Examples from Notes
+
+- **Default hosts location:** `/etc/hosts`. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+```bash
+# DNSdumpster
+# Web: dnsdumpster.com, enter domain
+
+# dnsrecon
+dnsrecon -d zonetransfer.me
+
+# dnsenum (zone transfer + brute force)
+dnsenum zonetransfer.me
+
+# 'whatis' for quick tool description
+whatis dig
+
+# dig zone transfer
+dig axfr zonetransfer.me @nsztm1.digi.ninja
+
+# fierce bruteforce
+fierce -dns zonetransfer.me
+```
+
+**Use when (exam):** For domains that look “internal” or lab‑specific (like `zonetransfer.me` in training), always check for AXFR exposure. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+## 🛠️ 14. DNS Zone Transfer Lab
+
+**Category:** Exploit / Payload  
+**Module:** DNS Enumeration
+
+Example lab with IP `192.84.45.3`: [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+```bash
+# AXFR for witrap.com
+dig axfr witrap.com @192.84.45.3
+
+# Reverse zone transfer for 192.168.0.0/16
+dig axfr -x 192.168 @192.84.45.3
+```
+
+Lab questions included:
+
+- Number of A records for `witrap.com` and subdomains.  
+- IP supporting LDAP over TCP for `witrap.com`.  
+- Secret flag in TXT record.  
+- Subdomain with only reverse DNS entry.  
+- Number of records in reverse zone (excluding SOA). [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+**Use when (exam):** This lab models how to systematically answer exam questions that directly reference DNS records and AXFR behavior. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+***
+
+## 🗺️ 15. Subdomains – Sublist3r, Fierce, SecLists
+
+**Category:** Workflow / Methodology  
+**Module:** Subdomain Discovery
+
+### Sublist3r
+
+- Includes `subbrute`.  
+- Uses multiple engines/APIs to enumerate subdomains. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+**Examples:**
+```bash
+# List subdomains
+sublist3r -d google.com
+
+# Specify search engine
+sublist3r -d google.com -e google
+
+# Bruteforce with fierce + wordlist
+fierce --domain ine.com --subdomain-file fierce-hostlist.txt
+```
+
+- **SecLists:** Wordlist repo for discovery; DNS lists under:  
+  `Discovery/DNS/` in the GitHub repo. [phrack](https://www.phrack.me/tools/2022/07/06/Ffuf-cheatsheet.html)
+
+**Use when (exam):** For any domain with multiple possible subdomains, run Sublist3r or Amass (see below) and feed results into further fuzzing and host mapping. [security.furybee](https://security.furybee.org/articles/modern-osint-tools/)
+
+***
+
+## 🗺️ 16. Web Server Vulnerability Scanning – Nikto
+
+**Category:** Workflow / Methodology  
+**Module:** Web Server Vulnerability Scanning
+
+- **Nikto:** Scanner for known vulnerabilities, misconfigurations, and dangerous files (e.g., `passwd`). [cirt](https://cirt.net/nikto/)
+
+- **Key notes from lab:**  
+  - Carefully review highlighted vulnerabilities and file findings.  
+  - Follow additional links suggested in the report; results vary depending on the route or VHost scanned. [vulnscanners](https://vulnscanners.com/blog/nikto-tutorial)
+
+**Use when (exam):** Run Nikto against main hosts; treat findings as leads to verify manually rather than final proof. [vulnscanners](https://vulnscanners.com/blog/nikto-tutorial)
+
+***
+
+## 🗺️ 17. Files & Directory Enumeration – Gobuster (and ffuf)
+
+**Category:** Workflow / Methodology  
+**Module:** Files & Directory Enumeration
+
+### Gobuster (from notes)
+
+- **Key tactic:** When you find folders with HTTP 200 responses, run further searches **inside those folders**. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+**Examples:**
+```bash
+# Basic directory enumeration
+gobuster dir -u http://192.137.160.3 \
+  -w /usr/share/wordlists/dirb/common.txt
+
+# Excluding 403 and 404
+gobuster dir -u http://192.137.160.3 \
+  -w /usr/share/wordlists/dirb/common.txt \
+  -b 403,404
+
+# Extensions (redirects followed with -r)
+gobuster dir -u http://192.137.160.3 \
+  -w /usr/share/wordlists/dirb/common.txt \
+  -b 403,404 \
+  -x .php,.txt,.xml \
+  -r
+```
+
+### ffuf (additional note)
+
+- Modern alternative with very flexible filtering and fuzzing, useful for directories, VHosts, and parameters. [cybercheatsheets](https://www.cybercheatsheets.org/en/tools/ffuf)
+
+**Example (for completeness):**
+```bash
+ffuf -u http://<IP>/FUZZ \
+     -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt \
+     -mc 200,301,302,403 \
+     -t 10
+```
+
+**Use when (exam):** Once main apps are identified, perform directory/file enumeration against root and any 200/302/403 endpoints; treat this as mandatory for coverage of hidden areas. [owasp](https://owasp.org/www-project-web-security-testing-guide/stable/4-Web_Application_Security_Testing/01-Information_Gathering/)
+
+***
+
+## 🗺️ 18. Automated Recon Framework – OWASP Amass
+
+**Category:** Workflow / Methodology  
+**Module:** Automated Recon Framework
+
+- **Purpose:** Network mapping of attack surfaces and external asset discovery via OSINT and active recon. [security.furybee](https://security.furybee.org/articles/modern-osint-tools/)
+
+**Examples (from lab):**
+```bash
+# Subdomain enumeration
+amass enum -d zonetransfer.me
+
+# Passive subdomain enumeration
+amass enum -passive -d zonetransfer.me
+
+# Passive + display sources + store to directory
+amass enum -d zonetransfer.me -passive -src \
+  -dir /home/kali/Desktop/ZTME
+
+# Brute-force + IPs
+amass enum -d zonetransfer.me -src -ip -brute \
+  -dir /home/kali/Desktop/ZTME_Brute
+
+# Intel for initial target discovery
+amass intel -active -whois -d zonetransfer.me \
+  -dir /home/kali/Desktop/ZTME_Intel
+
+# Visualize existing reports
+amass viz -dir /home/kali/Desktop/ZTME -d3
+```
+
+**Use when (exam):** For domains that appear to have many external assets, Amass can quickly generate a subdomain and infrastructure list for further testing. [security.furybee](https://security.furybee.org/articles/modern-osint-tools/)
+
+***
+
+## 🧱 19. Notes on Scenarios & Bundles (Future Extension)
+
+You already noted an idea to bundle commands per scenario, e.g.: [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/157649481/359ccabd-6694-425b-94f7-c2f515c4b6c8/notes.md?AWSAccessKeyId=ASIA2F3EMEYE7LV6D75N&Signature=3G3i2kn9sKq913O%2BbLGBhOO2jcE%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEF0aCXVzLWVhc3QtMSJGMEQCIGQpK8RA7sNpo6rQLTTJJCLQsbWeasKE7Z3CAzpCtbiEAiBqp9uq39gYETQdmhRMn931Dwa%2FIuS%2F%2B7KQWiEBBAmy8yrzBAglEAEaDDY5OTc1MzMwOTcwNSIM8L4x6nsTmuSfQcRDKtAEwmWNArzaOFT9rX81SwlHFEKE0x68OkC4A%2BtgLFxQXI5VQK94JohKtsU4jL73y9SLfZ5e5VcNe2%2BftdqUsfLlxuXK5UgXrp1Yi4EoGR36lk%2FkUcgiL9ekGJZk7NWiaIM9oSAkaEPTveyebH%2B%2Buxjp6Hb9jmunuHaNnaG%2FnaZ5nGvPCaS1iD1lFMcN8yWPpCSIzK4u1pLoxLlZrghehd29HQZDXFmDclcvons7UqSRSfoidJTw0%2ByAp0f8zUX7Sz%2FoqpufZeAVAxG86YVK%2B4eYSsfKIP%2FQiMzowlFjZzLtfuDfOlwHt5vmjL2OWYW1ELtFrDf3nFbjxc25%2FIQm3nqXyKFfZwnE6AUbD%2FJzVtkR7YONxRcNVPcMqBzz4amPXM7gn0rnLhNMmFfeLUc6RrsjpjLjftftPQR6Khp0XgoWpSz6xitInzLJrZ%2BWIbHL3nJZwae4mlndGFNd9Y232r%2F0eww1KkeKfX8%2B9eopQ2Ht0k%2BO0I%2F%2FzqiBX5pw%2Bqp3HFKHKlIZrFUD3q2xcff2d%2FDtxiJv%2BeUB3sIFoYr9Zzh8weo4rEXTHjfkFqe6qW1Sh6Uzw%2FQGomQNikKXZkyshTngRwJaDgpm2%2FUWuAmDgW5GfsuQmORtejf0cqBm0AVKhed6MF27Zky0TaMo%2BFGfhQta1r9ur%2BdN4%2F%2FxPuFcw%2BDE35H9c8mQ3Mtxy1Lrk4r6iHJ80N9BhlVVUvBCsLJmYlEyBjyoBmFBGoTDxHf79i%2FYRLspAQfovTT74FFQfwb%2FpyOsBD%2BADKHVRoc59CnYsO1spDD%2BtfXUBjqZAdkINbHlG4LX6ZEjZYvABRYQaLWdBFGMbJ0ebEHPhlQPHFi54qOWMtXPoMNiuLu7JfnLrOERB0MhadYOCOm6dFzp45MGqNcExqb9XvLQI4KN%2FoDtQP4teYewDjdZX1on5mwh8qfiHVnVpUy08BWjzbbKrix%2FpRf3MZv07SEk1511VToL9G%2FsB524k%2FVhggQ%2FTb6KQfS%2BmFL8hA%3D%3D&Expires=1788700881)
+
+- “Initial recon” → Nmap scan + Burp crawling + dnsrecon.  
+- “Directory brute force” → Gobuster/Dirb.  
+- “Port & version scan” → Nmap.  
+
+This is a good next step: build small “scenario bundles” mapping a use case (e.g., “find all web apps on a new exam IP”) to specific commands from notes, attacks_and_payloads, and cheatsheet.
