@@ -199,6 +199,28 @@
     -o gobuster-filtered.txt`
     - Result: `gobuster-filtered.txt`
 
+- Whatweb
+    - Command: `whatweb "http://meta2/" \ 
+      \> whatweb.txt` 
+      - Result: `whatweb.txt`
+    - Command: `whatweb -v "http://meta2/" \
+      \> whatweb.txt`
+      - Result: `whatweb-verbose.txt`
+
+- Nikto
+  - Command: `nikto -h "http://meta2/" \
+      -Tuning 23 \
+      -o nikto-quiet.txt \
+      -Format txt`
+      - Result: `nikto-quiet.txt`
+  - Command: `nikto -h "http://meta2/" \
+      -p 80,443,8080,8443 \
+      -ssl \
+      -Tuning x6 \
+      -o nikto-multi.txt \
+      -Format txt`
+      - Result: `nikto-multi.txt`
+
 - Other tools:  
   - `nikto -h http://10.x.x.10` → `X‑Powered‑By`, outdated components, interesting headers.  
 
@@ -334,7 +356,7 @@
 
 You can duplicate the whole `🛠 TARGET:` block for each IP and just change the IP, role, and related questions.
 
-## 💡 ENHANCEMENTS
+## 💡 PHASE INSIGHTS AND ENHANCEMENTS
 
 1. Check commands to process source file information quicker and more efficiently (grep, wc, and so on)
 2. Attach notes to each command on attacks and payloads md in order to ease interpretation
@@ -342,3 +364,4 @@ You can duplicate the whole `🛠 TARGET:` block for each IP and just change the
 4. Establish conventions for naming files: command-domain-context. Or such.
 5. It is difficult to identify sections or where I should put each piece of info in the target markdown report. Clarify this and find the best distribution
 6. Gain some time by directly saving files and not pasting content here (just the relevant details when later you review the discoverings)
+7. Discovery findings can really establish the direction of the commands and attacks in next phases. Bear that in mind
