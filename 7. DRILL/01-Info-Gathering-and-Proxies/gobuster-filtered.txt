@@ -1,0 +1,6 @@
+index               [32m (Status: 200)[0m [Size: 891]
+test                [36m (Status: 301)[0m [Size: 302][34m [--> http://meta2/test/][0m
+twiki               [36m (Status: 301)[0m [Size: 303][34m [--> http://meta2/twiki/][0m
+tikiwiki            [36m (Status: 301)[0m [Size: 306][34m [--> http://meta2/tikiwiki/][0m
+phpinfo             [32m (Status: 200)[0m [Size: 47929]
+phpMyAdmin          [36m (Status: 301)[0m [Size: 308][34m [--> http://meta2/phpMyAdmin/][0m

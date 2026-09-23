@@ -1,0 +1,23 @@
+# Nmap 7.99 scan initiated Sat Sep 19 12:06:25 2026 as: /usr/lib/nmap/nmap --privileged -sV -p 80,443 --script=http-enum,http-title,http-methods,http-robots.txt -oN nmap-172.20.0.2(1).txt 172.20.0.2
+Nmap scan report for 172.20.0.2 (172.20.0.2)
+Host is up (0.000043s latency).
+
+PORT    STATE  SERVICE VERSION
+80/tcp  open   http    Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-title: Metasploitable2 - Linux
+| http-enum: 
+|   /tikiwiki/: Tikiwiki
+|   /test/: Test page
+|   /phpinfo.php: Possible information file
+|   /phpMyAdmin/: phpMyAdmin
+|   /doc/: Potentially interesting directory w/ listing on 'apache/2.2.8 (ubuntu) dav/2'
+|   /icons/: Potentially interesting folder w/ directory listing
+|_  /index/: Potentially interesting folder
+|_http-server-header: Apache/2.2.8 (Ubuntu) DAV/2
+443/tcp closed https
+MAC Address: 56:49:6C:03:E8:D5 (Unknown)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sat Sep 19 12:06:32 2026 -- 1 IP address (1 host up) scanned in 7.62 seconds

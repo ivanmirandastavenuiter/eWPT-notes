@@ -1,0 +1,4 @@
+
+; <<>> DiG 9.20.24-1+b1-Debian <<>> axfr meta2@46.6.113.34#53
+;; global options: +cmd
+; Transfer failed.

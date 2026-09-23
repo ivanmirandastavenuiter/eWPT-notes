@@ -1,0 +1,22 @@
+# Nmap 7.99 scan initiated Sat Sep 19 12:48:39 2026 as: /usr/lib/nmap/nmap --privileged -F -oN nmap-172.20.0.2(1).txt 172.20.0.2
+Nmap scan report for 172.20.0.2 (172.20.0.2)
+Host is up (0.0000080s latency).
+Not shown: 86 closed tcp ports (reset)
+PORT     STATE SERVICE
+21/tcp   open  ftp
+22/tcp   open  ssh
+23/tcp   open  telnet
+25/tcp   open  smtp
+80/tcp   open  http
+111/tcp  open  rpcbind
+139/tcp  open  netbios-ssn
+445/tcp  open  microsoft-ds
+513/tcp  open  login
+514/tcp  open  shell
+2121/tcp open  ccproxy-ftp
+3306/tcp open  mysql
+5432/tcp open  postgresql
+8009/tcp open  ajp13
+MAC Address: 56:49:6C:03:E8:D5 (Unknown)
+
+# Nmap done at Sat Sep 19 12:48:41 2026 -- 1 IP address (1 host up) scanned in 1.69 seconds

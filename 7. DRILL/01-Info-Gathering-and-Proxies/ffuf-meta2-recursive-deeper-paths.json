@@ -1,0 +1,4268 @@
+{
+    "commandline": "ffuf -u http://meta2/FUZZ -w /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt:FUZZ -recursion -recursion-depth 1 -e .php -mc 200,301,302,403 -t 10 -o ffuf-meta2-recursive-deeper-paths -of json",
+    "time": "2026-09-23T18:43:08+02:00",
+    "results": [
+        {
+            "input": {
+                "FFUFHASH": "8bea2a",
+                "FUZZ": "# This work is licensed under the Creative Commons.php"
+            },
+            "position": 10,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 14410185,
+            "resultfile": "",
+            "url": "http://meta2/# This work is licensed under the Creative Commons.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea23",
+                "FUZZ": "#"
+            },
+            "position": 3,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 15415241,
+            "resultfile": "",
+            "url": "http://meta2/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea29",
+                "FUZZ": "# This work is licensed under the Creative Commons"
+            },
+            "position": 9,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 18153523,
+            "resultfile": "",
+            "url": "http://meta2/# This work is licensed under the Creative Commons",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea22",
+                "FUZZ": "# directory-list-2.3-small.txt.php"
+            },
+            "position": 2,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 18179379,
+            "resultfile": "",
+            "url": "http://meta2/# directory-list-2.3-small.txt.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea24",
+                "FUZZ": "#.php"
+            },
+            "position": 4,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 15679346,
+            "resultfile": "",
+            "url": "http://meta2/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea26",
+                "FUZZ": "# Copyright 2007 James Fisher.php"
+            },
+            "position": 6,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 16086820,
+            "resultfile": "",
+            "url": "http://meta2/# Copyright 2007 James Fisher.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea2b",
+                "FUZZ": "# Attribution-Share Alike 3.0 License. To view a copy of this"
+            },
+            "position": 11,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 12132733,
+            "resultfile": "",
+            "url": "http://meta2/# Attribution-Share Alike 3.0 License. To view a copy of this",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea210",
+                "FUZZ": "# or send a letter to Creative Commons, 171 Second Street,.php"
+            },
+            "position": 16,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 13526153,
+            "resultfile": "",
+            "url": "http://meta2/# or send a letter to Creative Commons, 171 Second Street,.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea211",
+                "FUZZ": "# Suite 300, San Francisco, California, 94105, USA."
+            },
+            "position": 17,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 10595252,
+            "resultfile": "",
+            "url": "http://meta2/# Suite 300, San Francisco, California, 94105, USA.",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea212",
+                "FUZZ": "# Suite 300, San Francisco, California, 94105, USA..php"
+            },
+            "position": 18,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 10316376,
+            "resultfile": "",
+            "url": "http://meta2/# Suite 300, San Francisco, California, 94105, USA..php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea213",
+                "FUZZ": "#"
+            },
+            "position": 19,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 10776078,
+            "resultfile": "",
+            "url": "http://meta2/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea214",
+                "FUZZ": "#.php"
+            },
+            "position": 20,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 11078503,
+            "resultfile": "",
+            "url": "http://meta2/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea215",
+                "FUZZ": "# Priority-ordered case-sensitive list, where entries were found"
+            },
+            "position": 21,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 16211189,
+            "resultfile": "",
+            "url": "http://meta2/# Priority-ordered case-sensitive list, where entries were found",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea216",
+                "FUZZ": "# Priority-ordered case-sensitive list, where entries were found.php"
+            },
+            "position": 22,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 14114924,
+            "resultfile": "",
+            "url": "http://meta2/# Priority-ordered case-sensitive list, where entries were found.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea2c",
+                "FUZZ": "# Attribution-Share Alike 3.0 License. To view a copy of this.php"
+            },
+            "position": 12,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 62814678,
+            "resultfile": "",
+            "url": "http://meta2/# Attribution-Share Alike 3.0 License. To view a copy of this.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea2f",
+                "FUZZ": "# or send a letter to Creative Commons, 171 Second Street,"
+            },
+            "position": 15,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 64357116,
+            "resultfile": "",
+            "url": "http://meta2/# or send a letter to Creative Commons, 171 Second Street,",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea2e",
+                "FUZZ": "# license, visit http://creativecommons.org/licenses/by-sa/3.0/.php"
+            },
+            "position": 14,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 64506819,
+            "resultfile": "",
+            "url": "http://meta2/# license, visit http://creativecommons.org/licenses/by-sa/3.0/.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea2d",
+                "FUZZ": "# license, visit http://creativecommons.org/licenses/by-sa/3.0/"
+            },
+            "position": 13,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 64399775,
+            "resultfile": "",
+            "url": "http://meta2/# license, visit http://creativecommons.org/licenses/by-sa/3.0/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea218",
+                "FUZZ": "# on at least 3 different hosts.php"
+            },
+            "position": 24,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 13830101,
+            "resultfile": "",
+            "url": "http://meta2/# on at least 3 different hosts.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea21a",
+                "FUZZ": "#.php"
+            },
+            "position": 26,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 10587421,
+            "resultfile": "",
+            "url": "http://meta2/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea219",
+                "FUZZ": "#"
+            },
+            "position": 25,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 12324436,
+            "resultfile": "",
+            "url": "http://meta2/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea21d",
+                "FUZZ": "index"
+            },
+            "position": 29,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 11409809,
+            "resultfile": "",
+            "url": "http://meta2/index",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea21e",
+                "FUZZ": "index.php"
+            },
+            "position": 30,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 13200599,
+            "resultfile": "",
+            "url": "http://meta2/index.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea217",
+                "FUZZ": "# on at least 3 different hosts"
+            },
+            "position": 23,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 62160561,
+            "resultfile": "",
+            "url": "http://meta2/# on at least 3 different hosts",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea21",
+                "FUZZ": "# directory-list-2.3-small.txt"
+            },
+            "position": 1,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 138350222,
+            "resultfile": "",
+            "url": "http://meta2/# directory-list-2.3-small.txt",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea25",
+                "FUZZ": "# Copyright 2007 James Fisher"
+            },
+            "position": 5,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 140769473,
+            "resultfile": "",
+            "url": "http://meta2/# Copyright 2007 James Fisher",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea28",
+                "FUZZ": "#.php"
+            },
+            "position": 8,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 143660640,
+            "resultfile": "",
+            "url": "http://meta2/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea21b",
+                "FUZZ": ""
+            },
+            "position": 27,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 62515650,
+            "resultfile": "",
+            "url": "http://meta2/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea27",
+                "FUZZ": "#"
+            },
+            "position": 7,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 153790622,
+            "resultfile": "",
+            "url": "http://meta2/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea24c9",
+                "FUZZ": "test"
+            },
+            "position": 1225,
+            "status": 301,
+            "length": 302,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/test/",
+            "scraper": {},
+            "duration": 80624,
+            "resultfile": "",
+            "url": "http://meta2/test",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea21c39",
+                "FUZZ": "twiki"
+            },
+            "position": 7225,
+            "status": 301,
+            "length": 303,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/twiki/",
+            "scraper": {},
+            "duration": 131509,
+            "resultfile": "",
+            "url": "http://meta2/twiki",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea29ab3",
+                "FUZZ": "tikiwiki"
+            },
+            "position": 39603,
+            "status": 301,
+            "length": 306,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/",
+            "scraper": {},
+            "duration": 5840500,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea21649d",
+                "FUZZ": ""
+            },
+            "position": 91293,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 15262311,
+            "resultfile": "",
+            "url": "http://meta2/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea225e8d",
+                "FUZZ": "phpinfo"
+            },
+            "position": 155277,
+            "status": 200,
+            "length": 47974,
+            "words": 2407,
+            "lines": 657,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 15854358,
+            "resultfile": "",
+            "url": "http://meta2/phpinfo",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "8bea225e8e",
+                "FUZZ": "phpinfo.php"
+            },
+            "position": 155278,
+            "status": 200,
+            "length": 47986,
+            "words": 2407,
+            "lines": 657,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 15815089,
+            "resultfile": "",
+            "url": "http://meta2/phpinfo.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6521",
+                "FUZZ": "# directory-list-2.3-small.txt"
+            },
+            "position": 1,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2760931,
+            "resultfile": "",
+            "url": "http://meta2/test/# directory-list-2.3-small.txt",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6527",
+                "FUZZ": "#"
+            },
+            "position": 7,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2523086,
+            "resultfile": "",
+            "url": "http://meta2/test/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6524",
+                "FUZZ": "#.php"
+            },
+            "position": 4,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2701001,
+            "resultfile": "",
+            "url": "http://meta2/test/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6523",
+                "FUZZ": "#"
+            },
+            "position": 3,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2757163,
+            "resultfile": "",
+            "url": "http://meta2/test/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff652a",
+                "FUZZ": "# This work is licensed under the Creative Commons.php"
+            },
+            "position": 10,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2207715,
+            "resultfile": "",
+            "url": "http://meta2/test/# This work is licensed under the Creative Commons.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6522",
+                "FUZZ": "# directory-list-2.3-small.txt.php"
+            },
+            "position": 2,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2980606,
+            "resultfile": "",
+            "url": "http://meta2/test/# directory-list-2.3-small.txt.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6529",
+                "FUZZ": "# This work is licensed under the Creative Commons"
+            },
+            "position": 9,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3279537,
+            "resultfile": "",
+            "url": "http://meta2/test/# This work is licensed under the Creative Commons",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6528",
+                "FUZZ": "#.php"
+            },
+            "position": 8,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3587139,
+            "resultfile": "",
+            "url": "http://meta2/test/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6525",
+                "FUZZ": "# Copyright 2007 James Fisher"
+            },
+            "position": 5,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3681691,
+            "resultfile": "",
+            "url": "http://meta2/test/# Copyright 2007 James Fisher",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff652b",
+                "FUZZ": "# Attribution-Share Alike 3.0 License. To view a copy of this"
+            },
+            "position": 11,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1309512,
+            "resultfile": "",
+            "url": "http://meta2/test/# Attribution-Share Alike 3.0 License. To view a copy of this",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff652c",
+                "FUZZ": "# Attribution-Share Alike 3.0 License. To view a copy of this.php"
+            },
+            "position": 12,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1521164,
+            "resultfile": "",
+            "url": "http://meta2/test/# Attribution-Share Alike 3.0 License. To view a copy of this.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff652d",
+                "FUZZ": "# license, visit http://creativecommons.org/licenses/by-sa/3.0/"
+            },
+            "position": 13,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1575358,
+            "resultfile": "",
+            "url": "http://meta2/test/# license, visit http://creativecommons.org/licenses/by-sa/3.0/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6526",
+                "FUZZ": "# Copyright 2007 James Fisher.php"
+            },
+            "position": 6,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3825116,
+            "resultfile": "",
+            "url": "http://meta2/test/# Copyright 2007 James Fisher.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff652e",
+                "FUZZ": "# license, visit http://creativecommons.org/licenses/by-sa/3.0/.php"
+            },
+            "position": 14,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1183041,
+            "resultfile": "",
+            "url": "http://meta2/test/# license, visit http://creativecommons.org/licenses/by-sa/3.0/.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65212",
+                "FUZZ": "# Suite 300, San Francisco, California, 94105, USA..php"
+            },
+            "position": 18,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 914690,
+            "resultfile": "",
+            "url": "http://meta2/test/# Suite 300, San Francisco, California, 94105, USA..php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65211",
+                "FUZZ": "# Suite 300, San Francisco, California, 94105, USA."
+            },
+            "position": 17,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 907644,
+            "resultfile": "",
+            "url": "http://meta2/test/# Suite 300, San Francisco, California, 94105, USA.",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65213",
+                "FUZZ": "#"
+            },
+            "position": 19,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1234524,
+            "resultfile": "",
+            "url": "http://meta2/test/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65217",
+                "FUZZ": "# on at least 3 different hosts"
+            },
+            "position": 23,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 952652,
+            "resultfile": "",
+            "url": "http://meta2/test/# on at least 3 different hosts",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65215",
+                "FUZZ": "# Priority-ordered case-sensitive list, where entries were found"
+            },
+            "position": 21,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1091917,
+            "resultfile": "",
+            "url": "http://meta2/test/# Priority-ordered case-sensitive list, where entries were found",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65214",
+                "FUZZ": "#.php"
+            },
+            "position": 20,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2129773,
+            "resultfile": "",
+            "url": "http://meta2/test/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65216",
+                "FUZZ": "# Priority-ordered case-sensitive list, where entries were found.php"
+            },
+            "position": 22,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1778310,
+            "resultfile": "",
+            "url": "http://meta2/test/# Priority-ordered case-sensitive list, where entries were found.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65210",
+                "FUZZ": "# or send a letter to Creative Commons, 171 Second Street,.php"
+            },
+            "position": 16,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2654582,
+            "resultfile": "",
+            "url": "http://meta2/test/# or send a letter to Creative Commons, 171 Second Street,.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65218",
+                "FUZZ": "# on at least 3 different hosts.php"
+            },
+            "position": 24,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2419540,
+            "resultfile": "",
+            "url": "http://meta2/test/# on at least 3 different hosts.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff652f",
+                "FUZZ": "# or send a letter to Creative Commons, 171 Second Street,"
+            },
+            "position": 15,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 4404928,
+            "resultfile": "",
+            "url": "http://meta2/test/# or send a letter to Creative Commons, 171 Second Street,",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6521b",
+                "FUZZ": ""
+            },
+            "position": 27,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 2354436,
+            "resultfile": "",
+            "url": "http://meta2/test/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff65219",
+                "FUZZ": "#"
+            },
+            "position": 25,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3073410,
+            "resultfile": "",
+            "url": "http://meta2/test/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6521a",
+                "FUZZ": "#.php"
+            },
+            "position": 26,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3221223,
+            "resultfile": "",
+            "url": "http://meta2/test/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ff6521649d",
+                "FUZZ": ""
+            },
+            "position": 91293,
+            "status": 200,
+            "length": 876,
+            "words": 53,
+            "lines": 15,
+            "content-type": "text/html;charset=UTF-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1588183,
+            "resultfile": "",
+            "url": "http://meta2/test/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c68",
+                "FUZZ": "#.php"
+            },
+            "position": 8,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1228711,
+            "resultfile": "",
+            "url": "http://meta2/twiki/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c67",
+                "FUZZ": "#"
+            },
+            "position": 7,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1271303,
+            "resultfile": "",
+            "url": "http://meta2/twiki/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c63",
+                "FUZZ": "#"
+            },
+            "position": 3,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1415737,
+            "resultfile": "",
+            "url": "http://meta2/twiki/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c62",
+                "FUZZ": "# directory-list-2.3-small.txt.php"
+            },
+            "position": 2,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1406026,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# directory-list-2.3-small.txt.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c65",
+                "FUZZ": "# Copyright 2007 James Fisher"
+            },
+            "position": 5,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1327416,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# Copyright 2007 James Fisher",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c61",
+                "FUZZ": "# directory-list-2.3-small.txt"
+            },
+            "position": 1,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1473950,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# directory-list-2.3-small.txt",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c69",
+                "FUZZ": "# This work is licensed under the Creative Commons"
+            },
+            "position": 9,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1211087,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# This work is licensed under the Creative Commons",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c66",
+                "FUZZ": "# Copyright 2007 James Fisher.php"
+            },
+            "position": 6,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1381967,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# Copyright 2007 James Fisher.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6a",
+                "FUZZ": "# This work is licensed under the Creative Commons.php"
+            },
+            "position": 10,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1277596,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# This work is licensed under the Creative Commons.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6f",
+                "FUZZ": "# or send a letter to Creative Commons, 171 Second Street,"
+            },
+            "position": 15,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 142046,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# or send a letter to Creative Commons, 171 Second Street,",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c613",
+                "FUZZ": "#"
+            },
+            "position": 19,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 127057,
+            "resultfile": "",
+            "url": "http://meta2/twiki/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6b",
+                "FUZZ": "# Attribution-Share Alike 3.0 License. To view a copy of this"
+            },
+            "position": 11,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 230452,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# Attribution-Share Alike 3.0 License. To view a copy of this",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6c",
+                "FUZZ": "# Attribution-Share Alike 3.0 License. To view a copy of this.php"
+            },
+            "position": 12,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 241592,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# Attribution-Share Alike 3.0 License. To view a copy of this.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6d",
+                "FUZZ": "# license, visit http://creativecommons.org/licenses/by-sa/3.0/"
+            },
+            "position": 13,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 145288,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# license, visit http://creativecommons.org/licenses/by-sa/3.0/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c614",
+                "FUZZ": "#.php"
+            },
+            "position": 20,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 257013,
+            "resultfile": "",
+            "url": "http://meta2/twiki/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c610",
+                "FUZZ": "# or send a letter to Creative Commons, 171 Second Street,.php"
+            },
+            "position": 16,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 320361,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# or send a letter to Creative Commons, 171 Second Street,.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c611",
+                "FUZZ": "# Suite 300, San Francisco, California, 94105, USA."
+            },
+            "position": 17,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 208996,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# Suite 300, San Francisco, California, 94105, USA.",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6e",
+                "FUZZ": "# license, visit http://creativecommons.org/licenses/by-sa/3.0/.php"
+            },
+            "position": 14,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 521883,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# license, visit http://creativecommons.org/licenses/by-sa/3.0/.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c618",
+                "FUZZ": "# on at least 3 different hosts.php"
+            },
+            "position": 24,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 215135,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# on at least 3 different hosts.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c616",
+                "FUZZ": "# Priority-ordered case-sensitive list, where entries were found.php"
+            },
+            "position": 22,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 299793,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# Priority-ordered case-sensitive list, where entries were found.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c612",
+                "FUZZ": "# Suite 300, San Francisco, California, 94105, USA..php"
+            },
+            "position": 18,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 443207,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# Suite 300, San Francisco, California, 94105, USA..php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c615",
+                "FUZZ": "# Priority-ordered case-sensitive list, where entries were found"
+            },
+            "position": 21,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 370647,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# Priority-ordered case-sensitive list, where entries were found",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c617",
+                "FUZZ": "# on at least 3 different hosts"
+            },
+            "position": 23,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 205789,
+            "resultfile": "",
+            "url": "http://meta2/twiki/# on at least 3 different hosts",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c61b",
+                "FUZZ": ""
+            },
+            "position": 27,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 162037,
+            "resultfile": "",
+            "url": "http://meta2/twiki/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c61a",
+                "FUZZ": "#.php"
+            },
+            "position": 26,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 163345,
+            "resultfile": "",
+            "url": "http://meta2/twiki/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c619",
+                "FUZZ": "#"
+            },
+            "position": 25,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 356402,
+            "resultfile": "",
+            "url": "http://meta2/twiki/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c61d",
+                "FUZZ": "index"
+            },
+            "position": 29,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 462541,
+            "resultfile": "",
+            "url": "http://meta2/twiki/index",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6a1",
+                "FUZZ": "templates"
+            },
+            "position": 161,
+            "status": 403,
+            "length": 293,
+            "words": 22,
+            "lines": 11,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 137126,
+            "resultfile": "",
+            "url": "http://meta2/twiki/templates",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6129",
+                "FUZZ": "pub"
+            },
+            "position": 297,
+            "status": 301,
+            "length": 307,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/twiki/pub/",
+            "scraper": {},
+            "duration": 275185,
+            "resultfile": "",
+            "url": "http://meta2/twiki/pub",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c616b",
+                "FUZZ": "data"
+            },
+            "position": 363,
+            "status": 403,
+            "length": 288,
+            "words": 22,
+            "lines": 11,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 145176,
+            "resultfile": "",
+            "url": "http://meta2/twiki/data",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c63c9",
+                "FUZZ": "bin"
+            },
+            "position": 969,
+            "status": 301,
+            "length": 307,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/twiki/bin/",
+            "scraper": {},
+            "duration": 114681,
+            "resultfile": "",
+            "url": "http://meta2/twiki/bin",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6549",
+                "FUZZ": "license"
+            },
+            "position": 1353,
+            "status": 200,
+            "length": 19440,
+            "words": 3328,
+            "lines": 378,
+            "content-type": "text/plain",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1075045,
+            "resultfile": "",
+            "url": "http://meta2/twiki/license",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c65a3",
+                "FUZZ": "lib"
+            },
+            "position": 1443,
+            "status": 301,
+            "length": 307,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/twiki/lib/",
+            "scraper": {},
+            "duration": 213733,
+            "resultfile": "",
+            "url": "http://meta2/twiki/lib",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c6d81",
+                "FUZZ": "readme"
+            },
+            "position": 3457,
+            "status": 200,
+            "length": 4334,
+            "words": 581,
+            "lines": 115,
+            "content-type": "text/plain",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1301027,
+            "resultfile": "",
+            "url": "http://meta2/twiki/readme",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "0a5c61649d",
+                "FUZZ": ""
+            },
+            "position": 91293,
+            "status": 200,
+            "length": 782,
+            "words": 64,
+            "lines": 18,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 157809,
+            "resultfile": "",
+            "url": "http://meta2/twiki/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1",
+                "FUZZ": "# directory-list-2.3-small.txt"
+            },
+            "position": 1,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 67762462,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# directory-list-2.3-small.txt",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d9",
+                "FUZZ": "# This work is licensed under the Creative Commons"
+            },
+            "position": 9,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 67544632,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# This work is licensed under the Creative Commons",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d4",
+                "FUZZ": "#.php"
+            },
+            "position": 4,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 69818103,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d6",
+                "FUZZ": "# Copyright 2007 James Fisher.php"
+            },
+            "position": 6,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 70478234,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# Copyright 2007 James Fisher.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d5",
+                "FUZZ": "# Copyright 2007 James Fisher"
+            },
+            "position": 5,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 73029176,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# Copyright 2007 James Fisher",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d3",
+                "FUZZ": "#"
+            },
+            "position": 3,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 76923938,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d7",
+                "FUZZ": "#"
+            },
+            "position": 7,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 72929705,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00da",
+                "FUZZ": "# This work is licensed under the Creative Commons.php"
+            },
+            "position": 10,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 75492007,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# This work is licensed under the Creative Commons.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2",
+                "FUZZ": "# directory-list-2.3-small.txt.php"
+            },
+            "position": 2,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 75960764,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# directory-list-2.3-small.txt.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d8",
+                "FUZZ": "#.php"
+            },
+            "position": 8,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 78586133,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00db",
+                "FUZZ": "# Attribution-Share Alike 3.0 License. To view a copy of this"
+            },
+            "position": 11,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 32316617,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# Attribution-Share Alike 3.0 License. To view a copy of this",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d14",
+                "FUZZ": "#.php"
+            },
+            "position": 20,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 32599365,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d13",
+                "FUZZ": "#"
+            },
+            "position": 19,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 33609106,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d10",
+                "FUZZ": "# or send a letter to Creative Commons, 171 Second Street,.php"
+            },
+            "position": 16,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 46328364,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# or send a letter to Creative Commons, 171 Second Street,.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d15",
+                "FUZZ": "# Priority-ordered case-sensitive list, where entries were found"
+            },
+            "position": 21,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 41360772,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# Priority-ordered case-sensitive list, where entries were found",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d11",
+                "FUZZ": "# Suite 300, San Francisco, California, 94105, USA."
+            },
+            "position": 17,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 92081174,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# Suite 300, San Francisco, California, 94105, USA.",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dc",
+                "FUZZ": "# Attribution-Share Alike 3.0 License. To view a copy of this.php"
+            },
+            "position": 12,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 101462676,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# Attribution-Share Alike 3.0 License. To view a copy of this.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd",
+                "FUZZ": "# license, visit http://creativecommons.org/licenses/by-sa/3.0/"
+            },
+            "position": 13,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 95314623,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# license, visit http://creativecommons.org/licenses/by-sa/3.0/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16",
+                "FUZZ": "# Priority-ordered case-sensitive list, where entries were found.php"
+            },
+            "position": 22,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 62213173,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# Priority-ordered case-sensitive list, where entries were found.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d17",
+                "FUZZ": "# on at least 3 different hosts"
+            },
+            "position": 23,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 63642805,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# on at least 3 different hosts",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00de",
+                "FUZZ": "# license, visit http://creativecommons.org/licenses/by-sa/3.0/.php"
+            },
+            "position": 14,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 101467248,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# license, visit http://creativecommons.org/licenses/by-sa/3.0/.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00df",
+                "FUZZ": "# or send a letter to Creative Commons, 171 Second Street,"
+            },
+            "position": 15,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 110631995,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# or send a letter to Creative Commons, 171 Second Street,",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d12",
+                "FUZZ": "# Suite 300, San Francisco, California, 94105, USA..php"
+            },
+            "position": 18,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 115746768,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# Suite 300, San Francisco, California, 94105, USA..php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d33",
+                "FUZZ": "about"
+            },
+            "position": 51,
+            "status": 302,
+            "length": 0,
+            "words": 1,
+            "lines": 1,
+            "content-type": "text/html",
+            "redirectlocation": "index.php",
+            "scraper": {},
+            "duration": 14001095,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/about",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d18",
+                "FUZZ": "# on at least 3 different hosts.php"
+            },
+            "position": 24,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 87290089,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/# on at least 3 different hosts.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d34",
+                "FUZZ": "about.php"
+            },
+            "position": 52,
+            "status": 302,
+            "length": 0,
+            "words": 1,
+            "lines": 1,
+            "content-type": "text/html",
+            "redirectlocation": "index.php",
+            "scraper": {},
+            "duration": 13965006,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/about.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d4d",
+                "FUZZ": "img"
+            },
+            "position": 77,
+            "status": 301,
+            "length": 310,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/img/",
+            "scraper": {},
+            "duration": 174617,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/img",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1f",
+                "FUZZ": "images"
+            },
+            "position": 31,
+            "status": 301,
+            "length": 313,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/images/",
+            "scraper": {},
+            "duration": 47492710,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/images",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d19",
+                "FUZZ": "#"
+            },
+            "position": 25,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 86329471,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/#",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1a",
+                "FUZZ": "#.php"
+            },
+            "position": 26,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 90736547,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/#.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1b",
+                "FUZZ": ""
+            },
+            "position": 27,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 90666500,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1d",
+                "FUZZ": "index"
+            },
+            "position": 29,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 89855319,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/index",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00da1",
+                "FUZZ": "templates"
+            },
+            "position": 161,
+            "status": 301,
+            "length": 316,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/templates/",
+            "scraper": {},
+            "duration": 305150,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/templates",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1e",
+                "FUZZ": "index.php"
+            },
+            "position": 30,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 90594229,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/index.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00db7",
+                "FUZZ": "files"
+            },
+            "position": 183,
+            "status": 301,
+            "length": 312,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/files/",
+            "scraper": {},
+            "duration": 106656,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/files",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d7a",
+                "FUZZ": "help.php"
+            },
+            "position": 122,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44314330,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/help.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d79",
+                "FUZZ": "help"
+            },
+            "position": 121,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 52483098,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/help",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d121",
+                "FUZZ": "modules"
+            },
+            "position": 289,
+            "status": 301,
+            "length": 314,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/modules/",
+            "scraper": {},
+            "duration": 112804,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/modules",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d12b",
+                "FUZZ": "games"
+            },
+            "position": 299,
+            "status": 301,
+            "length": 312,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/games/",
+            "scraper": {},
+            "duration": 330626,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/games",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d12d",
+                "FUZZ": "copyright"
+            },
+            "position": 301,
+            "status": 200,
+            "length": 27690,
+            "words": 4132,
+            "lines": 1431,
+            "content-type": "text/plain",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3170910,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/copyright",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d134",
+                "FUZZ": "comments.php"
+            },
+            "position": 308,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 43075730,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/comments.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1bb",
+                "FUZZ": "doc"
+            },
+            "position": 443,
+            "status": 301,
+            "length": 310,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/doc/",
+            "scraper": {},
+            "duration": 282611,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/doc",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d133",
+                "FUZZ": "comments"
+            },
+            "position": 307,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 45670752,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/comments",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d3e1",
+                "FUZZ": "maps"
+            },
+            "position": 993,
+            "status": 301,
+            "length": 311,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/maps/",
+            "scraper": {},
+            "duration": 250106,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/maps",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d549",
+                "FUZZ": "license"
+            },
+            "position": 1353,
+            "status": 200,
+            "length": 24381,
+            "words": 4056,
+            "lines": 459,
+            "content-type": "text/plain",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3945495,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/license",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d5a3",
+                "FUZZ": "lib"
+            },
+            "position": 1443,
+            "status": 301,
+            "length": 310,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/lib/",
+            "scraper": {},
+            "duration": 101523,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/lib",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d6a7",
+                "FUZZ": "db"
+            },
+            "position": 1703,
+            "status": 301,
+            "length": 309,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/db/",
+            "scraper": {},
+            "duration": 105765,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/db",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d701",
+                "FUZZ": "README"
+            },
+            "position": 1793,
+            "status": 200,
+            "length": 1355,
+            "words": 177,
+            "lines": 36,
+            "content-type": "text/plain",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 1352306,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/README",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d84f",
+                "FUZZ": "mods"
+            },
+            "position": 2127,
+            "status": 301,
+            "length": 311,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/mods/",
+            "scraper": {},
+            "duration": 170291,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/mods",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d963",
+                "FUZZ": "lang"
+            },
+            "position": 2403,
+            "status": 301,
+            "length": 311,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/lang/",
+            "scraper": {},
+            "duration": 127764,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/lang",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d9d7",
+                "FUZZ": "changelog"
+            },
+            "position": 2519,
+            "status": 200,
+            "length": 152633,
+            "words": 24654,
+            "lines": 2760,
+            "content-type": "text/plain",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3068181,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/changelog",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00db6f",
+                "FUZZ": "temp"
+            },
+            "position": 2927,
+            "status": 301,
+            "length": 311,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/temp/",
+            "scraper": {},
+            "duration": 261430,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/temp",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd2d",
+                "FUZZ": "favicon"
+            },
+            "position": 3373,
+            "status": 200,
+            "length": 184,
+            "words": 1,
+            "lines": 4,
+            "content-type": "image/png",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 4541919,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/favicon",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd89",
+                "FUZZ": "styles"
+            },
+            "position": 3465,
+            "status": 301,
+            "length": 313,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/styles/",
+            "scraper": {},
+            "duration": 131932,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/styles",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dde7",
+                "FUZZ": "robots"
+            },
+            "position": 3559,
+            "status": 200,
+            "length": 2190,
+            "words": 111,
+            "lines": 86,
+            "content-type": "text/plain",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3944815,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/robots",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dec7",
+                "FUZZ": "setup"
+            },
+            "position": 3783,
+            "status": 200,
+            "length": 4135,
+            "words": 583,
+            "lines": 186,
+            "content-type": "text/x-sh",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 3296254,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/setup",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1243",
+                "FUZZ": "remote"
+            },
+            "position": 4675,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 34776477,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/remote",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1244",
+                "FUZZ": "remote.php"
+            },
+            "position": 4676,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 34486718,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/remote.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1303",
+                "FUZZ": "INSTALL"
+            },
+            "position": 4867,
+            "status": 200,
+            "length": 5437,
+            "words": 769,
+            "lines": 163,
+            "content-type": "text/plain",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 692279,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/INSTALL",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16d1",
+                "FUZZ": "popups"
+            },
+            "position": 5841,
+            "status": 301,
+            "length": 313,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/popups/",
+            "scraper": {},
+            "duration": 377120,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/popups",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2bda",
+                "FUZZ": "tiki-index.php"
+            },
+            "position": 11226,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 42842178,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-index.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2bd9",
+                "FUZZ": "tiki-index"
+            },
+            "position": 11225,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 45574135,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-index",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d3097",
+                "FUZZ": "copyrights"
+            },
+            "position": 12439,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 43076476,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/copyrights",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d3098",
+                "FUZZ": "copyrights.php"
+            },
+            "position": 12440,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44069490,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/copyrights.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d5bcd",
+                "FUZZ": "dump"
+            },
+            "position": 23501,
+            "status": 301,
+            "length": 311,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/dump/",
+            "scraper": {},
+            "duration": 479346,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/dump",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d5cb7",
+                "FUZZ": "backups"
+            },
+            "position": 23735,
+            "status": 301,
+            "length": 314,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/backups/",
+            "scraper": {},
+            "duration": 230138,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/backups",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d6201",
+                "FUZZ": "htaccess"
+            },
+            "position": 25089,
+            "status": 200,
+            "length": 791,
+            "words": 320,
+            "lines": 31,
+            "content-type": "text/x-sh",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 9452403,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/htaccess",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d885c",
+                "FUZZ": "xmlrpc.php"
+            },
+            "position": 34908,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 38067603,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/xmlrpc.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d885b",
+                "FUZZ": "xmlrpc"
+            },
+            "position": 34907,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 39425144,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/xmlrpc",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00daf12",
+                "FUZZ": "tiki-register.php"
+            },
+            "position": 44818,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 40769039,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-register.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00daf10",
+                "FUZZ": "tiki-view_articles.php"
+            },
+            "position": 44816,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 41997097,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-view_articles.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00daf0f",
+                "FUZZ": "tiki-view_articles"
+            },
+            "position": 44815,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44900202,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-view_articles",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00daf11",
+                "FUZZ": "tiki-register"
+            },
+            "position": 44817,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 46391328,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-register",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00db528",
+                "FUZZ": "tiki-read_article.php"
+            },
+            "position": 46376,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 42076251,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-read_article.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00db527",
+                "FUZZ": "tiki-read_article"
+            },
+            "position": 46375,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 43480249,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-read_article",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dca88",
+                "FUZZ": "tiki-print.php"
+            },
+            "position": 51848,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 40630570,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-print.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dca87",
+                "FUZZ": "tiki-print"
+            },
+            "position": 51847,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 41590509,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-print",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd12c",
+                "FUZZ": "tiki-lastchanges.php"
+            },
+            "position": 53548,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 41490935,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-lastchanges.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd12e",
+                "FUZZ": "tiki-remind_password.php"
+            },
+            "position": 53550,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 45426909,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-remind_password.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd12b",
+                "FUZZ": "tiki-lastchanges"
+            },
+            "position": 53547,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 43574632,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-lastchanges",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd130",
+                "FUZZ": "tiki-wiki_rss.php"
+            },
+            "position": 53552,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 45551580,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-wiki_rss.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd12f",
+                "FUZZ": "tiki-wiki_rss"
+            },
+            "position": 53551,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44860968,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-wiki_rss",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dd12d",
+                "FUZZ": "tiki-remind_password"
+            },
+            "position": 53549,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 55675377,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-remind_password",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00deada",
+                "FUZZ": "tiki-pagehistory.php"
+            },
+            "position": 60122,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44162743,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-pagehistory.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dead9",
+                "FUZZ": "tiki-pagehistory"
+            },
+            "position": 60121,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44813446,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-pagehistory",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dfd49",
+                "FUZZ": "tiki-user_information"
+            },
+            "position": 64841,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44861709,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-user_information",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00dfd4a",
+                "FUZZ": "tiki-user_information.php"
+            },
+            "position": 64842,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 46485357,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-user_information.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d10898",
+                "FUZZ": "tiki-orphan_pages.php"
+            },
+            "position": 67736,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 48441036,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-orphan_pages.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d10897",
+                "FUZZ": "tiki-orphan_pages"
+            },
+            "position": 67735,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 50191379,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-orphan_pages",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d10896",
+                "FUZZ": "tiki-list_articles.php"
+            },
+            "position": 67734,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 55615866,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-list_articles.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d10899",
+                "FUZZ": "tiki-listpages"
+            },
+            "position": 67737,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 53477788,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-listpages",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d10895",
+                "FUZZ": "tiki-list_articles"
+            },
+            "position": 67733,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 59146970,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-list_articles",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1089a",
+                "FUZZ": "tiki-listpages.php"
+            },
+            "position": 67738,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 60242438,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-listpages.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d10894",
+                "FUZZ": "tiki-editpage.php"
+            },
+            "position": 67732,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 72939783,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-editpage.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d10893",
+                "FUZZ": "tiki-editpage"
+            },
+            "position": 67731,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 73227733,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-editpage",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d136ac",
+                "FUZZ": "show_image.php"
+            },
+            "position": 79532,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 42055915,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/show_image.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d136ab",
+                "FUZZ": "show_image"
+            },
+            "position": 79531,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44101877,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/show_image",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d15bcc",
+                "FUZZ": "tiki-likepages.php"
+            },
+            "position": 89036,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 40014915,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-likepages.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d15bcb",
+                "FUZZ": "tiki-likepages"
+            },
+            "position": 89035,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 42946495,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-likepages",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d15bd0",
+                "FUZZ": "tiki-view_forum.php"
+            },
+            "position": 89040,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 39786207,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-view_forum.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d15bcf",
+                "FUZZ": "tiki-view_forum"
+            },
+            "position": 89039,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 43364732,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-view_forum",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1649d",
+                "FUZZ": ""
+            },
+            "position": 91293,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 47203372,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cc8",
+                "FUZZ": "tiki-survey_stats.php"
+            },
+            "position": 93384,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 48782246,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-survey_stats.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd0",
+                "FUZZ": "tiki-forums.php"
+            },
+            "position": 93392,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 42827069,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-forums.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cce",
+                "FUZZ": "tiki-forum_rankings.php"
+            },
+            "position": 93390,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 42647616,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-forum_rankings.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cc9",
+                "FUZZ": "tiki-list_surveys"
+            },
+            "position": 93385,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 52619302,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-list_surveys",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16ccb",
+                "FUZZ": "tiki-list_faqs"
+            },
+            "position": 93387,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 53647765,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-list_faqs",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cca",
+                "FUZZ": "tiki-list_surveys.php"
+            },
+            "position": 93386,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 63437889,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-list_surveys.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16ccc",
+                "FUZZ": "tiki-list_faqs.php"
+            },
+            "position": 93388,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 63485769,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-list_faqs.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16ccd",
+                "FUZZ": "tiki-forum_rankings"
+            },
+            "position": 93389,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 71989157,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-forum_rankings",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cc7",
+                "FUZZ": "tiki-survey_stats"
+            },
+            "position": 93383,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 78825451,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-survey_stats",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16ccf",
+                "FUZZ": "tiki-forums"
+            },
+            "position": 93391,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 80962353,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-forums",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd5",
+                "FUZZ": "tiki-stats"
+            },
+            "position": 93397,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 42858395,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-stats",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd7",
+                "FUZZ": "tiki-articles_rss"
+            },
+            "position": 93399,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 45839420,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-articles_rss",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd6",
+                "FUZZ": "tiki-stats.php"
+            },
+            "position": 93398,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 48020685,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-stats.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd8",
+                "FUZZ": "tiki-articles_rss.php"
+            },
+            "position": 93400,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 47797229,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-articles_rss.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd2",
+                "FUZZ": "tiki-cms_rankings.php"
+            },
+            "position": 93394,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 90516488,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-cms_rankings.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd3",
+                "FUZZ": "tiki-galleries"
+            },
+            "position": 93395,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 91745180,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-galleries",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd1",
+                "FUZZ": "tiki-cms_rankings"
+            },
+            "position": 93393,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 93825686,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-cms_rankings",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d16cd4",
+                "FUZZ": "tiki-galleries.php"
+            },
+            "position": 93396,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 96137499,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-galleries.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1d4c6",
+                "FUZZ": "tiki-config_pdf.php"
+            },
+            "position": 120006,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 41079551,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-config_pdf.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d1d4c5",
+                "FUZZ": "tiki-config_pdf"
+            },
+            "position": 120005,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 41839121,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-config_pdf",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d25252",
+                "FUZZ": "tiki-poll_results.php"
+            },
+            "position": 152146,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 40663502,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-poll_results.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2524c",
+                "FUZZ": "tiki-list_trackers.php"
+            },
+            "position": 152140,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 44689543,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-list_trackers.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2524a",
+                "FUZZ": "tiki-print_article.php"
+            },
+            "position": 152138,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 45351653,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-print_article.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2524b",
+                "FUZZ": "tiki-list_trackers"
+            },
+            "position": 152139,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 50464810,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-list_trackers",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2524e",
+                "FUZZ": "tiki-file_galleries.php"
+            },
+            "position": 152142,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 52261999,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-file_galleries.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2524f",
+                "FUZZ": "tiki-galleries_rankings"
+            },
+            "position": 152143,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 57093145,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-galleries_rankings",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d25250",
+                "FUZZ": "tiki-galleries_rankings.php"
+            },
+            "position": 152144,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 56966712,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-galleries_rankings.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d25249",
+                "FUZZ": "tiki-print_article"
+            },
+            "position": 152137,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 65436197,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-print_article",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d2524d",
+                "FUZZ": "tiki-file_galleries"
+            },
+            "position": 152141,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 71269206,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-file_galleries",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d25251",
+                "FUZZ": "tiki-poll_results"
+            },
+            "position": 152145,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html; charset=utf-8",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 72892493,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/tiki-poll_results",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d25ff4",
+                "FUZZ": "banner_click.php"
+            },
+            "position": 155636,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 33364997,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/banner_click.php",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "ea00d25ff3",
+                "FUZZ": "banner_click"
+            },
+            "position": 155635,
+            "status": 200,
+            "length": 316,
+            "words": 33,
+            "lines": 7,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 33842014,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki/banner_click",
+            "host": "meta2"
+        }
+    ],
+    "config": {
+        "autocalibration": false,
+        "autocalibration_keyword": "FUZZ",
+        "autocalibration_perhost": false,
+        "autocalibration_strategies": [
+            "basic"
+        ],
+        "autocalibration_strings": [],
+        "colors": false,
+        "cmdline": "ffuf -u http://meta2/FUZZ -w /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt:FUZZ -recursion -recursion-depth 1 -e .php -mc 200,301,302,403 -t 10 -o ffuf-meta2-recursive-deeper-paths -of json",
+        "configfile": "",
+        "postdata": "",
+        "debuglog": "",
+        "delay": {
+            "value": "0.00"
+        },
+        "dirsearch_compatibility": false,
+        "encoders": [],
+        "extensions": [
+            ".php"
+        ],
+        "fmode": "or",
+        "follow_redirects": false,
+        "headers": {},
+        "ignorebody": false,
+        "ignore_wordlist_comments": false,
+        "inputmode": "clusterbomb",
+        "cmd_inputnum": 100,
+        "inputproviders": [
+            {
+                "name": "wordlist",
+                "keyword": "FUZZ",
+                "value": "/usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt",
+                "encoders": "",
+                "template": ""
+            }
+        ],
+        "inputshell": "",
+        "json": false,
+        "matchers": {
+            "IsCalibrated": false,
+            "Mutex": {},
+            "Matchers": {
+                "status": {
+                    "value": "200,301,302,403"
+                }
+            },
+            "Filters": {},
+            "PerDomainFilters": {}
+        },
+        "mmode": "or",
+        "maxtime": 0,
+        "maxtime_job": 0,
+        "method": "GET",
+        "noninteractive": false,
+        "outputdirectory": "",
+        "outputfile": "ffuf-meta2-recursive-deeper-paths",
+        "outputformat": "json",
+        "OutputSkipEmptyFile": false,
+        "proxyurl": "",
+        "quiet": false,
+        "rate": 0,
+        "raw": false,
+        "recursion": true,
+        "recursion_depth": 1,
+        "recursion_strategy": "default",
+        "replayproxyurl": "",
+        "requestfile": "",
+        "requestproto": "https",
+        "scraperfile": "",
+        "scrapers": "all",
+        "sni": "",
+        "stop_403": false,
+        "stop_all": false,
+        "stop_errors": false,
+        "threads": 10,
+        "timeout": 10,
+        "url": "http://meta2/tikiwiki/FUZZ",
+        "verbose": false,
+        "wordlists": [
+            "/usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt:FUZZ"
+        ],
+        "http2": false,
+        "client-cert": "",
+        "client-key": ""
+    }
+}

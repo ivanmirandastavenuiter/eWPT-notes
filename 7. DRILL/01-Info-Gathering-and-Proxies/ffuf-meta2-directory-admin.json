@@ -1,0 +1,234 @@
+{
+    "commandline": "ffuf -u http://meta2/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -mc 200,301,302,403 -t 10 -o ffuf-meta2-directory-admin.json -of json",
+    "time": "2026-09-21T19:05:32+02:00",
+    "results": [
+        {
+            "input": {
+                "FFUFHASH": "55b671f",
+                "FUZZ": "test"
+            },
+            "position": 31,
+            "status": 301,
+            "length": 302,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/test/",
+            "scraper": {},
+            "duration": 532594,
+            "resultfile": "",
+            "url": "http://meta2/test",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "55b67132",
+                "FUZZ": "phpMyAdmin"
+            },
+            "position": 306,
+            "status": 301,
+            "length": 308,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/phpMyAdmin/",
+            "scraper": {},
+            "duration": 111097,
+            "resultfile": "",
+            "url": "http://meta2/phpMyAdmin",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "55b67f5",
+                "FUZZ": "index"
+            },
+            "position": 245,
+            "status": 200,
+            "length": 891,
+            "words": 237,
+            "lines": 30,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 19660946,
+            "resultfile": "",
+            "url": "http://meta2/index",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "55b67bcb",
+                "FUZZ": "twiki"
+            },
+            "position": 3019,
+            "status": 301,
+            "length": 303,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/twiki/",
+            "scraper": {},
+            "duration": 97100,
+            "resultfile": "",
+            "url": "http://meta2/twiki",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "55b671dfd",
+                "FUZZ": "phpinfo"
+            },
+            "position": 7677,
+            "status": 200,
+            "length": 47974,
+            "words": 2407,
+            "lines": 657,
+            "content-type": "text/html",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 20240146,
+            "resultfile": "",
+            "url": "http://meta2/phpinfo",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "55b67231e",
+                "FUZZ": "dav"
+            },
+            "position": 8990,
+            "status": 301,
+            "length": 301,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/dav/",
+            "scraper": {},
+            "duration": 379972,
+            "resultfile": "",
+            "url": "http://meta2/dav",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "55b671083",
+                "FUZZ": "server-status"
+            },
+            "position": 4227,
+            "status": 403,
+            "length": 291,
+            "words": 22,
+            "lines": 11,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "",
+            "scraper": {},
+            "duration": 302018004,
+            "resultfile": "",
+            "url": "http://meta2/server-status",
+            "host": "meta2"
+        },
+        {
+            "input": {
+                "FFUFHASH": "55b672a6a",
+                "FUZZ": "tikiwiki"
+            },
+            "position": 10858,
+            "status": 301,
+            "length": 306,
+            "words": 21,
+            "lines": 10,
+            "content-type": "text/html; charset=iso-8859-1",
+            "redirectlocation": "http://meta2/tikiwiki/",
+            "scraper": {},
+            "duration": 110667,
+            "resultfile": "",
+            "url": "http://meta2/tikiwiki",
+            "host": "meta2"
+        }
+    ],
+    "config": {
+        "autocalibration": false,
+        "autocalibration_keyword": "FUZZ",
+        "autocalibration_perhost": false,
+        "autocalibration_strategies": [
+            "basic"
+        ],
+        "autocalibration_strings": [],
+        "colors": false,
+        "cmdline": "ffuf -u http://meta2/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -mc 200,301,302,403 -t 10 -o ffuf-meta2-directory-admin.json -of json",
+        "configfile": "",
+        "postdata": "",
+        "debuglog": "",
+        "delay": {
+            "value": "0.00"
+        },
+        "dirsearch_compatibility": false,
+        "encoders": [],
+        "extensions": [],
+        "fmode": "or",
+        "follow_redirects": false,
+        "headers": {},
+        "ignorebody": false,
+        "ignore_wordlist_comments": false,
+        "inputmode": "clusterbomb",
+        "cmd_inputnum": 100,
+        "inputproviders": [
+            {
+                "name": "wordlist",
+                "keyword": "FUZZ",
+                "value": "/usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt",
+                "encoders": "",
+                "template": ""
+            }
+        ],
+        "inputshell": "",
+        "json": false,
+        "matchers": {
+            "IsCalibrated": false,
+            "Mutex": {},
+            "Matchers": {
+                "status": {
+                    "value": "200,301,302,403"
+                }
+            },
+            "Filters": {},
+            "PerDomainFilters": {}
+        },
+        "mmode": "or",
+        "maxtime": 0,
+        "maxtime_job": 0,
+        "method": "GET",
+        "noninteractive": false,
+        "outputdirectory": "",
+        "outputfile": "ffuf-meta2-directory-admin.json",
+        "outputformat": "json",
+        "OutputSkipEmptyFile": false,
+        "proxyurl": "",
+        "quiet": false,
+        "rate": 0,
+        "raw": false,
+        "recursion": false,
+        "recursion_depth": 0,
+        "recursion_strategy": "default",
+        "replayproxyurl": "",
+        "requestfile": "",
+        "requestproto": "https",
+        "scraperfile": "",
+        "scrapers": "all",
+        "sni": "",
+        "stop_403": false,
+        "stop_all": false,
+        "stop_errors": false,
+        "threads": 10,
+        "timeout": 10,
+        "url": "http://meta2/FUZZ",
+        "verbose": false,
+        "wordlists": [
+            "/usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt"
+        ],
+        "http2": false,
+        "client-cert": "",
+        "client-key": ""
+    }
+}
