@@ -135,6 +135,42 @@
     ```
     123
     ```
+  - Command:  
+    `curl -sk -I "http://meta2:80" `  
+    - Results:  
+    ```
+    curl-head-80.txt
+    ```
+  - Command:  
+    `curl -sk -i "http://meta2/nonexistent_test_page_123"`  
+    - Results:  
+    ```
+    curl-trigger-error-verbose.txt
+    ```
+  - Command:  
+    `curl -sk "http://meta2/mutillidae/robots.txt"`  
+    - Results:  
+    ```
+    curl-common-metafiles.txt
+    ```
+  - Command:  
+    `curl -sk -i \
+      -H "Host: meta2 \
+      -H "Content-Type: application/x-form-urlencoded" \
+      -b "PHPSESSID=2c6169889ac5d25f2a2598c757941603" \
+      -X POST \
+      --data 'target_host=dsad&dns-lookup-php-submit-button=Lookup+DNS' \
+      "http://meta2/mutillidae/index.php?page=dns-lookup.php"
+    `  
+    - Results:  
+    ```
+    curl-post-json.txt
+    ```
+  - Command:  
+    `curl -sk -i \
+      --proxy http://127.0.0.1:8080 \
+      -H "Host: meta2" \
+      "http://meta2/"
 
 - ffuf:
   - Command: `ffuf -u "http://meta2/" \
@@ -174,6 +210,23 @@
      -t 10 \
      -o ffuf-backups-config.json -of json`
      - Result: `ffuf-backups-config.json`
+  - Command: `ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ \
+      -u "http://meta2/mutillidate/index.php?FUZZ=test" \
+      -mc all \
+      -t 5 \
+      -ac \
+      -o ffuf-fuzz-parameters-get -of json`
+    - Result: `ffuf-fuzz-parameters-get.json`
+  - Command:  
+    `ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ \
+      -u "http://meta2/mutillidae/index.php?page=dns-lookup.php" \
+      -X POST \
+      -d 'FUZZ=key' \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      -t 5 \
+      -o ffuf-fuzz-parameters-post.json -of json
+    `  
+    - Result: `ffuf-fuzz-parameters-post.json`
 
 - gobuster:
   - Command: `gobuster dir \
@@ -365,3 +418,5 @@ You can duplicate the whole `🛠 TARGET:` block for each IP and just change the
 5. It is difficult to identify sections or where I should put each piece of info in the target markdown report. Clarify this and find the best distribution
 6. Gain some time by directly saving files and not pasting content here (just the relevant details when later you review the discoverings)
 7. Discovery findings can really establish the direction of the commands and attacks in next phases. Bear that in mind
+8. Some commands are repetitive. Eliminate everything is not fully needed.
+9. These commands (curl, ffuf, etc) can throw different results depending on the path you use as a target. This is overwhelming for the exam. Where should I concentrate on?
