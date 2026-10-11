@@ -2,7 +2,6 @@
 
 **Start Time:** `HH:MM`  
 **Stop Time:** `HH:MM`  
-**Passing Score:** `35 / 50 (70%)`  
 
 ***
 
