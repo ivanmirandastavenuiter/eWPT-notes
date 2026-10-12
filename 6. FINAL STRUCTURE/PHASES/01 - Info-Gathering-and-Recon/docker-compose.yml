@@ -8,10 +8,16 @@ services:
     stdin_open: true 
     tty: true        
     # Starts the vulnerable services and keeps the container running indefinitely
-    command: sh -c "/bin/services.sh && tail -f /dev/null"
+    command: /bin/bash /init.sh
+    volumes:
+      - ./init.sh:/init.sh
+      - mysql_data:/var/lib/mysql
     networks:
       pentest_net:
         ipv4_address: 172.20.0.2 # Your static target IP
+
+volumes:
+  mysql_data:
 
 networks:
   pentest_net:
