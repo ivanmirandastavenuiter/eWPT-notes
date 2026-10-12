@@ -420,3 +420,6 @@ You can duplicate the whole `🛠 TARGET:` block for each IP and just change the
 7. Discovery findings can really establish the direction of the commands and attacks in next phases. Bear that in mind
 8. Some commands are repetitive. Eliminate everything is not fully needed.
 9. These commands (curl, ffuf, etc) can throw different results depending on the path you use as a target. This is overwhelming for the exam. Where should I concentrate on?
+10. Which wordlists will there be in the exam?
+11. How do I exactly calculate baseline size for ffuf?
+12. How can I optimize for reading discovery commands results?
