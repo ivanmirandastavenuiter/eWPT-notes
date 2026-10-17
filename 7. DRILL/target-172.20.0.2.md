@@ -452,3 +452,5 @@ You can duplicate the whole `🛠 TARGET:` block for each IP and just change the
 14. Eliminate repetitive commands
 15. Merge attacks and payloads with checklist
 16. Analyze and decide when to save command outputs into files vs when not
+17. Is OWASP ZAP available at the exam?
+18. Don't forget the big picture: subdomain enumeration, directory brute forcing. Correct the content of the file contents if diverting from what exam is going to ask.
