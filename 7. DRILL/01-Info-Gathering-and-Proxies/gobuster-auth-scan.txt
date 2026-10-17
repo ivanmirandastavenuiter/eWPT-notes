@@ -1,0 +1,23 @@
+images              [36m (Status: 301)[0m [Size: 315][34m [--> http://meta2/mutillidae/images/][0m
+home                [32m (Status: 200)[0m [Size: 2930]
+login               [32m (Status: 200)[0m [Size: 4102]
+register            [32m (Status: 200)[0m [Size: 1823]
+documentation       [36m (Status: 301)[0m [Size: 322][34m [--> http://meta2/mutillidae/documentation/][0m
+footer              [32m (Status: 200)[0m [Size: 450]
+includes            [36m (Status: 301)[0m [Size: 317][34m [--> http://meta2/mutillidae/includes/][0m
+index               [32m (Status: 200)[0m [Size: 24201]
+credits             [32m (Status: 200)[0m [Size: 509]
+header              [32m (Status: 200)[0m [Size: 19879]
+javascript          [36m (Status: 301)[0m [Size: 319][34m [--> http://meta2/mutillidae/javascript/][0m
+notes               [32m (Status: 200)[0m [Size: 1721]
+classes             [36m (Status: 301)[0m [Size: 316][34m [--> http://meta2/mutillidae/classes/][0m
+favicon             [32m (Status: 200)[0m [Size: 1150]
+styles              [36m (Status: 301)[0m [Size: 315][34m [--> http://meta2/mutillidae/styles/][0m
+robots              [32m (Status: 200)[0m [Size: 160]
+inc                 [32m (Status: 200)[0m [Size: 386260]
+installation        [32m (Status: 200)[0m [Size: 8138]
+passwords           [36m (Status: 301)[0m [Size: 318][34m [--> http://meta2/mutillidae/passwords/][0m
+framing             [32m (Status: 200)[0m [Size: 1426]
+phpinfo             [32m (Status: 200)[0m [Size: 49480]
+password-generator  [32m (Status: 200)[0m [Size: 2495]
+phpMyAdmin          [32m (Status: 200)[0m [Size: 174]

@@ -154,6 +154,12 @@
     curl-common-metafiles.txt
     ```
   - Command:  
+    ``  
+    - Results:  
+    ```
+    curl-common-metafiles.txt
+    ```
+  - Command:  
     `curl -sk -i \
       -H "Host: meta2 \
       -H "Content-Type: application/x-form-urlencoded" \
@@ -167,10 +173,8 @@
     curl-post-json.txt
     ```
   - Command:  
-    `curl -sk -i \
-      --proxy http://127.0.0.1:8080 \
-      -H "Host: meta2" \
-      "http://meta2/"
+    `curl -sk -i -X OPTIONS "http://meta2/mutillidae:80"`
+    - Results: `curl-options-80.txt`
 
 - ffuf:
   - Command: `ffuf -u "http://meta2/" \
@@ -227,7 +231,12 @@
       -o ffuf-fuzz-parameters-post.json -of json
     `  
     - Result: `ffuf-fuzz-parameters-post.json`
-
+  - Command: 
+    `ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://meta2/mutillidae/index.php?FUZZ=test -mc all -fs 24198 -t 5 -o ffuf-get-params.json -of json"`
+      - Result: `ffuf-get-params.json`
+  - Command: `ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -u http://meta2/mutillidae/index.php?page=login.php -X POST -d 'FUZZ=key' -H "Content-Type: application/x-www-form-urlencoded" -fs 25391 -t 5 -o ffuf-post-params -of json
+`
+    - Result: `ffuf-post-params.json`
 - gobuster:
   - Command: `gobuster dir \
     -u "http://meta2/" \
@@ -251,6 +260,21 @@
     -b '' \
     -o gobuster-filtered.txt`
     - Result: `gobuster-filtered.txt`
+  - Command: `gobuster dir \
+  -u "http://meta2/mutillidae" \
+  -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
+  -c "session=showhints=0;PHPSESSID=ae8c611eefc9206cceb80d837ad2b1cf" \ 
+  -t 10 \
+  -o gobuster-auth-scan.txt
+`
+    - Result: `gobuster-auth-scan.txt`
+  - Command: `gobuster dir \                                                     
+  -u "http://meta2/mutillidae" \
+  -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt \
+  -t 10 \
+  -o gobuster-api-scan.txt
+`
+    - Result: `gobuster-api-scan.txt`
 
 - Whatweb
     - Command: `whatweb "http://meta2/" \ 
@@ -372,7 +396,8 @@
 ### 4. NOTES / LESSONS (OPTIONAL)
 
 - `e.g., Forgot to check HTTP methods; remember OPTIONS/PROPFIND next time.`  
-- `e.g., SQLi payload X worked better on this stack.`  
+- `e.g., SQLi payload X worked better on this stack.` 
+- `When doing curl for options, add port to make response showing Allow header` 
 
 ***
 
@@ -423,3 +448,7 @@ You can duplicate the whole `🛠 TARGET:` block for each IP and just change the
 10. Which wordlists will there be in the exam?
 11. How do I exactly calculate baseline size for ffuf?
 12. How can I optimize for reading discovery commands results?
+13. Eliminate any tools are not in the kali machine at the exam
+14. Eliminate repetitive commands
+15. Merge attacks and payloads with checklist
+16. Analyze and decide when to save command outputs into files vs when not
