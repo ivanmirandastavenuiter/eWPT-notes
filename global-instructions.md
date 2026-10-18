@@ -33,10 +33,10 @@ The eWPTv2 has the following characteristics:
 - Files
     - structure_example. **Important**. It lays out the final structure for the notes for the exam day. The organization follows the same division as INE in its tutorials, for clarity.
         - checklist-xxx.md. Following the file you saw before, addresses exactly which are the steps and tasks you must perform regarding that category. The idea is avoiding the candidate to freeze
-        - attacks_and_payloads.md. A list of commands that acts like a cheatsheet, but with more context. It follows the order in the checklist so the workflow feels in harmony. 
+        - 📋 checklist-and-commands.md (Phase 01). Merges the WSTG checklist and the commands in one file, in WSTG ID order. Variants are in appendices. It replaces the former checklist-WSTG-INFO-CONF.md and attacks_and_payloads.md. 
         - cheatsheet.md. Additional commands the other file might not list. Thought to be a quick database for fallback options.
         - notes.md. User notes taken in point 1 enhanced by AI.
-        - automation_and_scripting.md. Aimed to be a series of automation and script files, but they are not applying, as you cannot upload that content at the eWPTv2 exam.
+        - automation_and_scripting.md was removed. Scripts cannot be uploaded at the eWPTv2 exam, so they do not apply.
         - LABS folder. Contains solution for labs both from INE and PortSwigger related to that category
     - ine-to-wstg.md. Tries to find and establish cohesive links between INE and the WSTG for a global comprehension.
     - port_swigger_categories.md. Tries to find and establish cohesive links between port swigger labs and the INE materials for a global comprehension.

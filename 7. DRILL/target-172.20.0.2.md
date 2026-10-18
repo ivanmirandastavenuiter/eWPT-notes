@@ -1,338 +1,94 @@
 # eWPTv2 EXAM SESSION: `2026‑09‑19`
 
-**Start Time:** `HH:MM`  
-**Stop Time:** `HH:MM`  
-**Passing Score:** `35 / 50 (70%)`  
+**Start:** `HH:MM` · **Stop:** `HH:MM` · **Passing score:** `35 / 50 (70%)`
+
+Command conventions, placeholders and output file naming are in [📋 checklist-and-commands.md](<../6. FINAL STRUCTURE/PHASES/01 - Info-Gathering-and-Recon/📋 checklist-and-commands.md>). Do not repeat them here.
 
 ***
 
-## 🎯 TARGET INFRASTRUCTURE MAPPING
+## 🗺 TARGET INFRASTRUCTURE MAP
 
-*Map IPs to app names and technologies as soon as the exam starts to keep questions tied to the right host.*  
+*Map IPs to apps and technologies as soon as the exam starts, so each question stays tied to the right host.*
 
-| Target IP | Site/App Name        | Tech Stack (Web, Lang, DB, OS) | Status / Notes               |
-| :-------- | :------------------- | :----------------------------- | :--------------------------- |
-| 172.20.0.2 | Reverse proxy     | Apache, PHP, MySQL, Linux, Samba, PostgreSQL   | [ ] Mutillidae, DVWA, WebDAV, phpMyAdmin, login |
+| Target | App / role | Stack (web, lang, DB, OS) | Status |
+| :----- | :--------- | :------------------------ | :----- |
+| `172.20.0.2` | Reverse proxy | Apache, PHP, MySQL, Linux, Samba, PostgreSQL | [ ] Mutillidae, DVWA, WebDAV, phpMyAdmin, login |
+
+***
+
+## 📜 LOG
+
+*One line per command. Output files are in `01-Info-Gathering-and-Proxies/`. Times were not recorded for these runs (`—`).*
+
+| # | Time | Command (short) | Result (one line) | Output file |
+| :- | :--- | :-------------- | :---------------- | :---------- |
+| 1 | — | `nmap -sC -sV --exclude-ports 1524,6667 172.20.0.2` | 17 open ports (see Discoveries) | `nmap-172.20.0.2.txt` |
+| 2 | — | `nmap -sV -p 80,443,8000,8080,8443,8888` (command from file header) | 80 open (Apache 2.2.8), the rest closed | `nmap-172.20.0.2(2).txt` |
+| 3 | — | `nmap` runs (1) and (3), commands not logged | 14 open ports and 1 open port | `nmap-172.20.0.2(1).txt`, `nmap-172.20.0.2(3).txt` |
+| 4 | — | `dig NS meta2` | NXDOMAIN, no NS record | `dig-ns-meta2.txt` |
+| 5 | — | `dig axfr meta2 @46.6.113.34` | Transfer failed | `dig-axfr-meta2.txt` |
+| 6 | — | `curl -skv http://meta2/fjdfdf` | 404, `Apache/2.2.8 (Ubuntu) DAV/2` | `curl-meta2.txt` |
+| 7 | — | `curl -sk http://meta2/fjdfdf \| wc -c` | 123 bytes | `curl-meta2(1).txt` |
+| 8 | — | `curl -sk -I "http://meta2:80"` | 200, `X-Powered-By: PHP/5.2.4` | `curl-head-80.txt` |
+| 9 | — | `curl -sk -i "http://meta2/nonexistent_test_page_123"` | 404 | `curl-trigger-error-verbose.txt` |
+| 10 | — | `curl -sk "http://meta2/mutillidae/robots.txt"` | 200, 401 bytes | `curl-common-metafiles.txt` |
+| 11 | — | `curl -sk -i -X POST` `dns-lookup.php`, body `target_host=dsad` | 200, 24 KB response | `curl-post-json.txt` |
+| 12 | — | `curl -sk -i -X OPTIONS "http://meta2/mutillidae:80"` | `Allow: GET,HEAD,POST,OPTIONS,TRACE` | `curl-options-80.txt` |
+| 13 | — | `ffuf` Host `FUZZ.meta2`, `-fs 280`, subdomains top 5000 | 4,967 hits, all on `/`, so the filter missed | `ffuf-meta2-subdomains.json` |
+| 14 | — | `ffuf` raft-medium-directories, `-mc 200,301,302,403` | 9 hits: `/test`, `/phpMyAdmin`, `/twiki`, `/phpinfo`, `/dav` | `ffuf-meta2-directory-admin.json` |
+| 15 | — | `ffuf` DirBuster small, `-recursion -recursion-depth 1 -e .php` | 233 hits, many are wordlist comment lines | `ffuf-meta2-recursive-deeper-paths.json` |
+| 16 | — | `ffuf index.phpFUZZ` (backup extensions) | 1 result line, URL shows literal `FUZZ` | `ffuf-backups-index.json` |
+| 17 | — | `ffuf configFUZZ` (backup extensions) | 1 result line, URL shows literal `FUZZ` | `ffuf-backups-config.json` |
+| 18 | — | `ffuf` burp-parameter-names on `index.php?FUZZ=test`, `-ac` | 1 hit: `page` (200, 21713 B) | `ffuf-fuzz-parameters-get.json` |
+| 19 | — | `ffuf` burp-parameter-names on `index.php?FUZZ=test`, `-fs 24198` | 6,448 hits, filter missed | `ffuf-get-params.json` |
+| 20 | — | `ffuf` burp-parameter-names POST on `dns-lookup.php`, no filter | 6,455 hits, noise | `ffuf-fuzz-parameters-post.json` |
+| 21 | — | `ffuf` burp-parameter-names POST on `login.php`, `-fs 25391` | 1 hit: `page` (200, 21708 B) | `ffuf-post-params.json` |
+| 22 | — | `gobuster dir` common.txt | `index`, `dav`, `phpMyAdmin`, `phpinfo.php`, `test`; 403 on `server-status`, `cgi-bin/` | `gobuster-root.txt` |
+| 23 | — | `gobuster dir -x php,html,txt,bak` | 403 on `.ht*` files; 200/301 on `index`, `dav`, `phpMyAdmin`, `phpinfo`, `test`, `twiki` | `gobuster-root-ext.txt` |
+| 24 | — | `gobuster dir` medium, `-s 200,204,301,302,307` | 6 hits: `index`, `test`, `twiki`, `tikiwiki`, `phpinfo`, `phpMyAdmin` | `gobuster-filtered.txt` |
+| 25 | — | `gobuster dir -u /mutillidae -c <COOKIE>` | `robots.txt` (200, 160 B), `passwords/` (301), `installation` (200), `phpinfo` (200), `phpMyAdmin` (200) | `gobuster-auth-scan.txt` |
+| 26 | — | `gobuster dir` api-endpoints | Empty (0 bytes) | `gobuster-api-scan.txt` |
+| 27 | — | `whatweb http://meta2/` | Apache 2.2.8, PHP 5.2.4, title `Metasploitable2 - Linux`, WebDAV | `whatweb.txt` |
+| 28 | — | `whatweb -v http://meta2/` | Not on disk | `whatweb-verbose.txt` (missing) |
+| 29 | — | `nikto -Tuning 23` | `/icons/` listing; Apache and PHP outdated; missing `X-Content-Type-Options` and HSTS | `nikto-quiet.txt.txt` |
+| 30 | — | `nikto -p 80,443,8080,8443 -ssl -Tuning x6` | Not on disk | `nikto-multi.txt` (missing) |
 
 ***
 
 ## 🛠 TARGET: `172.20.0.2`
 
-### 0. TARGET OVERVIEW & QUESTIONS
+### 0. Overview & questions
 
-- Role / description: `Reverse proxy`  
-- Related questions: `?`  
+- **Role / description:** `Reverse proxy`
+- **Related questions:** `?`
 
-### 0.1 SCANS & TOOLS
+### 1. Discoveries
 
-- nmap:  
-  - Command:  
-    `nmap -sC -sV --exclude-ports 1524,6667 172.20.0.2 -oN nmap-172.20.0.2.txt
-`  
-  - Key results:  
-    - `21/tcp  open  ftp   vsftpd 2.3.4`  
-    - `22/tcp  open  ssh   OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)`  
-    - `23/tcp  open  telnet   Linux telnet`  
-    - `25/tcp  open  smtp   Postfix smtpd`  
-    - `80/tcp  open  http   Apache/2.2.8 ((Ubuntu) DAV/2)`  
-    - `111/tcp  open  rpcbind   2 (RPC #1000000)`  
-    - `139/tcp  open  netbios-ssn   Samba smbd 3.X - 4.X`  
-    - `445/tcp  open  netbios-ssn   Samba smbd 3.0.20-Debian`  
-    - `512/tcp  open  exec   netkit-rsh rexecd`  
-    - `513/tcp  open  login`
-    - `514/tcp  open  tcpwrapped`
-    - `1099/tcp open  java-rmi    GNU Classpath grmiregistry`
-    - `2121/tcp open  ftp         ProFTPD 1.3.1`
-    - `3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5`
-    - `5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7`
-    - `8009/tcp open  ajp13       Apache Jserv (Protocol v1.3)`
-    - `8180/tcp open  http        Apache Tomcat/Coyote JSP engine 1.1`
+*Facts that look like exam material: versions, paths, headers, error messages, parameters. Each one carries its pivot.*
 
-  - Nmap directories
-    - `/tikiwiki/: Tikiwiki`
-    - `/test/: Test page`
-    - `/phpinfo.php: Possible information file`
-    - `/phpMyAdmin/: phpMyAdmin`
-    - `/doc/: Potentially interesting directory w/ listing on 'apache/2.2.8 (ubuntu) dav/2'`
-    - `/icons/: Potentially interesting folder w/ directory listing`
-    - `/index/: Potentially interesting folder`
+- **Open ports (nmap, 17):** `21` ftp vsftpd 2.3.4 · `22` ssh OpenSSH 4.7p1 · `23` telnet · `25` smtp Postfix · `80` http Apache 2.2.8 · `111` rpcbind · `139` / `445` Samba smbd · `512` exec · `513` login · `514` tcpwrapped · `1099` java-rmi GNU Classpath · `2121` ftp ProFTPD 1.3.1 · `3306` mysql 5.0.51a · `5432` postgresql 8.3.x · `8009` ajp13 · `8180` Tomcat/Coyote 1.1
+  - Closed web ports (nmap): `443`, `8000`, `8080`, `8443`, `8888` → pivot: nothing to test there.
+  - Pivot: vsftpd 2.3.4 and ProFTPD 1.3.1 → version-specific checks; mysql 5.0.51a → check remote login.
+- **nmap http-enum paths:** `/tikiwiki/`, `/test/`, `/phpinfo.php`, `/phpMyAdmin/`, `/doc/`, `/icons/`, `/index/` → pivot: `/doc/` and `/icons/` list directories.
+- **Server banner:** `Apache/2.2.8 (Ubuntu) DAV/2` (`curl-head-80.txt`) → pivot: Apache 2.2.8 version-specific checks.
+- **Accepted methods:** `GET, HEAD, POST, OPTIONS, TRACE` (`curl-options-80.txt`) → pivot: TRACE is enabled; test WebDAV methods on `/dav/`.
+- **X-Powered-By / framework:** `PHP/5.2.4-2ubuntu5.10` (`curl-head-80.txt`, `whatweb.txt`); title `Metasploitable2 - Linux` → pivot: `phpinfo.php` shows the full PHP config.
+- **Hidden directories / files** (`gobuster-root.txt`, `gobuster-filtered.txt`, `ffuf-meta2-directory-admin.json`):
+  - `/dav/` (301), `/phpMyAdmin/` (301), `/phpinfo.php` (200), `/test/` (301), `/twiki/`, `/tikiwiki/`; `/server-status` and `/cgi-bin/` (403).
+  - `/mutillidae/robots.txt` (200, 160 B), `/mutillidae/passwords/` (301), `/mutillidae/installation` (200) (`gobuster-auth-scan.txt`) → pivot: read `robots.txt`; check `passwords/` and `installation` for exposed content.
+  - Pivot: `/dav/` → WebDAV methods; `/phpMyAdmin/` → login checks.
+- **Missing security headers (nikto):** `X-Content-Type-Options`, `Strict-Transport-Security` (`nikto-quiet.txt.txt`).
+- **Subdomains:** none found. `meta2` has no NS record (`dig-ns-meta2.txt`), AXFR was refused (`dig-axfr-meta2.txt`), and the Host-header run was unfiltered (see Lessons) → pivot: re-run vhost fuzzing with the root response size filtered.
+- **Interesting parameters / behaviours:**
+  - `GET /mutillidae/index.php?page=` (`ffuf-fuzz-parameters-get.json`, only hit `page`, 200, 21713 B) → pivot: test `page` for file inclusion (see Finding 2).
+  - `POST /mutillidae/index.php?page=dns-lookup.php`, body `target_host=` (`curl-post-json.txt`, 200) → pivot: test `target_host` for injection.
+  - `POST /mutillidae/index.php?page=login.php`: the only POST hit is `page` (`ffuf-post-params.json`) → pivot: no login field found by ffuf; check the form in Burp.
+  - Unverified (noted before the saved outputs existed; not in any file): `GET /search.php?q=`, `GET /product.php?id=`, `POST /login.php` with `username` and `password`.
+- **Unverified paths (noted before the saved outputs existed):** `/backup/` (`config.php.bak`), `/dev/` (`/dev/api-docs/`), `/uploads/`, `/robots.txt` Disallow `/private/`, `/beta/`, `.git/`, `.env`.
 
-  - Nmap http ports:
-    - `80/tcp   open   http           Apache httpd 2.2.8 ((Ubuntu) DAV/2)`
-    - `443/tcp  closed https`
-    - `8000/tcp closed http-alt`
-    - `8080/tcp closed http-proxy`
-    - `8443/tcp closed https-alt`
-    - `8888/tcp closed sun-answerbook`
+### 2. Findings
 
-- Web enumeration:  
-  - Directory brute force
-    - Command: `ffuf -u http://10.x.x.10/FUZZ -w /usr/share/wordlists/...`  
-      - Result: `/admin/`, `/backup/`, `/uploads/`  
-    - Command: `dirsearch -u http://10.x.x.10/ -w ...`  
-      - Result: `/dev/`, `/old/`  
-  - Subdomain
-    - Command: `dig NS meta2`
-      - Result: 
-        ```
-        ; <<>> DiG 9.20.24-1+b1-Debian <<>> NS meta2
-        ;; global options: +cmd
-        ;; Got answer:
-        ;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 40991
-        ;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
-
-        ;; OPT PSEUDOSECTION:
-        ; EDNS: version: 0, flags:; udp: 512
-        ;; QUESTION SECTION:
-        ;meta2.				IN	NS
-
-        ;; AUTHORITY SECTION:
-        .			332	IN	SOA	a.root-servers.net. nstld.verisign-grs.com. 2026091900 1800 900 604800 86400
-
-        ;; Query time: 12 msec
-        ;; SERVER: 46.6.113.34#53(46.6.113.34) (UDP)
-        ;; WHEN: Sat Sep 19 13:08:04 CEST 2026
-        ;; MSG SIZE  rcvd: 109
-        ```
-    - Command: `dig axfr meta2 @46.6.113.34 > dig-axfr-meta2.txt`
-        - Result: 
-        ```
-        ; <<>> DiG 9.20.24-1+b1-Debian <<>> axfr meta2@46.6.113.34#53
-        ;; global options: +cmd
-        ; Transfer failed.
-        ```
-
-- curl:  
-  - Command:  
-    `curl -skv http://meta2/fjdfdf > curl-meta2.txt`  
-    - Results:  
-    ```
-    * Host meta2:80 was resolved.
-    * IPv6: (none)
-    * IPv4: 172.20.0.2
-    *   Trying 172.20.0.2:80...
-    * Established connection to meta2 (172.20.0.2 port 80) from 172.20.0.1 port 45156 
-    * using HTTP/1.x
-    > GET /fjdfdf HTTP/1.1
-    > Host: meta2
-    > User-Agent: curl/8.21.0
-    > Accept: */*
-    > 
-    * Request completely sent off
-    < HTTP/1.1 404 Not Found
-    < Date: Mon, 21 Sep 2026 16:43:33 GMT
-    < Server: Apache/2.2.8 (Ubuntu) DAV/2
-    < Content-Length: 280
-    < Content-Type: text/html; charset=iso-8859-1
-    < 
-    { [280 bytes data]
-    * Connection #0 to host meta2:80 left intact
-
-    ```
-  - Command:  
-    `curl -sk http://meta2/fjdfdf | wc -c > curl-meta2(1).txt`  
-    - Results:  
-    ```
-    123
-    ```
-  - Command:  
-    `curl -sk -I "http://meta2:80" `  
-    - Results:  
-    ```
-    curl-head-80.txt
-    ```
-  - Command:  
-    `curl -sk -i "http://meta2/nonexistent_test_page_123"`  
-    - Results:  
-    ```
-    curl-trigger-error-verbose.txt
-    ```
-  - Command:  
-    `curl -sk "http://meta2/mutillidae/robots.txt"`  
-    - Results:  
-    ```
-    curl-common-metafiles.txt
-    ```
-  - Command:  
-    ``  
-    - Results:  
-    ```
-    curl-common-metafiles.txt
-    ```
-  - Command:  
-    `curl -sk -i \
-      -H "Host: meta2 \
-      -H "Content-Type: application/x-form-urlencoded" \
-      -b "PHPSESSID=2c6169889ac5d25f2a2598c757941603" \
-      -X POST \
-      --data 'target_host=dsad&dns-lookup-php-submit-button=Lookup+DNS' \
-      "http://meta2/mutillidae/index.php?page=dns-lookup.php"
-    `  
-    - Results:  
-    ```
-    curl-post-json.txt
-    ```
-  - Command:  
-    `curl -sk -i -X OPTIONS "http://meta2/mutillidae:80"`
-    - Results: `curl-options-80.txt`
-
-- ffuf:
-  - Command: `ffuf -u "http://meta2/" \
-     -H "Host: FUZZ.meta2" \
-     -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt \
-     -fs 280 \
-     -t 10 \
-     -o ffuf-meta2-subdomains.json -of json`
-    - Results:  
-      ```
-      Note relevant
-      ```
-    - Advice: pay attention to response sizes, redirections and different word/line counts
-  - Command: `ffuf -u "http://meta2/FUZZ" \
-     -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt \
-     -mc 200,301,302,403 \
-     -t 10 \
-     -o ffuf-meta2-directory-admin.json -of json`
-    - Results: `ffuf-meta2-directory-admin.json`
-  - Command: `ffuf -u "http://meta2/FUZZ" \
-     -w /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-small.txt:FUZZ \
-     -recursion -recursion-depth 1 \
-     -e .php \
-     -mc 200,301,302,403 \
-     -t 10 \
-     -o ffuf-meta2-recursive-deeper-paths -of json`
-     - Result: `ffuf-meta2-recursive-deeper-paths.json`
-  - Command: `ffuf -u "http://meta2/index.phpFUZZ" \
-     -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt \
-     -e .bak,.old,.swp,.tmp,~ \
-     -t 10 \
-     -o ffuf-backups-index.json -of json`
-     - Result: `fffuf-backups-index.json`
-  - Command: `ffuf -u "http://meta2/configFUZZ" \
-     -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt \
-     -e .bak,.old,.zip,.tar.gz \
-     -t 10 \
-     -o ffuf-backups-config.json -of json`
-     - Result: `ffuf-backups-config.json`
-  - Command: `ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ \
-      -u "http://meta2/mutillidate/index.php?FUZZ=test" \
-      -mc all \
-      -t 5 \
-      -ac \
-      -o ffuf-fuzz-parameters-get -of json`
-    - Result: `ffuf-fuzz-parameters-get.json`
-  - Command:  
-    `ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ \
-      -u "http://meta2/mutillidae/index.php?page=dns-lookup.php" \
-      -X POST \
-      -d 'FUZZ=key' \
-      -H "Content-Type: application/x-www-form-urlencoded" \
-      -t 5 \
-      -o ffuf-fuzz-parameters-post.json -of json
-    `  
-    - Result: `ffuf-fuzz-parameters-post.json`
-  - Command: 
-    `ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u http://meta2/mutillidae/index.php?FUZZ=test -mc all -fs 24198 -t 5 -o ffuf-get-params.json -of json"`
-      - Result: `ffuf-get-params.json`
-  - Command: `ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -u http://meta2/mutillidae/index.php?page=login.php -X POST -d 'FUZZ=key' -H "Content-Type: application/x-www-form-urlencoded" -fs 25391 -t 5 -o ffuf-post-params -of json
-`
-    - Result: `ffuf-post-params.json`
-- gobuster:
-  - Command: `gobuster dir \
-    -u "http://meta2/" \
-    -w /usr/share/wordlists/dirb/common.txt \
-    -t 10 \
-    -o gobuster-root.txt`
-    - Result: `gobuster-root.txt`
-  - Command: `gobuster dir \
-    -u "http://meta2/" \
-    -w /usr/share/wordlists/dirb/common.txt \
-    -x php,html,txt,bak \
-    -t 10 \
-    -o gobuster-root-ext.txt`
-    - Result: `gobuster-root-ext.txt`
-  - Command: `gobuster dir \
-    -u "http://meta2/" \
-    -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
-    -s 200,204,301,302,307 \
-    --exclude-length 1234 \
-    -t 10 \
-    -b '' \
-    -o gobuster-filtered.txt`
-    - Result: `gobuster-filtered.txt`
-  - Command: `gobuster dir \
-  -u "http://meta2/mutillidae" \
-  -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt \
-  -c "session=showhints=0;PHPSESSID=ae8c611eefc9206cceb80d837ad2b1cf" \ 
-  -t 10 \
-  -o gobuster-auth-scan.txt
-`
-    - Result: `gobuster-auth-scan.txt`
-  - Command: `gobuster dir \                                                     
-  -u "http://meta2/mutillidae" \
-  -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt \
-  -t 10 \
-  -o gobuster-api-scan.txt
-`
-    - Result: `gobuster-api-scan.txt`
-
-- Whatweb
-    - Command: `whatweb "http://meta2/" \ 
-      \> whatweb.txt` 
-      - Result: `whatweb.txt`
-    - Command: `whatweb -v "http://meta2/" \
-      \> whatweb.txt`
-      - Result: `whatweb-verbose.txt`
-
-- Nikto
-  - Command: `nikto -h "http://meta2/" \
-      -Tuning 23 \
-      -o nikto-quiet.txt \
-      -Format txt`
-      - Result: `nikto-quiet.txt`
-  - Command: `nikto -h "http://meta2/" \
-      -p 80,443,8080,8443 \
-      -ssl \
-      -Tuning x6 \
-      -o nikto-multi.txt \
-      -Format txt`
-      - Result: `nikto-multi.txt`
-
-- Other tools:  
-  - `nikto -h http://10.x.x.10` → `X‑Powered‑By`, outdated components, interesting headers.  
-
-***
-
-### 1. DISCOVERY & ENUMERATION
-
-*Capture facts that look like “exam question material”: versions, paths, headers, error messages, etc.*  
-
-- **Server banner:**  
-  - `Apache httpd 2.2.8 ((Ubuntu) DAV/2)`
-- **Accepted methods:**
-  - `GET HEAD POST OPTIONS ` 
-- **X‑Powered‑By / framework clues:**  
-  - Example: `X‑Powered‑By: PHP/8.1.0`  
-- **Hidden directories / files:**   
-  - From `ffuf` / `dirsearch`:  
-    - `/backup/` → Contains `config.php.bak`  
-    - `/dev/` → Contains API documentation `/dev/api-docs/`  
-    - `/uploads/` → User-uploaded files, potential upload vuln  
-  - Common files checked:  
-    - `/robots.txt` → Disallowed paths: `/private/`, `/beta/`  
-    - `.git/` → Repository exposure?  
-    - `.env` → Environment vars (DB creds, keys)  
-
-- **Interesting parameters / behaviours:**  
-  - `GET /search.php?q=` → Reflects user input (XSS candidate)  
-  - `GET /product.php?id=` → Numeric ID, SQLi candidate  
-  - `POST /login.php` → Parameter names: `username`, `password`  
-
-***
-
-### 2. VULNERABILITIES & FLAGS
-
-*Each finding in a standard mini‑report format, linked to exam questions where relevant.*  
+*Each finding in a standard mini‑report format, linked to exam questions where relevant.*
 
 #### Finding 1: SQL Injection on `search.php?id`
 
@@ -385,25 +141,31 @@
 
 ***
 
-### 3. TODO / IDEAS FOR THIS TARGET
+### 3. Next steps
 
 - [ ] Test file upload in `/uploads/` for extension bypass and RCE.  
 - [ ] Check password reset / account recovery for token predictability.  
 - [ ] Look for IDOR in profile or order endpoints.  
+- [ ] Re-run vhost fuzzing with the root response size filtered (from Discoveries: subdomains).  
+- [ ] Test `page` and `target_host` for injection (from Discoveries: parameters).  
+- [ ] Check `/dav/` methods and `/mutillidae/passwords/` (from Discoveries: paths).  
 
-***
-
-### 4. NOTES / LESSONS (OPTIONAL)
+### 4. Lessons (optional)
 
 - `e.g., Forgot to check HTTP methods; remember OPTIONS/PROPFIND next time.`  
-- `e.g., SQLi payload X worked better on this stack.` 
-- `When doing curl for options, add port to make response showing Allow header` 
+- `e.g., SQLi payload X worked better on this stack.`  
+- `When doing curl for options, add port to make response showing Allow header`  
+- Calibrate ffuf filters against the root response first (`-ac`, or a measured `-fs`). The runs without a valid filter gave thousands of hits (log rows 13, 19 and 20).  
+- Drop wordlist comment lines with `-ic`. The recursive run (row 15) matched `# ...` comment lines as paths.  
+- Log the command next to every saved file. The nmap runs (1) and (3) were not logged with commands (the file header has them), and one blank-command row pointed at `curl-common-metafiles.txt`, so it was dropped from the log.  
+- Check output names after each run. Some report names did not match the disk (`fffuf-…`, `nikto-quiet.txt.txt`), and `whatweb-verbose.txt` and `nikto-multi.txt` are missing.  
+- `gobuster-api-scan.txt` is empty (0 bytes). Check the wordlist path before reading it as "no endpoints".  
 
 ***
 
-## 🔑 MASTER CREDENTIALS TRACKER (ALL TARGETS)
+## 🔑 CREDENTIALS TRACKER (all targets)
 
-*Update this live for any creds, hashes, or tokens.*  
+*Update this live for any creds, hashes, or tokens.*
 
 | Username | Password / Hash          | Source (SQLi, LFI, brute, etc.) | Works on (URL / service)        | Notes                    |
 | :------- | :----------------------- | :------------------------------ | :------------------------------ | :----------------------- |
@@ -415,7 +177,7 @@
 
 ## 📝 EXAM QUESTION SCRATCHPAD
 
-*Track questions to revisit and what they likely depend on.*  
+*Track questions to revisit and what they likely depend on.*
 
 - **Q14:** Needs exact CMS version. Likely from HTTP headers, `/admin` footer, or `/CHANGELOG`.  
 - **Q29:** Flag in `/uploads`. Need upload bypass and successful web shell / file access.  

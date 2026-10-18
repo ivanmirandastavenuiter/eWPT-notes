@@ -1,21 +1,27 @@
 # 00-Exam-Setup: Pre-Flight Checklist
 
+### Phase 0: Kali Tool Check & Workspace
+
+* [ ] Check which tools from the Phase 01 checklist are installed. Missing tools are skipped, not installed during the exam:
+`command -v nmap dig ffuf gobuster nikto whatweb wafw00f openssl curl`
+* [ ] Create the output folder used by every command: `mkdir -p recon`
+
 ### Phase 1: Network & Target Verification
 
 * [ ] Connect to the exam VPN environment.
 * [ ] Verify routing to the target IP(s) provided in the exam letter:
-`ping -c 4 [TARGET_IP]`
+`ping -c 4 <IP>`
 * [ ] Run a rapid, non-intrusive scan to confirm web ports are accessible (ignore legacy network ports):
-`nmap -Pn -n -T4 -p 80,443,8080,8180,8443 [TARGET_IP]`
+`nmap -Pn -n -T4 -p 80,443,8080,8180,8443 <IP>`
 
 ### Phase 2: DNS & Virtual Host Mapping
 
-* [ ] Identify the primary root domain (e.g., `target.com`) provided in the exam letter.
+* [ ] Identify the primary root domain (`<DOMAIN>`) provided in the exam letter.
 * [ ] Edit local DNS routing to map the IP to the domain:
 `sudo nano /etc/hosts`
-* [ ] Add the entry: `[TARGET_IP] target.com`
+* [ ] Add the entry: `<IP> <DOMAIN>`
 * [ ] Verify local DNS resolution is working:
-`ping -c 1 target.com`
+`ping -c 1 <DOMAIN>`
 * [ ] *Note: Keep `/etc/hosts` open or easily accessible. As you discover subdomains (like `admin.target.com`) during Information Gathering, immediately append them to this line.*
 
 ### Phase 3: Browser & Certificate Configuration
@@ -40,19 +46,19 @@
 * [ ] Open Burp Suite (Community Edition).
 * [ ] Navigate to **Target > Scope settings** and check **Use advanced scope control**.
 * [ ] Click **Add** under "Include in scope". Leave protocol as `Any`.
-* [ ] Add the raw target IP: e.g., `10.0.x.x`
-* [ ] Add the wildcard for the root domain: e.g., `.*\.target\.com`
+* [ ] Add the raw target IP: `<IP>`
+* [ ] Add the wildcard for the root domain, with dots escaped: `.*\.<DOMAIN>` (e.g. `.*\.target\.com`)
 * [ ] Navigate to **Proxy > HTTP history**. Click the filter bar at the top.
 * [ ] Check **Show only in-scope items**.
 * [ ] Check **Hide uninteresting content** (filters out CSS, JS, images).
 * [ ] Turn Intercept ON, click through the main application pages normally to populate the **Target > Site map** tab, then turn Intercept OFF.
-* [ ] For filtering proxy interceptor, go to proxy settings > and, url is in target scope.
+* [ ] Go to **Proxy > Options > Intercept Client Requests** and enable **And URL Is in target scope**, so out-of-scope requests are never intercepted.
 
 ### Phase 5: Evidence Preservation Strategy (Burp Community)
 
 *Because Burp Community cannot save project files, set up your backup habits now:*
 
-* [ ] Open your `target_scratchpad_template.md` to log findings.
-* [ ] Rule established: The moment a vulnerability is confirmed, right-click the Request/Response in Burp and paste the raw text into the scratchpad.
+* [ ] Open a copy of `7. DRILL/target-report-template.md` as the single report for the whole exam. Add a `TARGET` block per host.
+* [ ] Rule established: The moment a vulnerability is confirmed, right-click the Request/Response in Burp and paste the raw text into the report.
 * [ ] Rule established: Use **Repeater** tabs as a workspace. Double-click tab headers to rename them (e.g., `SQLi-Login`, `XSS-Search`).
 * [ ] Rule established: For critical exploit chains, right-click the request in Burp and select **Save item** to export the XML backup to your Kali host.

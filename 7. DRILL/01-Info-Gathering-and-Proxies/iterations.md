@@ -24,7 +24,7 @@ Completed
 
 #### Status
 
-In progress
+Completed
 
 #### Instructions
 
@@ -49,3 +49,23 @@ Next, read what's been done at iteration 1.
 - Regarding targets. I thought initially to separate the content for the different machines in several folders. I think that's not practical, and probably better to create just one md file for all.
 - Regarding '7.DRILL'. This is a simulation for the first phases. target-172.20.0.2.md represents the attempt of real reporting, using metasploitable as the target for practice. I started noting down the raw output of commands, but that demonstrated to be really cumbersome and time consuming. That's why I changed to a file approach: I just note the command and save the content in files. This, though, it's also really problematic in terms of time, as it takes a lot. The sections seem to be properly separated: I'm comfortable with the idea of noting first what I do, then writing the main discoverings and findings and continuing with vulnerabilities. Other categories, such as notes, pass registries and so on seem to be correct too. Offer guidance in how to efficiently approach the part of what to note down, and what not.
 - Read and integrate into your work the points established at file target-172.20.0.2.md at the `PHASE INSIGHTS AND ENHANCEMENTS` phase. From them, ignore points 9, 10, 11, 17.
+
+#### Outcome
+
+- Merged `checklist-WSTG-INFO-CONF.md` and `attacks_and_payloads.md` into `📋 checklist-and-commands.md` (layout A: one file in WSTG ID order, appendices for variants).
+- Deleted `automation_and_scripting.md`, `checklist-WSTG-INFO-CONF.md`, `attacks_and_payloads.md`.
+- Moved `docker-compose.yml` and `init.sh` into `Metasploitable2/` and improved both.
+- Condensed `📜 cheatsheet.md` (24 KB → ~8 KB). The file was deleted and recreated, not edited. The original is in git HEAD.
+- Rebuilt `📝 notes.md` around a tool decision table. Citations and lab IPs removed; a scenario table added.
+- Added `7. DRILL/target-report-template.md`: target-agnostic, with a note-taking guide and a "where information goes" table.
+- Integrated insights 1–8, 12–16, 18. Ignored 9, 10, 11, 17.
+- Startup checklist: tool check, `mkdir -p recon`, placeholders unified, Burp scope fix, single report file.
+
+#### Open decisions
+
+- `target-172.20.0.2.md` kept as-is (findings, credentials, scratchpad, tips and insights verbatim). Its SQLi and LFI findings, `FLAG{...}` values and credential rows have no matching evidence in the saved outputs. Decision: keep.
+- Target report converted to the target-agnostic template layout. The LOG reflects the saved outputs on disk. Decision: done.
+- Exam Kali tool list: optional tools dropped (`testssl.sh`, `subzy`, `amass`, `sublist3r`, `fierce`, `eyewitness`, `httrack`, `lynx`, `browsh`, `droopescan`). Kept: `wafw00f`, `dnsenum`, `wpscan`. Decision: done.
+- `init.sh` CRLF: the Metasploitable2 compose command strips CRs at runtime with `tr` and runs the script with `exec`. Not yet tested in the container.
+- `global-instructions.md` updated to the new file names. Decision: done.
+- `structure_example.md` Phases 02–08 still list the old file names. Deferred to a later iteration, per the user.

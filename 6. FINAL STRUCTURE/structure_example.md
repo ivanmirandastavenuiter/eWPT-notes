@@ -6,11 +6,12 @@
 │   └── 📋 exam_questions_tracker.md
 │
 ├── 🔍 01-Info-Gathering-and-Proxies/
-│   ├── 📋 checklist-WSTG-INFO-CONF.md
-│   ├── 💣 attacks_and_payloads.md
-│   ├── 🐍 automation_and_scripting.md
+│   ├── 📋 checklist-and-commands.md
 │   ├── 📜 cheatsheet.md
 │   ├── 📝 notes.md
+│   ├── 🐳 Metasploitable2/
+│   │   ├── docker-compose.yml
+│   │   └── init.sh
 │   └── 🧪 Labs/
 │
 ├── ⚡ 02-XSS-and-Client-Side/
