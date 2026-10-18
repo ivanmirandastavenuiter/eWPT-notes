@@ -69,3 +69,11 @@ Next, read what's been done at iteration 1.
 - `init.sh` CRLF: the Metasploitable2 compose command strips CRs at runtime with `tr` and runs the script with `exec`. Not yet tested in the container.
 - `global-instructions.md` updated to the new file names. Decision: done.
 - `structure_example.md` Phases 02–08 still list the old file names. Deferred to a later iteration, per the user.
+
+#### Pending
+
+- Merge study-plan and guideline in the same file. Preserve and merge organically. Main, critical point: optimize the workflow aligning exactly with what eWPTv2 requires. Not more, not less.
+- What I'm missing in my current iteration? Is the exam requiring more?
+- Understand how to cohesively execute commands: how to chain outcomes with further steps.
+- Understand exam's environment
+- Targeted FAQ's. Decide if segregate into the phases or rather place it into the exam faq file.
