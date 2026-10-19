@@ -1,7 +1,5 @@
 # eWPTv2 Exam: Doubts, FAQ and Exam-Day Mechanics
 
-Merged from the former `exam-doubts.md` (root) and `3. EXAM STRATEGY/exam_doubts.md`. All original questions, protocols, templates and loose ends are kept below.
-
 ## Status legend
 
 | Mark | Meaning |
