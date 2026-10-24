@@ -1,6 +1,6 @@
 # Phase 1 – WSTG Recon: Checklist + Commands
 
-**Tags:** ⏱ **ASYNC** start at once, read later · 🖐 **MANUAL** Burp/browser while scans run · ❓ **EXTRA** only when a question or a blocker (403, WAF, OSINT question) points to it.
+**Tags:** `ASYNC` start at once, read later · `MANUAL` Burp/browser while scans run · `EXTRA` only when a question or a blocker (403, WAF, OSINT question) points to it.
 
 ***
 
@@ -32,8 +32,8 @@
   curl -sk -o /dev/null -w "%{size_download}\n" -H "Host: nohost-zz9.<DOMAIN>" "http://<IP>/"
   ```
 - **Start at the root** of each web host (`<SCHEME>://<VHOST>/`). A path-specific result can differ from the root, so only go deeper when the root gives you something.
-- **Save to file flag:** every step has `Save to file: [x]` or `[ ]`. `[x]` means the command writes to `recon/` with `-o`; `[ ]` means you read the output in the terminal only. Long outputs (nmap, ffuf, gobuster, nikto, wpscan) are `[x]`.
-- **Step format:** Step, Command, How to read, Save to file, Next.
+- **Save to file flag:** every step's table has `[x]` or `[ ]` under Save to file. `[x]` means the command writes to `recon/` with `-o`; `[ ]` means you read the output in the terminal only. Long outputs (nmap, ffuf, gobuster, nikto, wpscan) are `[x]`.
+- **Step format:** a heading with tags, a one-line description, the command, a **Read** quote, and a table with the save flag and next action.
 - **Output folder:** run `mkdir -p recon` once in the working directory before the first scan.
 - **Naming:** `recon/<tool>-<target>-<context>.<ext>`, e.g. `recon/nmap-full-172.20.0.2.txt`, `recon/ffuf-dirs-app.target.com.md`.
 - **Read big output with grep, not by scrolling:** `grep -E "open" recon/nmap-full-<IP>.txt`, `grep -c "^[^#]" file`, `grep -v " 404 "`.
@@ -42,605 +42,609 @@
 
 ## WSTG-CONF-01 · Network infrastructure
 
-**Step:** Full port scan ⏱ ASYNC. Most important async job; it also covers non-standard web ports.
+### Full port scan · `ASYNC`
 
-**Command:**
+Most important async job; it also covers non-standard web ports.
+
 ```bash
 nmap -sC -sV -p- --min-rate 1000 <IP> -oN recon/nmap-full-<IP>.txt
 ```
 
-**How to read:** `grep -E "open" recon/nmap-full-<IP>.txt`. Each line is an open port with its service and version. Every HTTP(S) port goes into `<WEB_PORTS>`.
+> **Read:** `grep -E "open" recon/nmap-full-<IP>.txt`. Each line is an open port with its service and version. Every HTTP(S) port goes into `<WEB_PORTS>`.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Run the HTTP scripts step on `<WEB_PORTS>`, then WSTG-INFO-02 on each web port. |
 
-**Next:** Run the HTTP scripts step on `<WEB_PORTS>`, then WSTG-INFO-02 on each web port.
+### HTTP scripts on the open web ports · `ASYNC`
 
-**Step:** HTTP scripts on the open web ports ⏱ ASYNC. Run after the full scan, using its ports.
+Run after the full scan, using its ports.
 
-**Command:**
 ```bash
 nmap -sV -p <WEB_PORTS> --script http-enum,http-title,http-methods,http-robots.txt <IP> -oN recon/nmap-http-<IP>.txt
 ```
 
-**How to read:** `grep "|" recon/nmap-http-<IP>.txt`. `http-methods` lists allowed verbs (CONF-06). `http-enum` lists directories and files (CONF-05). `http-robots.txt` lists Disallow paths (INFO-03).
+> **Read:** `grep "|" recon/nmap-http-<IP>.txt`. `http-methods` lists allowed verbs (CONF-06). `http-enum` lists directories and files (CONF-05). `http-robots.txt` lists Disallow paths (INFO-03).
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Add every found path to Burp scope and test it. |
 
-**Next:** Add every found path to Burp scope and test it.
+### TLS certificate SANs
 
-**Step:** TLS certificate SANs. Extra hostnames for `/etc/hosts`.
+Extra hostnames for `/etc/hosts`.
 
-**Command:**
 ```bash
 echo | openssl s_client -connect <IP>:443 -servername <DOMAIN> 2>/dev/null | openssl x509 -noout -ext subjectAltName
 ```
 
-**How to read:** Each `DNS:` entry is a hostname. Keep it as a `<SUBDOMAIN>` candidate.
+> **Read:** Each `DNS:` entry is a hostname. Keep it as a `<SUBDOMAIN>` candidate.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Add each name to `/etc/hosts` and Burp scope, then run the root checks on it. |
 
-**Next:** Add each name to `/etc/hosts` and Burp scope, then run the root checks on it.
+### DNS zone transfer (AXFR)
 
-**Step:** DNS zone transfer (AXFR). Get the name servers first, then ask each one.
+Get the name servers first, then ask each one.
 
-**Command:**
 ```bash
 dig NS <DOMAIN> +short
 dig axfr <DOMAIN> @<NAMESERVER> > recon/dns-axfr-<DOMAIN>.txt
 grep -c "IN" recon/dns-axfr-<DOMAIN>.txt
 ```
 
-**How to read:** The count from `grep -c` is the record total. Real hostnames mean the zone transferred. `Transfer failed.` in the file means it was refused.
+> **Read:** The count from `grep -c` is the record total. Real hostnames mean the zone transferred. `Transfer failed.` in the file means it was refused.
 
-**Save to file:** [x]
-
-**Next:** Each hostname goes to the SAN and vhost checks.
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Each hostname goes to the SAN and vhost checks. |
 
 ## WSTG-CONF-03 · File extension handling
 
-**Step:** Alternate extensions on a known page.
+### Alternate extensions on a known page
 
-**Command:**
 ```bash
 for e in php php7 phtml inc bak old; do curl -sk -o /dev/null -w "%{http_code} %{size_download} <NAME>.$e\n" "<SCHEME>://<VHOST>/<NAME>.$e"; done
 ```
 
-**How to read:** Compare each line with the `php` line. A `200` on `php7`, `phtml`, `inc`, or `bak` with source code in the body means the server serves that extension as plain text. A different size from `php` means a separate handler.
+> **Read:** Compare each line with the `php` line. A `200` on `php7`, `phtml`, `inc`, or `bak` with source code in the body means the server serves that extension as plain text. A different size from `php` means a separate handler.
 
-**Save to file:** [ ]
-
-**Next:** Open each `200` in Burp and read the body. Source code in the response is a finding.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Open each `200` in Burp and read the body. Source code in the response is a finding. |
 
 ## WSTG-CONF-04 · Backup and unreferenced files
 
-**Step:** Backup and temp files ⏱ ASYNC on the root and known files.
+### Backup and temp files · `ASYNC`
 
-**Command:**
+On the root and known files.
+
 ```bash
 ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -e .bak,.old,.swp,.tmp,~ -mc 200 -fs <BASELINE> -t 10 -o recon/ffuf-backups-<VHOST>.md -of md
 ```
 
-**How to read:** `grep -iE "bak|old|swp|tmp" recon/ffuf-backups-<VHOST>.md`. Each hit is a file that exists.
+> **Read:** `grep -iE "bak|old|swp|tmp" recon/ffuf-backups-<VHOST>.md`. Each hit is a file that exists.
 
-**Save to file:** [x]
-
-**Next:** Download each hit and read it before anything else.
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Download each hit and read it before anything else. |
 
 ## WSTG-CONF-02 · Application platform configuration
 
-**Step:** Source control and env leaks.
+### Source control and env leaks
 
-**Command:**
 ```bash
 for p in .git/HEAD .svn/entries .env .DS_Store; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p"; done
 ```
 
-**How to read:** Only `200` lines matter. `403` means the file exists but is blocked.
+> **Read:** Only `200` lines matter. `403` means the file exists but is blocked.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | `.git/HEAD` at `200`: dump the repo with `wget -r` and read its config. `.env` at `200`: read it for credentials. |
 
-**Next:** `.git/HEAD` at `200`: dump the repo with `wget -r` and read its config. `.env` at `200`: read it for credentials.
+### Debug and default endpoints
 
-**Step:** Debug and default endpoints.
-
-**Command:**
 ```bash
 for p in _profiler phpinfo.php actuator/env server-status console; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p"; done
 ```
 
-**How to read:** `200` means the endpoint is live. `403` means present but blocked, so send it to CONF-06.
+> **Read:** `200` means the endpoint is live. `403` means present but blocked, so send it to CONF-06.
 
-**Save to file:** [ ]
-
-**Next:** Open each live endpoint in Burp and record it as a finding.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Open each live endpoint in Burp and record it as a finding. |
 
 ## WSTG-CONF-05 · Admin interfaces and directories
 
-**Step:** Directory brute force ⏱ ASYNC on each web host. This is the main directory scan.
+### Directory brute force · `ASYNC`
 
-**Command:**
+On each web host. This is the main directory scan.
+
 ```bash
 ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -mc 200,301,302,403 -fs <BASELINE> -t 10 -o recon/ffuf-dirs-<VHOST>.md -of md
 ```
 
-**How to read:** Open the `.md` report and sort by status. `200`, `301`, and `302` are pages to open in Burp. `403` goes to CONF-06.
+> **Read:** Open the `.md` report and sort by status. `200`, `301`, and `302` are pages to open in Burp. `403` goes to CONF-06.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Add each hit to the Burp Site map. A new directory repeats INFO-06 on it. |
 
-**Next:** Add each hit to the Burp Site map. A new directory repeats INFO-06 on it.
+### Admin keywords
 
-**Step:** Admin keywords. Quick check of the paths most likely to matter.
+Quick check of the paths most likely to matter.
 
-**Command:**
 ```bash
 for p in admin manage dashboard phpmyadmin grafana jenkins; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p/"; done
 ```
 
-**How to read:** `200`, `301`, `302`, `401`, and `403` are leads. `404` means nothing is there.
+> **Read:** `200`, `301`, `302`, `401`, and `403` are leads. `404` means nothing is there.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Open each lead in Burp. A login page goes to the auth tests. |
 
-**Next:** Open each lead in Burp. A login page goes to the auth tests.
+### Log every 403
 
-**Step:** Log every 403.
-
-**Command:**
 ```bash
 grep "403" recon/ffuf-dirs-<VHOST>.md > recon/forbidden-<VHOST>.txt
 ```
 
-**How to read:** Each line is a path to test in CONF-06.
+> **Read:** Each line is a path to test in CONF-06.
 
-**Save to file:** [x]
-
-**Next:** Run the verb tampering check in CONF-06 on each path.
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Run the verb tampering check in CONF-06 on each path. |
 
 ## WSTG-INFO-01 · Search engine discovery ❓ EXTRA (OSINT questions)
 
-**Step:** Google dorks.
+### Google dorks
 
-**Command:**
 ```text
 site:<DOMAIN> ext:xml OR ext:conf OR ext:bak
 site:<DOMAIN> inurl:admin OR inurl:staging
 site:<DOMAIN> "index of" "backup"
 ```
 
-**How to read:** Open each result. The search snippet can be stale.
+> **Read:** Open each result. The search snippet can be stale.
 
-**Save to file:** [x] (keep confirmed URLs in `recon/osint-<DOMAIN>.txt`)
+| Save to file | Next |
+|:---:|---|
+| `[x]` (keep confirmed URLs in `recon/osint-<DOMAIN>.txt`) | Any live URL goes to Burp scope and INFO-05. |
 
-**Next:** Any live URL goes to Burp scope and INFO-05.
+### Code repos
 
-**Step:** Code repos.
-
-**Command:**
 ```text
 GitHub search: "<DOMAIN>" "API_KEY"
 GitHub search: "<DOMAIN>" "secret" "token"
 ```
 
-**How to read:** Open the matching file and confirm the value is real, not a placeholder.
+> **Read:** Open the matching file and confirm the value is real, not a placeholder.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | A real credential gets tested on the login page. Screenshot the file. |
 
-**Next:** A real credential gets tested on the login page. Screenshot the file.
+### Host lookup
 
-**Step:** Host lookup.
+Also search the certificate by `<DOMAIN>` on the same site.
 
-**Command:**
 ```text
 https://www.shodan.io/host/<IP>
 ```
-Certificate search by `<DOMAIN>` on the same site.
 
-**How to read:** Compare ports and banners with the nmap scan. A port that nmap did not show is a lead.
+> **Read:** Compare ports and banners with the nmap scan. A port that nmap did not show is a lead.
 
-**Save to file:** [ ]
-
-**Next:** Each new port goes to WSTG-INFO-02.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Each new port goes to WSTG-INFO-02. |
 
 ## WSTG-INFO-02 · Web server and stack fingerprint
 
-**Step:** Tech stack ⏱ ASYNC. CMS, frameworks, and plugins.
+### Tech stack · `ASYNC`
 
-**Command:**
+CMS, frameworks, and plugins.
+
 ```bash
 whatweb -v "<SCHEME>://<VHOST>/" > recon/whatweb-<VHOST>.txt
 ```
 
-**How to read:** Read the plugin names and version numbers in brackets, for example `Apache[2.4.x]`.
+> **Read:** Read the plugin names and version numbers in brackets, for example `Apache[2.4.x]`.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | CMS detected goes to WSTG-INFO-08. A framework version goes to a CVE search. |
 
-**Next:** CMS detected goes to WSTG-INFO-08. A framework version goes to a CVE search.
+### Known exploits for the detected version
 
-**Step:** Known exploits for the detected version. Run once per product from whatweb or the headers.
+Run once per product from whatweb or the headers.
 
-**Command:**
 ```bash
 searchsploit "<PRODUCT> <VERSION>" > recon/searchsploit-<PRODUCT>.txt
 ```
 
-**How to read:** Each line is an exploit title and its path. Match the title to the exact version before using it.
+> **Read:** Each line is an exploit title and its path. Match the title to the exact version before using it.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | A version-matched exploit is a lead to verify in Burp, not a finding. |
 
-**Next:** A version-matched exploit is a lead to verify in Burp, not a finding.
+### Quick vulnerability scan · `ASYNC`
 
-**Step:** Quick vulnerability scan ⏱ ASYNC. Treat results as leads to verify, not findings.
+Treat results as leads to verify, not findings.
 
-**Command:**
 ```bash
 nikto -h "<SCHEME>://<VHOST>:<PORT>/" -o recon/nikto-<VHOST>.txt
 ```
 
-**How to read:** `grep "^+" recon/nikto-<VHOST>.txt` shows the findings. Each one is a lead.
+> **Read:** `grep "^+" recon/nikto-<VHOST>.txt` shows the findings. Each one is a lead.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Verify each lead in Burp before it goes in the report. |
 
-**Next:** Verify each lead in Burp before it goes in the report.
+### Headers · `MANUAL`
 
-**Step:** Headers 🖐 MANUAL.
-
-**Command:**
 ```bash
 curl -sk -I "<SCHEME>://<VHOST>:<PORT>/" | grep -iE "^(server|x-powered-by|x-aspnet-version|strict-transport-security|content-security-policy|x-frame-options|x-content-type-options|set-cookie)"
 ```
 
-**How to read:** `Server` and `X-Powered-By` with version numbers are findings. Missing security headers are informational. `Set-Cookie` without `HttpOnly`, `Secure`, or `SameSite` is a lead for session tests.
+> **Read:** `Server` and `X-Powered-By` with version numbers are findings. Missing security headers are informational. `Set-Cookie` without `HttpOnly`, `Secure`, or `SameSite` is a lead for session tests.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | A version string goes to whatweb and searchsploit. Cookie flags go to the auth and session tests. |
 
-**Next:** A version string goes to whatweb and searchsploit. Cookie flags go to the auth and session tests.
+### Verbose error · `MANUAL`
 
-**Step:** Verbose error 🖐 MANUAL. Force a 404 and look for version strings.
+Force a 404 and look for version strings.
 
-**Command:**
 ```bash
 curl -sk -i "<SCHEME>://<VHOST>:<PORT>/nohost-zz9.php" | grep -iE "apache|php|tomcat|nginx|version|exception"
 ```
 
-**How to read:** A stack trace or version in the body is a finding. Read the full body in Burp.
+> **Read:** A stack trace or version in the body is a finding. Read the full body in Burp.
 
-**Save to file:** [ ]
-
-**Next:** Record the version. A stack trace goes to the input validation tests.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Record the version. A stack trace goes to the input validation tests. |
 
 ## WSTG-INFO-03 · Webserver metafiles
 
-**Step:** Status of each metafile 🖐 MANUAL, then read only the ones that exist.
+### Status of each metafile · `MANUAL`
 
-**Command:**
+Then read only the ones that exist.
+
 ```bash
 for f in robots.txt sitemap.xml .well-known/security.txt crossdomain.xml clientaccesspolicy.xml humans.txt; do curl -sk -o /dev/null -w "%{http_code} $f\n" "<SCHEME>://<VHOST>/$f"; done
 curl -sk "<SCHEME>://<VHOST>/robots.txt" | grep -i disallow
 ```
 
-**How to read:** `200` means read the file. `404` means it is absent. The `Disallow:` lines are the paths to test.
+> **Read:** `200` means read the file. `404` means it is absent. The `Disallow:` lines are the paths to test.
 
-**Save to file:** [ ]
-
-**Next:** Add every `Disallow:` path to Burp scope and test it like a discovered directory.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Add every `Disallow:` path to Burp scope and test it like a discovered directory. |
 
 ## WSTG-INFO-04 · Virtual hosts and applications
 
-**Step:** VHost fuzzing ⏱ ASYNC. Use the baseline from the conventions section.
+### VHost fuzzing · `ASYNC`
 
-**Command:**
+Use the baseline from the conventions section.
+
 ```bash
 ffuf -u "<SCHEME>://<IP>/" -H "Host: FUZZ.<DOMAIN>" -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -fs <BASELINE> -t 10 -o recon/ffuf-vhosts-<DOMAIN>.md -of md
 ```
 
-**How to read:** Each hit is a vhost name. Read the size and status columns in the `.md` report.
+> **Read:** Each hit is a vhost name. Read the size and status columns in the `.md` report.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Add each hit to `/etc/hosts` on the same line as the target and to Burp scope, then run the root checks on it. |
 
-**Next:** Add each hit to `/etc/hosts` on the same line as the target and to Burp scope, then run the root checks on it.
+### DNS brute force · `ASYNC`
 
-**Step:** DNS brute force ⏱ ASYNC. Finds subdomains that have DNS records, which vhost fuzzing can miss.
+Finds subdomains that have DNS records, which vhost fuzzing can miss.
 
-**Command:**
 ```bash
 dnsenum --noreverse -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -o recon/dnsenum-<DOMAIN>.xml <DOMAIN>
 ```
 
-**How to read:** `grep -oE "[a-z0-9.-]+\.<DOMAIN>" recon/dnsenum-<DOMAIN>.xml | sort -u` lists each unique name.
+> **Read:** `grep -oE "[a-z0-9.-]+\.<DOMAIN>" recon/dnsenum-<DOMAIN>.xml | sort -u` lists each unique name.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Each new name goes to `/etc/hosts` and the root checks, the same as the vhost hits. |
 
-**Next:** Each new name goes to `/etc/hosts` and the root checks, the same as the vhost hits.
+### Non-standard web ports
 
-**Step:** Non-standard web ports. The full scan already covers them, so no new scan is needed.
+The full scan already covers them, so no new scan is needed.
 
-**Command:**
 ```bash
 grep "open" recon/nmap-full-<IP>.txt
 ```
 
-**How to read:** Each port with an http or https service is a web host.
+> **Read:** Each port with an http or https service is a web host.
 
-**Save to file:** [ ]
-
-**Next:** Each one becomes a `<WEB_PORTS>` entry for WSTG-INFO-02.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Each one becomes a `<WEB_PORTS>` entry for WSTG-INFO-02. |
 
 ## WSTG-INFO-05 · Webpage content and source code
 
-**Step:** Comments, JS, and hidden fields on the root page 🖐 MANUAL.
+### Comments, JS, and hidden fields on the root page · `MANUAL`
 
-**Command:**
 ```bash
 curl -sk "<SCHEME>://<VHOST>/" | grep -Eio '<!--.*-->|src="[^"]+\.js"|type="hidden"[^>]*' | sort -u
 ```
 
-**How to read:** Comments and hidden values can show internal paths or debug notes. Each `.js` path is a file to open.
+> **Read:** Comments and hidden values can show internal paths or debug notes. Each `.js` path is a file to open.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Each JS URL goes to the next step. A hidden value is a parameter for INFO-06. |
 
-**Next:** Each JS URL goes to the next step. A hidden value is a parameter for INFO-06.
+### Secrets and internal IPs in a JS file · `MANUAL`
 
-**Step:** Secrets and internal IPs in a JS file 🖐 MANUAL.
-
-**Command:**
 ```bash
 curl -sk "<JS_URL>" | grep -Eio '(api_key|secret|token|jwt)[^,;]{0,60}|10\.[0-9]+\.[0-9]+\.[0-9]+'
 ```
 
-**How to read:** Each match shows a key name and its value. `10.x.x.x` addresses are internal hosts for the report.
+> **Read:** Each match shows a key name and its value. `10.x.x.x` addresses are internal hosts for the report.
 
-**Save to file:** [ ]
-
-**Next:** A real secret gets tested. An internal IP gets noted and checked in the SSRF tests.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | A real secret gets tested. An internal IP gets noted and checked in the SSRF tests. |
 
 ## WSTG-INFO-06 · Application entry points
 
-**Step:** Walk the app in Burp 🖐 MANUAL with Proxy on.
+### Walk the app in Burp · `MANUAL`
 
-**Command:** None. Build the list from Target → Site map.
+Proxy on. Build the list from Target → Site map.
 
-**How to read:** Sort the Site map by URL. Note each GET parameter, POST body, custom header, and API path.
+> **Read:** Sort the Site map by URL. Note each GET parameter, POST body, custom header, and API path.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Parameters go to the fuzz steps below. |
 
-**Next:** Parameters go to the fuzz steps below.
+### GET parameter names · `ASYNC`
 
-**Step:** GET parameter names ⏱ ASYNC. Set `<BASELINE>` to that page's size with a random parameter.
+Set `<BASELINE>` to that page's size with a random parameter.
 
-**Command:**
 ```bash
 ffuf -u "<SCHEME>://<VHOST>/<PAGE>?FUZZ=test" -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -fs <BASELINE> -mc all -t 5 -o recon/ffuf-get-params.md -of md
 ```
 
-**How to read:** `-fs` hides the baseline size, so each hit is a parameter that changes the response.
+> **Read:** `-fs` hides the baseline size, so each hit is a parameter that changes the response.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | A confirmed parameter goes to the value fuzz below. Note it for SQLi and XSS tests. |
 
-**Next:** A confirmed parameter goes to the value fuzz below. Note it for SQLi and XSS tests.
+### POST parameter names · `ASYNC`
 
-**Step:** POST parameter names ⏱ ASYNC, form-encoded.
+Form-encoded.
 
-**Command:**
 ```bash
 ffuf -u "<SCHEME>://<VHOST>/<PAGE>" -X POST -d "FUZZ=test" -H "Content-Type: application/x-www-form-urlencoded" -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -fs <BASELINE> -mc all -t 5 -o recon/ffuf-post-params.md -of md
 ```
 
-**How to read:** Same as GET. Each hit is a body field that changes the response.
+> **Read:** Same as GET. Each hit is a body field that changes the response.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Note it for SQLi, XSS, and logic tests. |
 
-**Next:** Note it for SQLi, XSS, and logic tests.
+### Parameter values once a parameter is confirmed
 
-**Step:** Parameter values once a parameter is confirmed (numeric IDs).
+Numeric IDs.
 
-**Command:**
 ```bash
 seq 1 1000 > recon/ids.txt
 ffuf -u "<SCHEME>://<VHOST>/<PAGE>" -X POST -d "id=FUZZ" -H "Content-Type: application/x-www-form-urlencoded" -w recon/ids.txt -fs <BASELINE> -t 5 -o recon/ffuf-id-values.md -of md
 ```
 
-**How to read:** A `200` with a different size from the baseline is another record.
+> **Read:** A `200` with a different size from the baseline is another record.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | A record ID that exposes another user's data goes to the IDOR test. |
 
-**Next:** A record ID that exposes another user's data goes to the IDOR test.
+### API endpoints · `ASYNC`
 
-**Step:** API endpoints ⏱ ASYNC. Only when the app has an `/api` path.
+Only when the app has an `/api` path.
 
-**Command:**
 ```bash
 gobuster dir -u "<SCHEME>://<VHOST>/api" -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -b 403,404 -t 10 -o recon/gobuster-api-<VHOST>.txt
 ```
 
-**How to read:** Each `200` is an endpoint. Read its response in Burp.
+> **Read:** Each `200` is an endpoint. Read its response in Burp.
 
-**Save to file:** [x]
-
-**Next:** Each endpoint goes to Burp Repeater and the web service tests.
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Each endpoint goes to Burp Repeater and the web service tests. |
 
 ## WSTG-INFO-07 · Execution paths
 
-**Step:** Map the workflows 🖐 MANUAL. Registration, login, profile edit, checkout, and password reset.
+### Map the workflows · `MANUAL`
 
-**Command:** None. Replay any request with the Appendix A template.
+Registration, login, profile edit, checkout, and password reset. Replay any request with the Appendix A template.
 
-**How to read:** In Burp HTTP history, note where session tokens change between steps.
+> **Read:** In Burp HTTP history, note where session tokens change between steps.
 
-**Save to file:** [ ]
-
-**Next:** Multi-step flows go to the logic tests.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Multi-step flows go to the logic tests. |
 
 ## WSTG-INFO-08 · CMS fingerprint ❓ EXTRA (only when whatweb or headers suggest a CMS)
 
-**Step:** Check for WordPress markers.
+### Check for WordPress markers
 
-**Command:**
 ```bash
 curl -sk "<SCHEME>://<VHOST>/" | grep -Eio 'wp-content|wp-includes|name="generator"[^>]*'
 for p in wp-login.php wp-json/ xmlrpc.php readme.html; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p"; done
 ```
 
-**How to read:** `wp-content` or `wp-includes` in the source means WordPress. A `200` on `wp-login.php`, `wp-json/`, or `xmlrpc.php` confirms it. The generator tag shows the version.
+> **Read:** `wp-content` or `wp-includes` in the source means WordPress. A `200` on `wp-login.php`, `wp-json/`, or `xmlrpc.php` confirms it. The generator tag shows the version.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | WordPress confirmed goes to WSTG-INFO-09. Anything else goes to the other CMS tools below. |
 
-**Next:** WordPress confirmed goes to WSTG-INFO-09. Anything else goes to the other CMS tools below.
+### WordPress version
 
-**Step:** WordPress version.
-
-**Command:**
 ```bash
 curl -sk "<SCHEME>://<VHOST>/readme.html" | grep -i "version"
 ```
 
-**How to read:** Compare the version with CVE lists. Hardened sites remove this file, so use the version from the wpscan report instead.
+> **Read:** Compare the version with CVE lists. Hardened sites remove this file, so use the version from the wpscan report instead.
 
-**Save to file:** [ ]
-
-**Next:** The version goes to searchsploit and the wpscan report.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | The version goes to searchsploit and the wpscan report. |
 
 ## WSTG-INFO-09 · WordPress with wpscan ❓ EXTRA (only when WordPress is confirmed)
 
-**Step:** Full wpscan enumeration ⏱ ASYNC.
+### Full wpscan enumeration · `ASYNC`
 
-**Command:**
 ```bash
 wpscan --url "<SCHEME>://<VHOST>/" --disable-tls-checks -e u,vp,vt,cb,dbe --api-token <TOKEN> -o recon/wpscan-<VHOST>.txt
 ```
 
-**How to read:** `grep -E "\[\+\]|\[!\]" recon/wpscan-<VHOST>.txt`. `[+]` is a finding (version, theme, plugin, user). `[!]` is a warning or vulnerability. Drop `--api-token <TOKEN>` if you have no token. Vulnerability details are then missing.
+> **Read:** `grep -E "\[\+\]|\[!\]" recon/wpscan-<VHOST>.txt`. `[+]` is a finding (version, theme, plugin, user). `[!]` is a warning or vulnerability. Drop `--api-token <TOKEN>` if you have no token. Vulnerability details are then missing.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | A vulnerable plugin or theme goes to a CVE search. Each user goes to the user step below. |
 
-**Next:** A vulnerable plugin or theme goes to a CVE search. Each user goes to the user step below.
+### Users only
 
-**Step:** Users only.
-
-**Command:**
 ```bash
 wpscan --url "<SCHEME>://<VHOST>/" --disable-tls-checks -e u
 curl -sk "<SCHEME>://<VHOST>/wp-json/wp/v2/users" | grep -Eo '"slug":"[^"]+"'
 ```
 
-**How to read:** Each username from either output is a login candidate.
+> **Read:** Each username from either output is a login candidate.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Usernames go to the password test below. Lab scope only. |
 
-**Next:** Usernames go to the password test below. Lab scope only.
+### Aggressive plugin detection
 
-**Step:** Aggressive plugin detection. Finds plugins the passive scan missed.
+Finds plugins the passive scan missed.
 
-**Command:**
 ```bash
 wpscan --url "<SCHEME>://<VHOST>/" --disable-tls-checks --plugins-detection aggressive -e vp -o recon/wpscan-plugins-<VHOST>.txt
 ```
 
-**How to read:** Read each `[+]` plugin line and its version. Match the version against the `[!]` vulnerability lines below it.
+> **Read:** Read each `[+]` plugin line and its version. Match the version against the `[!]` vulnerability lines below it.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | A vulnerable plugin goes to `searchsploit <PLUGIN_NAME>`. |
 
-**Next:** A vulnerable plugin goes to `searchsploit <PLUGIN_NAME>`.
+### Password test · lab scope only
 
-**Step:** Password test. Only with a username from the users step, in lab scope.
+Only with a username from the users step.
 
-**Command:**
 ```bash
 gunzip -k /usr/share/wordlists/rockyou.txt.gz   # only if rockyou.txt is still gzipped
 wpscan --url "<SCHEME>://<VHOST>/" --disable-tls-checks -U <USER> -P /usr/share/wordlists/rockyou.txt -o recon/wpscan-bruteforce-<VHOST>.txt
 ```
 
-**How to read:** `grep "SUCCESS" recon/wpscan-bruteforce-<VHOST>.txt` shows the valid user and password.
+> **Read:** `grep "SUCCESS" recon/wpscan-bruteforce-<VHOST>.txt` shows the valid user and password.
 
-**Save to file:** [x]
-
-**Next:** Log in. Check the theme and plugin editors and the upload page for admin-level attack paths.
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Log in. Check the theme and plugin editors and the upload page for admin-level attack paths. |
 
 **Other CMS tools (mention only, no command set here).** If wpscan is not the right tool, use the one that matches the fingerprint: `joomscan` for Joomla, `droopescan` for Drupal, SilverStripe, and Moodle, and `CMSmap` for WordPress, Joomla, Drupal, and Moodle.
 
 ## WSTG-INFO-10 · Application architecture and WAF ❓ EXTRA (payloads blocked)
 
-**Step:** WAF detection.
+### WAF detection
 
-**Command:**
 ```bash
 wafw00f "<SCHEME>://<VHOST>/" > recon/wafw00f-<VHOST>.txt
 ```
 
-**How to read:** The WAF name is in the output. A "no WAF" result means none was found.
+> **Read:** The WAF name is in the output. A "no WAF" result means none was found.
 
-**Save to file:** [x]
+| Save to file | Next |
+|:---:|---|
+| `[x]` | A WAF found means: lower `-t`, encode payloads, and note the WAF in the report. |
 
-**Next:** A WAF found means: lower `-t`, encode payloads, and note the WAF in the report.
+### Compare a benign and a suspicious request
 
-**Step:** Compare a benign and a suspicious request.
-
-**Command:**
 ```bash
 curl -sk -o /dev/null -w "benign %{http_code}\n" "<SCHEME>://<VHOST>/?q=test"
 curl -sk -o /dev/null -w "payload %{http_code}\n" "<SCHEME>://<VHOST>/?q=<script>alert(1)</script>"
 curl -skI "<SCHEME>://<VHOST>/" | grep -iE "via|x-cache|cf-ray|x-forwarded"
 ```
 
-**How to read:** A different status (403, 406) or a block page for the payload means a WAF is in front. The `via`, `x-cache`, and `cf-ray` headers name the proxy.
+> **Read:** A different status (403, 406) or a block page for the payload means a WAF is in front. The `via`, `x-cache`, and `cf-ray` headers name the proxy.
 
-**Save to file:** [ ]
-
-**Next:** Same as above.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Same as above. |
 
 ## WSTG-CONF-06 · HTTP methods ❓ EXTRA (403 pages)
 
-**Step:** Allowed methods.
+### Allowed methods
 
-**Command:**
 ```bash
 curl -sk -i -X OPTIONS "<SCHEME>://<VHOST>:<PORT>/" | grep -i allow
 ```
 
-**How to read:** The `Allow:` header lists the verbs the server accepts.
+> **Read:** The `Allow:` header lists the verbs the server accepts.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Verbs that are missing from `Allow:` but still work go to the verb tampering step below. |
 
-**Next:** Verbs that are missing from `Allow:` but still work go to the verb tampering step below.
+### Verb tampering on a restricted path
 
-**Step:** Verb tampering on a restricted path.
-
-**Command:**
 ```bash
 for m in GET HEAD POST PUT DELETE TRACE; do curl -sk --max-time 10 -o /dev/null -w "$m %{http_code}\n" -X $m "<SCHEME>://<VHOST>:<PORT>/admin/"; done
 ```
 
-**How to read:** Any code other than `403` is a lead. A `200` with a different verb is a bypass candidate.
+> **Read:** Any code other than `403` is a lead. A `200` with a different verb is a bypass candidate.
 
-**Save to file:** [ ]
-
-**Next:** A `200` opens in Burp Repeater with that verb, and the body is checked.
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | A `200` opens in Burp Repeater with that verb, and the body is checked. |
 
 ## WSTG-CONF-10 · Subdomain takeover ❓ EXTRA (cloud or dangling DNS)
 
-**Step:** CNAME target of each subdomain.
+### CNAME target of each subdomain
 
-**Command:**
 ```bash
 dig CNAME <SUBDOMAIN> +short
 ```
 
-**How to read:** A provider name (S3, GitHub Pages, Azure) means the subdomain points to a third party.
+> **Read:** A provider name (S3, GitHub Pages, Azure) means the subdomain points to a third party.
 
-**Save to file:** [ ]
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Check the response in the next step. |
 
-**Next:** Check the response in the next step.
+### Takeover check
 
-**Step:** Takeover check. Save the provider response as evidence.
+Save the provider response as evidence.
 
-**Command:**
 ```bash
 curl -sk "<SCHEME>://<SUBDOMAIN>/" -o recon/takeover-<SUBDOMAIN>.html
 ```
 
-**How to read:** A "NoSuchBucket" or 404 page from the provider is the takeover condition. Document the CNAME and the provider error.
+> **Read:** A "NoSuchBucket" or 404 page from the provider is the takeover condition. Document the CNAME and the provider error.
 
-**Save to file:** [x]
-
-**Next:** Report the finding with the CNAME and the saved response.
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Report the finding with the CNAME and the saved response. |
 
 ***
 
