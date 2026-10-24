@@ -1,7 +1,5 @@
 # Phase 1 – WSTG Recon: Checklist + Commands
 
-Work top-down by WSTG ID. Each item = what to do, the command, and what to look for.
-
 **Tags:** ⏱ **ASYNC** start at once, read later · 🖐 **MANUAL** Burp/browser while scans run · ❓ **EXTRA** only when a question or a blocker (403, WAF, OSINT question) points to it.
 
 ***
@@ -21,6 +19,9 @@ Work top-down by WSTG ID. Each item = what to do, the command, and what to look 
 | `<PAGE>` / `<PATH>` | Page or path (`login.php`, `/api/user`) |
 | `<JS_URL>` | Full URL of a `.js` file found in the page |
 | `<METHOD>` / `<BODY>` | HTTP verb and request body (Appendix A) |
+| `<SUBDOMAIN>` | Subdomain from DNS or vhost results (`dev.target.com`) |
+| `<SUBNET>` | CIDR range from the scope (`172.20.0.0/24`), only when a subnet is in scope |
+| `<TOKEN>` | WPScan API token (optional tool) |
 
 - **Baseline (once per host or vhost):** size of a page that does not exist, so `-fs` can hide soft-404s.
   ```bash
@@ -57,12 +58,15 @@ Work top-down by WSTG ID. Each item = what to do, the command, and what to look 
   grep -c "IN" recon/dns-axfr-<DOMAIN>.txt
   ```
 
-## WSTG-CONF-02 · Application platform configuration
+## WSTG-CONF-04 · Backup and unreferenced files
 
 - [ ] ⏱ **Backup and temp files** on the root and on known files.
   ```bash
   ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -e .bak,.old,.swp,.tmp,~ -mc 200 -fs <BASELINE> -t 10 -o recon/ffuf-backups-<VHOST>.md -of md
   ```
+
+## WSTG-CONF-02 · Application platform configuration
+
 - [ ] ⏱ **Source control and env leaks.**
   ```bash
   for p in .git/HEAD .svn/entries .env .DS_Store; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p"; done
@@ -101,9 +105,9 @@ Work top-down by WSTG ID. Each item = what to do, the command, and what to look 
   ```bash
   nikto -h "<SCHEME>://<VHOST>:<PORT>/" -o recon/nikto-<VHOST>.txt
   ```
-- [ ] 🖐 **Headers.** Read `Server`, `X-Powered-By`, `X-AspNet-Version`, `X-Frame-Options`.
+- [ ] 🖐 **Headers.** Read `Server`, `X-Powered-By`, `X-AspNet-Version`, the security headers (`Strict-Transport-Security`, `Content-Security-Policy`, `X-Frame-Options`, `X-Content-Type-Options`), and `Set-Cookie` flags (`HttpOnly`, `Secure`, `SameSite`).
   ```bash
-  curl -sk -I "<SCHEME>://<VHOST>:<PORT>/" | grep -iE "^(server|x-powered-by|x-aspnet-version|x-frame-options)"
+  curl -sk -I "<SCHEME>://<VHOST>:<PORT>/" | grep -iE "^(server|x-powered-by|x-aspnet-version|strict-transport-security|content-security-policy|x-frame-options|x-content-type-options|set-cookie)"
   ```
 - [ ] 🖐 **Verbose error.** Force a 404 and look for version strings.
   ```bash
@@ -114,7 +118,7 @@ Work top-down by WSTG ID. Each item = what to do, the command, and what to look 
 
 - [ ] 🖐 **Status of each metafile**, then read only the ones that exist.
   ```bash
-  for f in robots.txt sitemap.xml .well-known/security.txt crossdomain.xml humans.txt; do curl -sk -o /dev/null -w "%{http_code} $f\n" "<SCHEME>://<VHOST>/$f"; done
+  for f in robots.txt sitemap.xml .well-known/security.txt crossdomain.xml clientaccesspolicy.xml humans.txt; do curl -sk -o /dev/null -w "%{http_code} $f\n" "<SCHEME>://<VHOST>/$f"; done
   curl -sk "<SCHEME>://<VHOST>/robots.txt" | grep -i disallow
   ```
 - [ ] 🖐 Add every `Disallow:` path to Burp scope.
@@ -123,7 +127,7 @@ Work top-down by WSTG ID. Each item = what to do, the command, and what to look 
 
 - [ ] ⏱ **VHost fuzzing** (use the baseline from the conventions section).
   ```bash
-  ffuf -u "http://<IP>/" -H "Host: FUZZ.<DOMAIN>" -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -fs <BASELINE> -t 10 -o recon/ffuf-vhosts-<DOMAIN>.md -of md
+  ffuf -u "<SCHEME>://<IP>/" -H "Host: FUZZ.<DOMAIN>" -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -fs <BASELINE> -t 10 -o recon/ffuf-vhosts-<DOMAIN>.md -of md
   ```
 - [ ] ⏱ Add each hit to `/etc/hosts` on the same line as the target and to Burp scope.
 - [ ] Non-standard ports are already covered by the full scan (CONF-01). Check them with `grep open`.
@@ -186,7 +190,7 @@ Work top-down by WSTG ID. Each item = what to do, the command, and what to look 
   ```
 - [ ] **Verb tampering** on a restricted path. Any change from 403 is a lead.
   ```bash
-  for m in GET HEAD POST PUT DELETE TRACE; do curl -sk -o /dev/null -w "$m %{http_code}\n" -X $m "<SCHEME>://<VHOST>:<PORT>/admin/"; done
+  for m in GET HEAD POST PUT DELETE TRACE; do curl -sk --max-time 10 -o /dev/null -w "$m %{http_code}\n" -X $m "<SCHEME>://<VHOST>:<PORT>/admin/"; done
   ```
 
 ## WSTG-CONF-10 · Subdomain takeover ❓ EXTRA (cloud or dangling DNS)
@@ -209,6 +213,7 @@ Work top-down by WSTG ID. Each item = what to do, the command, and what to look 
 | Parameter that changes output | INFO-06 value fuzz; note it for SQLi, IDOR, and logic tests |
 | WAF or blocked payload | Lower `-t`, encode payloads, note the WAF in the report |
 | Backup, `.git`, or `.env` file | Download it and read it before anything else |
+| WordPress or Drupal fingerprint | CMS section in 📜 cheatsheet, then folder 07 |
 
 ***
 
