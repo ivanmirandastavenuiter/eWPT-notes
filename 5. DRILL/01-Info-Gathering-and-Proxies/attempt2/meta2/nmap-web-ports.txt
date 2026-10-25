@@ -1,0 +1,49 @@
+# Nmap 7.99 scan initiated Sun Oct 25 16:51:10 2026 as: /usr/lib/nmap/nmap --privileged -sV -p 80,443,8000,8080,8443,8888 --script http-enum,http-title,http-methods,http-robots.txt -oN meta2/nmap-web-ports.txt meta2 meta2
+Nmap scan report for meta2 (172.20.0.2)
+Host is up (0.000038s latency).
+
+PORT     STATE  SERVICE        VERSION
+80/tcp   open   http           Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+|_http-title: Metasploitable2 - Linux
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.2.8 (Ubuntu) DAV/2
+| http-enum: 
+|   /test/: Test page
+|   /phpinfo.php: Possible information file
+|   /phpMyAdmin/: phpMyAdmin
+|   /doc/: Potentially interesting directory w/ listing on 'apache/2.2.8 (ubuntu) dav/2'
+|   /icons/: Potentially interesting folder w/ directory listing
+|_  /index/: Potentially interesting folder
+443/tcp  closed https
+8000/tcp closed http-alt
+8080/tcp closed http-proxy
+8443/tcp closed https-alt
+8888/tcp closed sun-answerbook
+MAC Address: EE:C8:72:A0:ED:03 (Unknown)
+
+Nmap scan report for meta2 (172.20.0.2)
+Host is up (0.000019s latency).
+
+PORT     STATE  SERVICE        VERSION
+80/tcp   open   http           Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.2.8 (Ubuntu) DAV/2
+|_http-title: Metasploitable2 - Linux
+| http-enum: 
+|   /test/: Test page
+|   /phpinfo.php: Possible information file
+|   /phpMyAdmin/: phpMyAdmin
+|   /doc/: Potentially interesting directory w/ listing on 'apache/2.2.8 (ubuntu) dav/2'
+|   /icons/: Potentially interesting folder w/ directory listing
+|_  /index/: Potentially interesting folder
+443/tcp  closed https
+8000/tcp closed http-alt
+8080/tcp closed http-proxy
+8443/tcp closed https-alt
+8888/tcp closed sun-answerbook
+MAC Address: EE:C8:72:A0:ED:03 (Unknown)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sun Oct 25 16:51:25 2026 -- 2 IP addresses (2 hosts up) scanned in 14.93 seconds

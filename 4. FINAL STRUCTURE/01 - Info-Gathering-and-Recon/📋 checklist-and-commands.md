@@ -114,6 +114,8 @@ for e in php php7 phtml inc bak old; do curl -sk -o /dev/null -w "%{http_code} %
 |:---:|---|
 | `[ ]` | Open each `200` in Burp and read the body. Source code in the response is a finding. |
 
+`Not critical`
+
 ## WSTG-CONF-04 · Backup and unreferenced files
 
 ### Backup and temp files · `ASYNC`
