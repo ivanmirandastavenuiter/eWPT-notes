@@ -60,14 +60,34 @@ Command conventions, placeholders and output file naming are in [📋 checklist-
 | # | Time | Command (short) | Result (one line) | Output file |
 | :- | :--- | :-------------- | :---------------- | :---------- |
 | 1 | `HH:MM` | `curl -sk -o /dev/null -w "%{size_download}\n" "http://meta2/mutillidae/notfound"` | `293` | |
-| 1 | `HH:MM` | `nmap -sC -sV --exclude-ports 1524 --min-rate 1000 meta2 -oN meta2/nmap-full.txt"` | `21,22,23,25,80,111,139,445,512,513,1099,2121,3306,5432,5900,6000,6667,8009,8180` | `meta2/nmap-full.txt"` |
-***
+| 2 | `HH:MM` | `nmap -sC -sV --exclude-ports 1524 --min-rate 1000 meta2 -oN meta2/nmap-full.txt"` | `21,22,23,25,80,111,139,445,512,513,1099,2121,3306,5432,5900,6000,6667,8009,8180` | `meta2/nmap-full.txt"` | |
+| 3 | `HH:MM` | `for e in php php7 phtml inc bak old; do curl -sk -o /dev/null -w "%{http_code} %{size_download} index.$e\n" "http://meta2/mutillidae/index.$e"; done` | `200 24198 index.php, 200 178 config.inc` | |
+| 4 | `HH:MM` | `ffuf -u "http://meta2/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -e .bak,.old,.swp,.tmp,~ -mc 200 -fs 293 -t 10 -o meta2/ffuf-backups -of all` | `Several hits. Check html file` | `ffuf-backups-mutillidae.html` |
+| 5 | `HH:MM` | `ffuf -u "http://meta2/mutillidae/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -e .bak,.old,.swp,.tmp,~ -mc 200 -fs 293 -t 10 -o meta2/ffuf-backups-mutillidae -of all` | `Several hits. Check html file` | `ffuf-backups-mutillidae.html` |
+| 6 | `HH:MM` | `for p in .git/HEAD .svn/entries .env .DS_Store; do curl -sk -o /dev/null -w "%{http_code} $p\n" "http://meta2/$p"; done` | `404 .git/HEAD, 404 .svn/entries, 404 .env, 404 .DS_Store` | `None` |
+| 7 | `HH:MM` | `for p in .git/HEAD .svn/entries .env .DS_Store; do curl -sk -o /dev/null -w "%{http_code} $p\n" "http://meta2/mutillidae/$p"; done` | `404 .git/HEAD, 404 .svn/entries, 404 .env, 404 .DS_Store` | `None` |
+| 8 | `HH:MM` | `for p in _profiler phpinfo.php actuator/env server-status console; do curl -sk -o /dev/null -w "%{http_code} $p\n" "http://meta2/$p"; done` | `200 phpinfo.php, 403 server-status` | `None` |
+| 9 | `HH:MM` | `for p in _profiler phpinfo.php actuator/env server-status console; do curl -sk -o /dev/null -w "%{http_code} $p\n" "http://meta2/mutillidae/$p"; done` | `200 phpinfo.php` | `None` |
+| 10 | `HH:MM` | `ffuf -u "http://meta2/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -mc 200,301,302,403 -fs 293 -t 10 -o meta2/ffuf-dirs -of all` | `Several hits. Check files` | `ffuf-dirs` |
+| 11 | `HH:MM` | `ffuf -u "http://meta2/mutillidae/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt -mc 200,301,302,403 -fs 293 -t 10 -o meta2/ffuf-dirs -of all` | `Several hits. Check files` | `ffuf-dirs-mutillidae` |
+| 12 | `HH:MM` | `for p in admin manage dashboard phpmyadmin grafana jenkins; do curl -sk -o /dev/null -w "%{http_code} $p\n" "http://meta2/$p/"; done` | `404` | `None` |
+| 13 | `HH:MM` | `for p in admin manage dashboard phpmyadmin grafana jenkins; do curl -sk -o /dev/null -w "%{http_code} $p\n" "http://meta2/mutillidae/$p/"; done` | `404` | `None` |
+| 14 | `HH:MM` | `grep "403" meta2/ffuf-dirs.csv > meta2/forbidden-dirs.txt ` | `server-status` | `forbidden-dirs` |
+| 15 | `HH:MM` | `grep "403" meta2/mutillidae/ffuf-dirs.csv > meta2/forbidden-dirs-mutillidae.txt ` | `None` | `forbidden-dirs-mutillidae` |
+| 16 | `HH:MM` | `whatweb -v http://meta2 > meta2/whatweb.txt` | `Apache 2.2.8 (Ubuntu) DAV/2, PHP (5.2.4-2ubuntu5.10), WebDav, X-Powered-By` | `whatweb.txt` |
+| 17 | `HH:MM` | `whatweb -v http://meta2/mutillidae > meta2/whatweb-mutillidae.txt` | `All above, JQuery, Cookie PHPSESSID ` | `whatweb.txt` |
+| 18 | `HH:MM` | `searchsploit "Apache 2.2.8" > meta2/searchsploit-apache.txt` | `Several hits` | `searchsploit-apache.txt` |
+| 19 | `HH:MM` | `nikto -h "http://meta2" -o meta2/nikto.txt` | `Several hits` | `nikto.txt` |
+| 20 | `HH:MM` | `nikto -h "http://meta2/mutillidae" -o meta2/nikto-mutillidae.txt` | `Several hits` | `nikto-mutillidae.txt` |
+| 21 | `HH:MM` | `for f in robots.txt sitemap.xml .well-known/security.txt crossdomain.xml clientaccesspolicy.xml humans.txt; do curl -sk -o /dev/null -w "%{http_code} $f\n" "http://meta2/mutillidae/$f"; done` | `robots.txt` | `None` |
+| 22 | `HH:MM` | `curl -sk "http://meta2/mutillidae/index.php" \| grep -Eio '<!--.*-->\|src="[^"]+\.js"\|type="hidden"[^>]*' \| sort -u` | `<!-- Begin Content -->,<!-- End Content -->, src="./javascript/bookmark-site.js", src="./javascript/ddsmoothmenu/ddsmoothmenu.js", src="./javascript/ddsmoothmenu/jquery.min.js"` | `None` |
+| 23 | `HH:MM` | `ffuf -u "http://meta2/mutillidae/index.php?FUZZ=test" -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt -ac -mc all -t 5 -o meta2/ffuf-get-params -of all` | `page` | `ffuf-get-params` |
 
 ## 🛠 TARGET: `meta2/mutillidae (172.20.0.2)`
 
 ### 0. Overview & questions
 
-- **Role / description:** `Web application`
+- *Role / description:** `Web application`
 - **Related questions:** `Qxx, Qyy`
 
 ### 1. Discoveries
@@ -75,9 +95,15 @@ Command conventions, placeholders and output file naming are in [📋 checklist-
 *Facts that look like exam material: versions, paths, headers, error messages, parameters. Each one carries its pivot.*
 
 - **Server banner:** `Apache httpod 2.2.8 ((Ubuntu) DAV/2)` → pivot: `<next step>`
-- **Accepted methods:** `<methods>` (from `curl -i -X OPTIONS`)
+- **Accepted methods:** `GET,HEAD,POST,OPTIONS` (from `curl -i -X OPTIONS`)
 - **Framework / tech:** `<tech>` → pivot: `<next step>`
-- **Hidden paths / files:** `<path>` (status `<code>`, size `<size>`) → pivot: `<next step>`
+- **Hidden paths / files:** 
+    - `/test`
+    - `/phpinfo.php`
+    - `/phpMYAdmin`
+    - `/doc`
+    - `/icons`
+    - `/index`
 - **Metafiles:** `robots.txt` Disallow `<paths>` → pivot: `<next step>`
 - **Parameters:** `<METHOD> <PATH>?<param>=` → pivot: `<next step>`
 

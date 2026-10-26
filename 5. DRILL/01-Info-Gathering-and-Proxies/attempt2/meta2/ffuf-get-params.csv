@@ -1,0 +1,2 @@
+FUZZ,url,redirectlocation,position,status_code,content_length,content_words,content_lines,content_type,duration,resultfile,Ffufhash
+page,http://meta2/mutillidae/index.php?page=test,,3976,200,21713,932,515,text/html,56.705928ms,,6179bf88

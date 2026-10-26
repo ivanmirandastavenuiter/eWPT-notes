@@ -1,0 +1,9 @@
+FUZZ,url,redirectlocation,position,status_code,content_length,content_words,content_lines,content_type,duration,resultfile,Ffufhash
+test,http://meta2/test,http://meta2/test/,31,301,302,21,10,text/html; charset=iso-8859-1,144.361µs,,435731f
+phpMyAdmin,http://meta2/phpMyAdmin,http://meta2/phpMyAdmin/,306,301,308,21,10,text/html; charset=iso-8859-1,175.477µs,,43573132
+index,http://meta2/index,,245,200,891,237,30,text/html,16.291837ms,,43573f5
+twiki,http://meta2/twiki,http://meta2/twiki/,3019,301,303,21,10,text/html; charset=iso-8859-1,225.719µs,,43573bcb
+server-status,http://meta2/server-status,,4227,403,291,22,11,text/html; charset=iso-8859-1,12.764413ms,,435731083
+phpinfo,http://meta2/phpinfo,,7677,200,47974,2407,657,text/html,14.570922ms,,435731dfd
+dav,http://meta2/dav,http://meta2/dav/,8990,301,301,21,10,text/html; charset=iso-8859-1,101.442µs,,43573231e
+tikiwiki,http://meta2/tikiwiki,http://meta2/tikiwiki/,10858,301,306,21,10,text/html; charset=iso-8859-1,144.605µs,,435732a6a

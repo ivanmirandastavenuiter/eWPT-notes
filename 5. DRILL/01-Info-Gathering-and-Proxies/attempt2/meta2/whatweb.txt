@@ -1,0 +1,63 @@
+WhatWeb report for [1m[34mhttp://meta2[0m
+Status    : 200 OK
+Title     : [1m[33mMetasploitable2 - Linux[0m
+IP        : 172.20.0.2
+Country   : [1m[31mRESERVED, ZZ[0m
+
+Summary   : [1mApache[0m[[1m[32m2.2.8[0m], [1mHTTPServer[0m[[1m[31mUbuntu Linux[0m][[1m[36mApache/2.2.8 (Ubuntu) DAV/2[0m], [1mPHP[0m[[1m[32m5.2.4-2ubuntu5.10[0m], [1mWebDAV[0m[[1m[32m2[0m], [1mX-Powered-By[0m[[0m[22mPHP/5.2.4-2ubuntu5.10[0m]
+
+Detected Plugins:
+[ [1mApache[0m ]
+	The Apache HTTP Server Project is an effort to develop and 
+	maintain an open-source HTTP server for modern operating 
+	systems including UNIX and Windows NT. The goal of this 
+	project is to provide a secure, efficient and extensible 
+	server that provides HTTP services in sync with the current 
+	HTTP standards. 
+
+	Version      : [1m[32m2.2.8[0m (from HTTP Server Header)
+	Google Dorks: (3)
+	Website     : http://httpd.apache.org/
+
+[ [1mHTTPServer[0m ]
+	HTTP server header string. This plugin also attempts to 
+	identify the operating system from the server header. 
+
+	OS           : [1m[31mUbuntu Linux[0m
+	String       : [1m[36mApache/2.2.8 (Ubuntu) DAV/2[0m (from server string)
+
+[ [1mPHP[0m ]
+	PHP is a widely-used general-purpose scripting language 
+	that is especially suited for Web development and can be 
+	embedded into HTML. This plugin identifies PHP errors, 
+	modules and versions and extracts the local file path and 
+	username if present. 
+
+	Version      : [1m[32m5.2.4-2ubuntu5.10[0m
+	Google Dorks: (3)
+	Website     : http://www.php.net/
+
+[ [1mWebDAV[0m ]
+	Web-based Distributed Authoring and Versioning (WebDAV) is 
+	a set of methods based on the Hypertext Transfer Protocol 
+	(HTTP) that facilitates collaboration between users in 
+	editing and managing documents and files stored on World 
+	Wide Web servers. - More Info: 
+	http://en.wikipedia.org/wiki/WebDAV 
+
+	Version      : [1m[32m2[0m
+
+[ [1mX-Powered-By[0m ]
+	X-Powered-By HTTP header 
+
+	String       : [1m[36mPHP/5.2.4-2ubuntu5.10[0m (from x-powered-by string)
+
+HTTP Headers:
+	HTTP/1.1 200 OK
+	Date: Mon, 26 Oct 2026 12:15:32 GMT
+	Server: Apache/2.2.8 (Ubuntu) DAV/2
+	X-Powered-By: PHP/5.2.4-2ubuntu5.10
+	Connection: close
+	Transfer-Encoding: chunked
+	Content-Type: text/html
+	

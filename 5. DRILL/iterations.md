@@ -77,3 +77,15 @@ Next, read what's been done at iteration 1.
 - Understand how to cohesively execute commands: how to chain outcomes with further steps.
 - Understand exam's environment
 - Targeted FAQ's. Decide if segregate into the phases or rather place it into the exam faq file.
+
+#### Improvements
+
+- Mark or remove non-critical operations. Can be flag set along with the 'Save to file' one. This decision relies in the fact that there seem to be operations that cover what other commands do, so we can skip steps and save time
+    - Note: all non-critical operations have been marked with the 'non-critical' tag at the bottom of each block.
+- Change output here in all ffuf commands to 'all'. Offer how to read csv with grep instead for each one
+- Change time in logs for title. Remove index number.
+- Reframe searchsploit so it address only eWPTv2 potential targets (layer 7)
+- Review threads to avoid Kali machine freezing
+- Do not log everything: just what contains something relevant
+- Some commands try to find something in comments. Wouldn't be better to manually inspect files when browsing?
+- Add autocalibrations for ffuf commands in case of dynamic page sizes

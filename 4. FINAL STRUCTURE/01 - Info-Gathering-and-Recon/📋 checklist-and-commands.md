@@ -188,6 +188,8 @@ for p in admin manage dashboard phpmyadmin grafana jenkins; do curl -sk -o /dev/
 |:---:|---|
 | `[ ]` | Open each lead in Burp. A login page goes to the auth tests. |
 
+`Not critical`
+
 ### Log every 403
 
 ```bash
@@ -299,6 +301,8 @@ curl -sk -I "<SCHEME>://<VHOST>:<PORT>/" | grep -iE "^(server|x-powered-by|x-asp
 |:---:|---|
 | `[ ]` | A version string goes to whatweb and searchsploit. Cookie flags go to the auth and session tests. |
 
+`Not critical`
+
 ### Verbose error · `MANUAL`
 
 Force a 404 and look for version strings.
@@ -312,6 +316,8 @@ curl -sk -i "<SCHEME>://<VHOST>:<PORT>/nohost-zz9.php" | grep -iE "apache|php|to
 | Save to file | Next |
 |:---:|---|
 | `[ ]` | Record the version. A stack trace goes to the input validation tests. |
+
+`Not critical`
 
 ## WSTG-INFO-03 · Webserver metafiles
 

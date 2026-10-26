@@ -1,0 +1,23 @@
+FUZZ,url,redirectlocation,position,status_code,content_length,content_words,content_lines,content_type,duration,resultfile,Ffufhash
+includes,http://meta2/mutillidae/includes,http://meta2/mutillidae/includes/,4,301,317,21,10,text/html; charset=iso-8859-1,348.044µs,,60f484
+images,http://meta2/mutillidae/images,http://meta2/mutillidae/images/,2,301,315,21,10,text/html; charset=iso-8859-1,285.886µs,,60f482
+styles,http://meta2/mutillidae/styles,http://meta2/mutillidae/styles/,87,301,315,21,10,text/html; charset=iso-8859-1,150.251µs,,60f4857
+inc,http://meta2/mutillidae/inc,,57,200,386260,38538,9004,text/plain,259.596µs,,60f4839
+classes,http://meta2/mutillidae/classes,http://meta2/mutillidae/classes/,104,301,316,21,10,text/html; charset=iso-8859-1,129.146µs,,60f4868
+javascript,http://meta2/mutillidae/javascript,http://meta2/mutillidae/javascript/,139,301,319,21,10,text/html; charset=iso-8859-1,240.488µs,,60f488b
+installation,http://meta2/mutillidae/installation,,19,200,8138,978,150,text/html,15.358374ms,,60f4813
+register,http://meta2/mutillidae/register,,38,200,1823,92,60,text/html,16.003247ms,,60f4826
+login,http://meta2/mutillidae/login,,39,200,4102,225,130,text/html,16.813563ms,,60f4827
+home,http://meta2/mutillidae/home,,130,200,2930,141,54,text/html,15.737151ms,,60f4882
+phpMyAdmin,http://meta2/mutillidae/phpMyAdmin,,306,200,174,7,10,text/html,17.360271ms,,60f48132
+documentation,http://meta2/mutillidae/documentation,http://meta2/mutillidae/documentation/,848,301,322,21,10,text/html; charset=iso-8859-1,95.01µs,,60f48350
+header,http://meta2/mutillidae/header,,718,200,19879,764,481,text/html,18.150574ms,,60f482ce
+footer,http://meta2/mutillidae/footer,,762,200,450,21,16,text/html,16.825292ms,,60f482fa
+index,http://meta2/mutillidae/index,,245,200,24216,1035,564,text/html,62.595385ms,,60f48f5
+notes,http://meta2/mutillidae/notes,,1348,200,1721,176,38,text/html,15.336592ms,,60f48544
+robots,http://meta2/mutillidae/robots,,1644,200,160,8,7,text/plain,309.748µs,,60f4866c
+passwords,http://meta2/mutillidae/passwords,http://meta2/mutillidae/passwords/,3536,301,318,21,10,text/html; charset=iso-8859-1,86.717µs,,60f48dd0
+favicon,http://meta2/mutillidae/favicon,,3980,200,1150,4,5,image/x-icon,551.318µs,,60f48f8c
+credits,http://meta2/mutillidae/credits,,4808,200,509,39,20,text/html,14.738615ms,,60f4812c8
+page-not-found,http://meta2/mutillidae/page-not-found,,4902,200,705,52,25,text/html,16.014291ms,,60f481326
+phpinfo,http://meta2/mutillidae/phpinfo,,7677,200,48785,2449,677,text/html,14.71002ms,,60f481dfd
