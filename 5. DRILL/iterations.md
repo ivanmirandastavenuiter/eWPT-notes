@@ -80,13 +80,31 @@ Next, read what's been done at iteration 1.
 
 #### Improvements
 
-- Mark or remove non-critical operations. Can be flag set along with the 'Save to file' one. This decision relies in the fact that there seem to be operations that cover what other commands do, so we can skip steps and save time
+1. Mark or remove non-critical operations. Can be flag set along with the 'Save to file' one. This decision relies in the fact that there seem to be operations that cover what other commands do, so we can skip steps and save time
     - Note: all non-critical operations have been marked with the 'non-critical' tag at the bottom of each block.
-- Change output here in all ffuf commands to 'all'. Offer how to read csv with grep instead for each one
-- Change time in logs for title. Remove index number.
-- Reframe searchsploit so it address only eWPTv2 potential targets (layer 7)
-- Review threads to avoid Kali machine freezing
-- Do not log everything: just what contains something relevant
-- Some commands try to find something in comments. Wouldn't be better to manually inspect files when browsing?
-- Add autocalibrations for ffuf commands in case of dynamic page sizes
-- Think about commands: when are they needed / when not? That can allow you to skip some of them during the exam
+    - Analyze which commands are addressing the same in different ways and maintain just the optimal one. For example, I saw an intersection between ffuf and for + curl. The second one directly feeds a few keyword in order to find hidden files or directories, while ffuf feeds an entire list from a file. I see, in this case, ffuf option has way more possibilities, as the list is larger by far.
+2. Change output here in all ffuf commands to 'all'. Offer how to read csv with grep instead for each one
+3. In logs section of the report template, change time for title. Remove index number.
+4. Reframe searchsploit so it address only eWPTv2 potential targets (layer 7)
+5. Review threads to avoid Kali machine freezing
+6. Do not log everything: just what contains something relevant
+7. Some commands try to find something in comments. Wouldn't be better to manually inspect files when browsing?
+8. Add autocalibrations for ffuf commands in case of dynamic page sizes
+9. Think about commands: when are they needed / when not? That can allow you to skip some of them during the exam
+    - Maybe add a 'When to use flag'?
+
+#### Fixes
+
+Apply fixes for the indicated points and take into account the following
+
+- I want to relocate the commands that are critical to the top. For example, nmap scan, ffuf or dnsenum/dnsrecon for me are first class citizens here. Others, however, like some specific curl statements, the for loops and so on seem to be quite contextual. I want you to readdress this and split into critical commands and context-dependent. Move also to this second block the extra statements.
+- Instead of removing the non-critical, duplicated commands, what you can do is organize each of the tags in relevance classes. So it'd be like the following
+    - The key, most relevant commands for the trhee categories (async, manual and extra) go first. You can create a separate layer called 'Main commands' or just leave it as it is and include the rest, non crucial items in the Appendix, mixing it with the rest of the content is already there
+- Also group by category of the recon phase: subdomain enumeration, brute force, and so on. Whatever you find more suitable for better comprehension
+- Most of the 9 points above include fixes and enhancement to perform. Do it.
+
+#### Pending
+
+- Including guideline and workflow for burpsuite usage during recon phase
+- What if my list of commands is not enought? How can I adapt to a different scenario the day of the exam?
+    - In this sense, it'd be quite useful to know what are the crucial 'aspects' the commands can take. For example, what you can potentially do with curl if you change the method, with ffuf if you change the wordlist, ... and so on. To have a guide to quickly look up for action advice.
