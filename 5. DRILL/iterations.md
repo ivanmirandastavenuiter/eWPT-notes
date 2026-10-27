@@ -108,3 +108,4 @@ Apply fixes for the indicated points and take into account the following
 - Including guideline and workflow for burpsuite usage during recon phase
 - What if my list of commands is not enought? How can I adapt to a different scenario the day of the exam?
     - In this sense, it'd be quite useful to know what are the crucial 'aspects' the commands can take. For example, what you can potentially do with curl if you change the method, with ffuf if you change the wordlist, ... and so on. To have a guide to quickly look up for action advice.
+- Quick access and understanding is an absolute priority. Reduce any noise in checklist file.
