@@ -89,3 +89,4 @@ Next, read what's been done at iteration 1.
 - Do not log everything: just what contains something relevant
 - Some commands try to find something in comments. Wouldn't be better to manually inspect files when browsing?
 - Add autocalibrations for ffuf commands in case of dynamic page sizes
+- Think about commands: when are they needed / when not? That can allow you to skip some of them during the exam
