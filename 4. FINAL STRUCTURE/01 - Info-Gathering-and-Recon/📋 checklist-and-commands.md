@@ -146,6 +146,8 @@ for p in .git/HEAD .svn/entries .env .DS_Store; do curl -sk -o /dev/null -w "%{h
 |:---:|---|
 | `[ ]` | `.git/HEAD` at `200`: dump the repo with `wget -r` and read its config. `.env` at `200`: read it for credentials. |
 
+`Non-critical`
+
 ### Debug and default endpoints
 
 ```bash
@@ -157,6 +159,8 @@ for p in _profiler phpinfo.php actuator/env server-status console; do curl -sk -
 | Save to file | Next |
 |:---:|---|
 | `[ ]` | Open each live endpoint in Burp and record it as a finding. |
+
+`Non-critical`
 
 ## WSTG-CONF-05 · Admin interfaces and directories
 
@@ -201,6 +205,8 @@ grep "403" recon/ffuf-dirs-<VHOST>.md > recon/forbidden-<VHOST>.txt
 | Save to file | Next |
 |:---:|---|
 | `[x]` | Run the verb tampering check in CONF-06 on each path. |
+
+`Not critical`
 
 ## WSTG-INFO-01 · Search engine discovery ❓ EXTRA (OSINT questions)
 
@@ -380,6 +386,8 @@ grep "open" recon/nmap-full-<IP>.txt
 |:---:|---|
 | `[ ]` | Each one becomes a `<WEB_PORTS>` entry for WSTG-INFO-02. |
 
+`Not critical`
+
 ## WSTG-INFO-05 · Webpage content and source code
 
 ### Comments, JS, and hidden fields on the root page · `MANUAL`
@@ -393,6 +401,8 @@ curl -sk "<SCHEME>://<VHOST>/" | grep -Eio '<!--.*-->|src="[^"]+\.js"|type="hidd
 | Save to file | Next |
 |:---:|---|
 | `[ ]` | Each JS URL goes to the next step. A hidden value is a parameter for INFO-06. |
+
+`Not critical`
 
 ### Secrets and internal IPs in a JS file · `MANUAL`
 
@@ -460,6 +470,8 @@ ffuf -u "<SCHEME>://<VHOST>/<PAGE>" -X POST -d "id=FUZZ" -H "Content-Type: appli
 | Save to file | Next |
 |:---:|---|
 | `[x]` | A record ID that exposes another user's data goes to the IDOR test. |
+
+`Not critical`
 
 ### API endpoints · `ASYNC`
 
