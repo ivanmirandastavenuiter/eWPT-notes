@@ -2,7 +2,7 @@
 
 **Start:** `HH:MM` · **Stop:** `HH:MM` · **Passing score:** `35 / 50 (70%)`
 
-Command conventions, placeholders and output file naming are in [📋 checklist-and-commands.md](<../6. FINAL STRUCTURE/PHASES/01 - Info-Gathering-and-Recon/📋 checklist-and-commands.md>). Do not repeat them here.
+Command conventions, placeholders and output file naming are in [📋 checklist-and-commands.md](<../4. FINAL STRUCTURE/01 - Info-Gathering-and-Recon/📋 checklist-and-commands.md>). Do not repeat them here.
 
 ***
 
@@ -10,11 +10,12 @@ Command conventions, placeholders and output file naming are in [📋 checklist-
 
 **Note first, paste nothing.** Write the command and one line of result, then save raw output to `recon/` and link the path. Pasting raw output costs time you need on the exam.
 
-**Log every command** (one line each, in the Log section):
+**Log only what matters** (one line each, in the Log section):
 
-- Time, short command, and the question number if one applies.
+- Short title for the step, the command, and the question number if one applies.
 - One-line result with the anchor you would need to reproduce it (port, version, path, status, size, param name).
 - Output file path, if the output was saved.
+- Skip a row entirely when the command found nothing new — a clean scan doesn't need a log line.
 
 **Save to a file** when the output is longer than one screen (nmap, ffuf, gobuster, nikto, `openssl s_client`, `dig axfr`) or when you will need to grep it again. Quick `curl -I` or `dig +short` checks do not need a file.
 
@@ -34,7 +35,7 @@ Command conventions, placeholders and output file naming are in [📋 checklist-
 | Section | Holds | Updated |
 |---|---|---|
 | Target map | IP, app name, stack, status | Once at start, then per target |
-| Log | Every command, one line | Live, as you run each command |
+| Log | Commands with a relevant result, one line each | Live, as you run each command |
 | Discoveries (per target) | Facts with anchors: versions, paths, headers, params | After each scan |
 | Findings | Confirmed vulnerabilities only, with evidence file | When confirmed |
 | Credentials tracker | Every cred, hash, token and key | When found |
@@ -57,9 +58,9 @@ Command conventions, placeholders and output file naming are in [📋 checklist-
 
 *One line per command. Newest at the bottom.*
 
-| # | Time | Command (short) | Result (one line) | Output file |
-| :- | :--- | :-------------- | :---------------- | :---------- |
-| 1 | `HH:MM` | `nmap -sC -sV <IP>` | `21 ftp, 80 http Apache 2.2.8` | `recon/nmap-full-<IP>.txt` |
+| Title | Command (short) | Result (one line) | Output file |
+| :---- | :--------------- | :----------------- | :----------- |
+| `Full port scan` | `nmap -sC -sV <IP>` | `21 ftp, 80 http Apache 2.2.8` | `recon/nmap-full-<IP>.txt` |
 
 ***
 

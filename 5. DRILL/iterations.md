@@ -109,3 +109,9 @@ Apply fixes for the indicated points and take into account the following
 - What if my list of commands is not enough? How can I adapt to a different scenario the day of the exam?
     - In this sense, it'd be quite useful to know what are the crucial 'aspects' the commands can take. For example, what you can potentially do with curl if you change the method, with ffuf if you change the wordlist, ... and so on. To have a guide to quickly look up for action advice.
 - Quick access and understanding is an absolute priority. Reduce any noise in checklist file.
+- Remember we need to take into account all WSTG keys addressed by the eWPTv2.
+- While checklist executes commands blindly, when looking for information I've seen that the order and depencies matter. For example
+    - Running nmap first against the whole subnet, then against each IP
+    - Launch whatweb and ffuf commands after nmap
+    
+    These nuances are key. Organize checklist adding knowledge about the procedure. The idea would be to create a file that explains what to do, merging those explanations with the current content of the checklist. Align with eWPTv2
