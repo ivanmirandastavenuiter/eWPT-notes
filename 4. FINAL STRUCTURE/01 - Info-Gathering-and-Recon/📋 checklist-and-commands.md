@@ -302,6 +302,20 @@ grep -c "IN" recon/dns-axfr-<DOMAIN>.txt
 |:---:|---|
 | `[x]` | Each hostname goes to `/etc/hosts` and the root checks. |
 
+#### Dangling CNAME check · `WSTG-CONF-10`
+
+*When:* a `<DOMAIN>` is in scope and a discovered subdomain has a CNAME record.
+
+```bash
+for s in <SUBDOMAIN>; do t=$(dig +short CNAME "$s"); [ -n "$t" ] && echo "$s -> $t resolves to: $(dig +short "$t" | head -1)"; done
+```
+
+> **Read:** An empty `resolves to:` value means the CNAME target does not exist. That is a takeover candidate, recorded as a lead only.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Record the subdomain and target. Do not claim the name. |
+
 #### TLS certificate SANs · `WSTG-CONF-01`
 
 *When:* a host answers on HTTPS. It can surface hostnames that vhost fuzzing misses.
@@ -476,6 +490,20 @@ curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -iE "^(server|x-p
 | Save to file | Next |
 |:---:|---|
 | `[ ]` | A version string goes to searchsploit. Cookie flags go to the auth and session tests. |
+
+#### HSTS header · `WSTG-CONF-07`
+
+*When:* a host answers on HTTPS.
+
+```bash
+curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -i "strict-transport-security"
+```
+
+> **Read:** No output means HSTS is missing. A `max-age` of 0 or a very short value is weak.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Missing or weak HSTS is a configuration finding to note. |
 
 #### Verbose error · `WSTG-INFO-02`
 
@@ -761,6 +789,22 @@ curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>/" | grep -iE "via|x-cache|cf-ray|
 |:---:|---|
 | `[ ]` | Same as above. |
 
+#### Map the architecture · `WSTG-INFO-10` · `MANUAL`
+
+*When:* after the Burp site map has enough pages.
+
+Build a component list: front-end host, API hosts, third-party script hosts, and any reverse proxy or CDN.
+
+```bash
+curl -sk "<SCHEME>://<VHOST>/" | grep -Eo '(src|href)="https?://[^"/]+' | sort -u
+```
+
+> **Read:** Each host that differs from `<VHOST>` is a separate component. Same-host paths belong to the app itself.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Write the component list in your notes. Each separate host goes to Burp scope and the root checks. |
+
 ***
 
 ## Discovery → next step
@@ -780,5 +824,35 @@ curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>/" | grep -iE "via|x-cache|cf-ray|
 | Backup, `.git`, `.env`, or an archive | Download it and read it before anything else |
 | WordPress fingerprint | Block N. Joomla or Drupal: cheatsheet → *CMS* |
 | Parameter that changes output | Note it for SQLi, XSS, IDOR, and logic tests |
+| Subdomain with a CNAME | Dangling CNAME check (block F) |
+| Architecture question | Map the architecture (block O) |
+| Exam names an external domain | OSINT on the host PC (Appendix B) |
+
+***
+
+## Appendix B – Host PC only (internet)
+
+Run these on the host PC, not Kali. Record the results in your notes.
+
+### OSINT · `WSTG-INFO-01` · `MANUAL`
+
+*When:* the exam letter names an external domain, or a question asks about public exposure.
+
+Search-engine dorks in a browser:
+
+```text
+site:<DOMAIN>
+site:<DOMAIN> inurl:admin
+site:<DOMAIN> filetype:sql OR filetype:env OR filetype:bak
+site:<DOMAIN> intitle:"index of"
+```
+
+Archived copies: `https://web.archive.org/web/*/<DOMAIN>/*`. Registration data: `whois <DOMAIN>`.
+
+> **Read:** A hit that names a path, backup, or admin page goes to the root checks on the lab host, if that host is in scope. Anything outside scope is noted, not tested.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Record the hits in your notes. |
 
 ***
