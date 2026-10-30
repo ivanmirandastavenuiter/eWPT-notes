@@ -359,7 +359,7 @@ Other generic CMS scanners, if installed: `cmsmap`, `whatweb -a 3`.
 
 ## Authenticated scans
 
-Use these once you hold a session cookie. Compare against the unauthenticated run with the `comm` line in the checklist (block M).
+Use these once you hold a session cookie. Compare against the unauthenticated run with the `comm` line in the checklist (block K).
 
 ```bash
 ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt -e <EXT> -H "Cookie: <COOKIE>" -mc all -fc 404 -ac -t 10 -o recon/ffuf-dirs-auth-<VHOST> -of all

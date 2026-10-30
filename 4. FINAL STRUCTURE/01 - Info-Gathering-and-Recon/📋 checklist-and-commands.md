@@ -1,31 +1,46 @@
-# Phase 1 – WSTG Recon: Checklist + Commands
+# Phase 1 – WSTG Recon: Checklist + Guide
 
 **Tags:** `ASYNC` start at once, read later · `MANUAL` Burp/ZAP/browser while scans run · `EXTRA` only when a question or a blocker points to it. Every block keeps its WSTG ID.
 
-**Layout:** [Run order](#run-order-one-target-at-a-time) → [Main Commands](#main-commands) (tool-driven, run on every web host) → [Context-Dependent & Extra Commands](#context-dependent--extra-commands) (each has a *When* line). Main blocks end with **If it fails**, which points to a section of [📜 cheatsheet.md](<./📜 cheatsheet.md>).
-
-**Exam reality:** Kali has no internet. Tools run against internal hosts only. Anything that needs the internet is in Appendix B (host PC only).
+**How to use it:** *Study* by reading the context lines and **Watch** notes. *Execute* by jumping to the commands and reading only the **Read** line. Blocks A–O follow the order you work in. Inside each block, core commands come first and the ones with a *When* line are triggered extras. Every block ends with a **Next** column. **If it fails** points to a section of [📜 cheatsheet.md](<./📜 cheatsheet.md>). The question lookup, the discovery map and troubleshooting are at the end.
 
 ***
 
-## Run order (one target at a time)
+## Exam rules that shape this checklist
 
-1. `mkdir -p recon`, then the tool and wordlist check below.
-2. **Full nmap** (`ASYNC`). Build `<WEB_PORTS>` from it.
-3. While nmap runs: open the root in the Burp browser (`MANUAL`) and read the page.
-4. **whatweb + headers** on each web port (5 seconds each). Choose `<EXT>`. Run searchsploit on what you identify.
-5. **Directory/file scan** and **backup scan** (`ASYNC`, at most 2 fuzzers at once).
-6. If the exam gives a `<DOMAIN>`: **vhost fuzzing**. If nmap shows port 53 open: **dnsenum**.
-7. Spider with ZAP if a question asks for counts. Probe web-service paths. Work the context blocks as triggers appear.
-8. **nikto last, alone.** Then one completeness pass.
-9. Copy `recon/` and your notes to the host PC. A Kali reset wipes them.
+- **Read all 50 questions first** (10–15 min). Note target, answer type, and count questions. They decide which triggered blocks you run.
+- **Wide first, deep later.** Run steps 1–7 below on every target before going deep on one.
+- **Layer 7 only.** The exam tests web applications. OS services (SSH, SMB, kernel) matter only when they leak web files.
+- **Kali has no internet.** Everything here runs against internal hosts. `searchsploit` is local, `wpscan` has no API token, OSINT is done on the host PC.
+- **Count questions** ("how many pages, parameters, subdomains") need the scans finished and every endpoint re-checked, not the first hit.
+- **Answers are exact strings.** Copy the value from the output.
+- **A lead is not a finding.** Verify each one in Burp before it goes in your notes.
+- **A Kali reset wipes everything.** Copy `recon/` and notes to the host PC as you go.
 
-```bash
-command -v nmap ffuf feroxbuster wfuzz gobuster nikto whatweb dnsenum dnsrecon wpscan joomscan searchsploit zaproxy
-ls -d /usr/share/seclists /usr/share/wordlists/dirb /usr/share/wordlists/dirbuster 2>&1
-```
+***
 
-Missing tool or wordlist: use the substitute from cheatsheet → *Wordlist fallbacks* and the matching fuzzer section. Do not install anything.
+## Run order
+
+**Root checks** = what you run on every web host, every vhost and every web port: whatweb → headers → searchsploit (D) → directory + backup scan (E) → metafiles (G) → web-service probe (I). Every new hostname or port you discover gets the same.
+
+| Where | What | When |
+|---|---|---|
+| Terminal 1 | Host discovery, full nmap (`ASYNC`) | First, leave it running |
+| Terminal 2 | HTTP scripts, whatweb, headers, curl probes | After nmap gives the web ports |
+| Terminal 3 | Fuzzers (directories, backups, vhosts) | After whatweb gives `<EXT>` |
+| Burp browser | Manual walk (`MANUAL`) | Right away, during nmap |
+
+1. **Setup (A).** `recon/` folder, tool check, `/etc/hosts`.
+2. **Subnet in scope?** Host discovery first (B), so you know every target. Otherwise skip.
+3. **Full nmap** (B, `ASYNC`) on every live host. It is the slowest job, and every later step needs its web ports.
+4. **While nmap runs:** walk the app in Burp (C).
+5. **Nmap done:** build `<WEB_PORTS>`. Check port 53 and the non-web services. Run the HTTP scripts (B).
+6. **Fingerprint** each web port (D). Set `<EXT>`.
+7. **Directory + backup scans** (E). At most 2 fuzzers at once.
+8. **`<DOMAIN>` given?** VHost fuzzing. **Port 53 open?** dnsenum (F). Repeat the root checks on each new name.
+9. **While fuzzers run:** metafiles, leaks and page content (G), web-service probe (I).
+10. **Triggers:** methods and 403s (H), parameters (J), CMS (L), TLS (M), WAF (N). Once you hold a login: logged-in surface (K).
+11. **Close out (O):** nikto last and alone, completeness pass, copy `recon/` and notes to the host PC.
 
 ***
 
@@ -34,28 +49,42 @@ Missing tool or wordlist: use the substitute from cheatsheet → *Wordlist fallb
 | Placeholder | Meaning |
 |---|---|
 | `<IP>` | Exam IP |
+| `<SUBNET>` | CIDR range from the scope, only when a subnet is in scope |
 | `<DOMAIN>` | Domain from the exam letter or questions. No domain means skip vhost fuzzing and DNS |
 | `<VHOST>` | Host to request (`app.target.com`, or `<IP>` if none) |
 | `<SCHEME>` / `<PORT>` | `http`/`https` and port. A service shown as `https` or `ssl/http` by nmap is `https` |
-| `<WEB_PORTS>` | Comma list of open HTTP(S) ports, built from the full scan (see Run order step 2) |
+| `<WEB_PORTS>` | Comma list of open HTTP(S) ports, built from the full scan |
 | `<HTTPS_PORTS>` | Subset of `<WEB_PORTS>` that speaks TLS (`ssl/http` or `https` in nmap) |
 | `<EXT>` | `-e` value for the stack: `.php,.txt` (PHP), `.aspx,.txt` (ASP.NET), `.jsp,.txt` (Java) |
 | `<BASELINE>` | Size of a non-existent page. Only needed when `-ac` misbehaves |
 | `<COOKIE>` / `<PROXY>` | `PHPSESSID=...` / `127.0.0.1:8080` |
 | `<NAMESERVER>` | Name server to query. In the exam this is usually `<IP>` itself |
-| `<PAGE>` / `<PATH>` / `<NAME>` | Page (`login.php`), path (`/api/user`), page name without extension (`login`) |
+| `<REVERSE_ZONE>` | Network octets reversed, e.g. `0.20.172` for 172.20.0.0/24 |
+| `<PAGE>` / `<NAME>` | Page (`login.php`), page name without extension (`login`) |
 | `<PRODUCT>` / `<VERSION>` | Software and version from whatweb or headers (`apache`, `2.4.49`) |
+| `<EDB-ID>` | Exploit ID from a searchsploit line |
 | `<JS_URL>` | Full URL of a `.js` file found in the page |
-| `<METHOD>` / `<BODY>` | HTTP verb and request body (Appendix A) |
-| `<SUBDOMAIN>` | Subdomain from DNS or vhost results |
-| `<SUBNET>` | CIDR range from the scope, only when a subnet is in scope (cheatsheet) |
+| `<SUBDOMAIN>` / `<USER>` | Subdomain from DNS or vhost results / a confirmed username |
 
-- **Calibration:** every ffuf command uses `-ac` (auto-calibrate), so no baseline is needed. If `-ac` hides real hits or lets noise through, measure a baseline and swap `-ac` for `-fs <BASELINE>`:
+**HTTP status codes in recon**
+
+| Code | Meaning | Do |
+|---|---|---|
+| 200 | Exists, readable | Open in Burp |
+| 301 / 302 | Exists, redirects | Follow it, note the target |
+| 401 | Exists, needs login (basic auth) | Note it, test credentials later |
+| 403 | Exists, blocked | Block H |
+| 405 / 415 | Exists, wrong verb / content type | Likely an API: other verbs, other `Content-Type` |
+| 500 | Exists, server error | Read the body, it may leak data |
+| 404 | Not found | Ignore |
+
+- **Calibration:** every ffuf command uses `-ac`, which hides responses that look like the server's default one (a custom 404 that returns 200). If `-ac` hides real hits or lets noise through, measure a baseline and swap `-ac` for `-fs <BASELINE>`:
   ```bash
   curl -sk -o /dev/null -w "%{size_download}\n" "<SCHEME>://<VHOST>/nohost-zz9"
   ```
-- **Start at the root** of each web host. A path-specific result can differ from the root, so go deeper only when the root gives you something.
-- **Authenticated re-scan:** whenever you get a working session or credentials, re-run the directory scan and API probe with the cookie (context block M). Most of the surface hides behind the login.
+- **The wordlist is the limit.** A word that is not in the list is a path you miss. Medium list for content, small list for backups, fallbacks in the cheatsheet.
+- **Start at the root** of each web host. Go deeper only when the root gives you something.
+- **Authenticated re-scan:** whenever you get a working session or credentials, redo the directory scan and API probe with the cookie (block K). Most of the surface hides behind the login.
 - **Save to file flag:** `[x]` means the command writes to `recon/`; `[ ]` means read it in the terminal only. Every ffuf command writes `-of all`: six files per run (`.json`, `.ejson`, `.csv`, `.ecsv`, `.html`, `.md`). Read the `.csv`.
 - **Naming:** `recon/<tool>-<context>-<target>`, e.g. `recon/nmap-full-172.20.0.2.txt`, `recon/ffuf-dirs-app.target.com.csv`.
 - **Read ffuf output with awk, not grep.** CSV columns: `1 FUZZ, 2 url, 3 redirect, 4 position, 5 status, 6 size`. `grep ",200,"` also matches size or position values, so use field 5:
@@ -68,20 +97,55 @@ Missing tool or wordlist: use the substitute from cheatsheet → *Wordlist fallb
 - **Read other output with grep:** `grep -E "open" recon/nmap-full-<IP>.txt`, `grep "^+" recon/nikto-<VHOST>.txt`.
 - **Threads and concurrency:** `ASYNC` jobs run in parallel to save time, with limits that stop the Kali VM from freezing.
   - Fuzzers (ffuf, feroxbuster, wfuzz, gobuster): `-t 10`. feroxbuster defaults to 50 threads, so always set `-t`.
-  - At most 2 fuzzers at once. The full nmap counts as one job.
+  - At most 2 fuzzers at once. The full nmap counts as one job, not a fuzzer.
   - nikto and `wpscan --plugins-detection aggressive` run alone.
   - If the VM lags, check `htop` and stop the newest job.
-- **Step format:** heading with tags, one-line description, command, **Read** quote, table (save flag, next action). Main blocks add **If it fails**. Context blocks add a *When* line.
+- **Step format:** heading with tags, context line, command, **Read** quote, optional **Watch** note, table (save flag, next action). Extra blocks add a *When* line. Main blocks add **If it fails**.
 
 ***
 
-## Main Commands
+## A. Setup & scope
 
-### A. Network & port discovery
+#### Workspace, tools and hosts file
+
+Two minutes, before any scan. Everything below writes to `recon/`.
+
+```bash
+mkdir -p recon
+command -v nmap ffuf feroxbuster wfuzz gobuster nikto whatweb dnsenum dnsrecon wpscan joomscan searchsploit zaproxy
+ls -d /usr/share/seclists /usr/share/wordlists/dirb /usr/share/wordlists/dirbuster 2>&1
+```
+
+> **Read:** A tool that prints no path is missing. Use the substitute from cheatsheet → *Wordlist fallbacks* and the matching fuzzer section. Do not install anything.
+> **Watch:** `/etc/hosts` takes one line per IP, with names separated by **spaces**, not commas: `10.0.0.5 app.local api.local`. Add every new hostname there the moment you find it. Many apps answer by `Host` header, so the IP and the name can show different sites.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Subnet in scope: host discovery. Otherwise: full port scan. |
+
+***
+
+## B. Network & port discovery
+
+#### Host discovery · `WSTG-CONF-01` · `ASYNC`
+
+*When:* the scope lists a subnet (`<SUBNET>`) instead of single IPs. It goes first so you know every target before scanning ports. Skip it for a single IP.
+
+```bash
+sudo nmap -sn -T4 <SUBNET> -oG - | awk '/Up$/{print $2}' > recon/live_hosts.txt
+wc -l recon/live_hosts.txt
+```
+
+> **Read:** Each line of `recon/live_hosts.txt` is a live host and a separate target.
+> **Watch:** With `sudo` on the local network nmap uses ARP, which hosts cannot block. Without root it uses ICMP and TCP probes and can miss hosts. Missing hosts: `sudo arp-scan -I eth0 <SUBNET>` (cheatsheet → *Host discovery*).
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Run the full port scan on each live host. |
 
 #### Full port scan · `WSTG-CONF-01` · `ASYNC`
 
-Most important async job. It covers non-standard web ports, and `-sC` already runs `ftp-anon` and similar default scripts.
+Most important async job. It covers non-standard web ports, and `-sC` already runs `ftp-anon` and similar default scripts. Start it first and do other work while it runs.
 
 ```bash
 nmap -Pn -n -sC -sV -p- --min-rate 1000 <IP> -oN recon/nmap-full-<IP>.txt
@@ -89,13 +153,31 @@ nmap -Pn -n -sC -sV -p- --min-rate 1000 <IP> -oN recon/nmap-full-<IP>.txt
 
 > **Read:** `grep -E "open" recon/nmap-full-<IP>.txt`. Build `<WEB_PORTS>` with:
 > `grep -E "^[0-9]+/tcp +open +(ssl/)?http" recon/nmap-full-<IP>.txt | cut -d/ -f1 | paste -sd,`
-> Every web port is a separate host to test. `53` open means DNS tests apply (block B).
+> **Watch:** Every web port is a separate host to test. Several hosts: run them one after another in the same terminal, not in parallel:
+> `for ip in $(cat recon/live_hosts.txt); do nmap -Pn -n -sC -sV -p- --min-rate 1000 $ip -oN recon/nmap-full-$ip.txt; done`
+> Many hosts and little time: sweep only the usual web ports first (cheatsheet → *Nmap*), so you can start Burp on every host while the full scans queue.
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | HTTP scripts on `<WEB_PORTS>`, then whatweb on each web port. |
+| `[x]` | Port 53 open: DNS tests (block F). No TCP 53 but a `<DOMAIN>` or a DNS question: UDP check below. Then HTTP scripts, then whatweb on each web port. |
 
 **If it fails →** cheatsheet: *Nmap*.
+
+#### UDP 53 check · `WSTG-CONF-01`
+
+*When:* a `<DOMAIN>` is in scope or a question mentions names, zones or DNS records, and the TCP scan shows no port 53. DNS is normally **UDP**, so the default TCP scan can miss it.
+
+```bash
+sudo nmap -Pn -n -sU -p 53 <IP> -oN recon/nmap-udp53-<IP>.txt
+dig @<IP> <DOMAIN> +short
+```
+
+> **Read:** `53/udp open` is a DNS server. `open|filtered` is inconclusive, so trust the `dig` line: any answer means a live resolver.
+> **Watch:** A zone transfer (AXFR) needs **TCP** 53. A UDP-only server answers `dig` queries and `dnsenum` brute force but refuses transfers. Add `+tcp` to a `dig` to force TCP.
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | DNS is live: dnsenum and DNS records (block F). Set `<NAMESERVER>` to `<IP>`. |
 
 #### HTTP scripts on the open web ports · `WSTG-CONF-01` · `ASYNC`
 
@@ -105,85 +187,78 @@ Run after the full scan, using its ports.
 nmap -Pn -n -sV -p <WEB_PORTS> --script http-enum,http-title,http-methods,http-robots.txt <IP> -oN recon/nmap-http-<IP>.txt
 ```
 
-> **Read:** `grep "|" recon/nmap-http-<IP>.txt`. `http-methods` lists allowed verbs (CONF-06). `http-enum` lists directories and files (CONF-05). `http-robots.txt` lists Disallow paths (INFO-03), so you can skip the metafile curl loop for robots.
+> **Read:** `grep "|" recon/nmap-http-<IP>.txt`. `http-methods` lists allowed verbs (CONF-06). `http-enum` lists directories and files (CONF-05). `http-robots.txt` lists Disallow paths (INFO-03), so you can skip the robots curl in block G.
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Add every found path to Burp scope and test it. |
+| `[x]` | Add every found path to Burp scope and test it. Then whatweb on each web port. |
 
 **If it fails →** cheatsheet: *Nmap*.
 
-### B. Subdomain & DNS enumeration
+#### Non-web services that expose web content · `WSTG-CONF-01`
 
-Needs a `<DOMAIN>`. Without one, skip this block.
-
-#### VHost fuzzing · `WSTG-INFO-04` · `ASYNC`
-
-Works without a DNS server: it only needs the web server on `<IP>`. This is the primary subdomain tool.
+*When:* nmap lists FTP, rsync, NFS, or a database port. It matters only when it leaks source code, config files, or credentials for the web app. Ignore other network services (layer 7 scope).
 
 ```bash
-ffuf -u "<SCHEME>://<IP>/" -H "Host: FUZZ.<DOMAIN>" -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -ac -t 10 -o recon/ffuf-vhosts-<DOMAIN> -of all
+grep -A2 "ftp-anon" recon/nmap-full-<IP>.txt
+curl -s --user anonymous:anonymous "ftp://<IP>/"
 ```
 
-> **Read:** `awk -F, 'NR>1 {print $1,$5,$6}' recon/ffuf-vhosts-<DOMAIN>.csv`. Each row is a hostname (`$1`) whose response differs from the default site.
+> **Read:** An anonymous listing that contains web files (`index.php`, `wp-config.php`, `.sql`) means the web root or its backups are reachable.
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Add each hit to `/etc/hosts` on the same line as the target and to Burp scope, then run the root checks on it. |
+| `[ ]` | Download the file, read the config for credentials, and try them on the web login. |
 
-**If it fails →** cheatsheet: *ffuf* (`-fs`), *wfuzz* (vhost), *gobuster* (vhost), *Wordlist fallbacks*.
+***
 
-#### DNS brute force · `WSTG-INFO-04` · `ASYNC`
+## C. Burp & application mapping
 
-*Only if nmap shows port 53 open on `<IP>`.* Finds names with DNS records and tries a zone transfer on its own, so no separate AXFR step is needed.
+Burp is your notebook for the whole exam: everything you open through it is recorded in the Site map and HTTP history.
 
-```bash
-dnsenum --dnsserver <IP> --noreverse -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -o recon/dnsenum-<DOMAIN>.xml <DOMAIN>
-```
+#### Burp Suite walk · `WSTG-INFO-06` · `MANUAL`
 
-> **Read:** `grep -oE "[a-z0-9.-]+\.<DOMAIN>" recon/dnsenum-<DOMAIN>.xml | sort -u` lists each unique name. A zone transfer shows as many records at once.
+Start it while nmap runs, since the browser is idle anyway. Burp Community has no crawler, no scanner and a throttled Intruder, so the mapping is manual. Scope and browser setup are in the [startup checklist](<../00-Exam-Setup-and-Proxies/startup-checklist.md>).
 
-| Save to file | Next |
-|:---:|---|
-| `[x]` | Each new name goes to `/etc/hosts` and the root checks, the same as vhost hits. |
+1. **Scope:** Target → Scope holds `<IP>` and `.*\.<DOMAIN>`. Add each new vhost or port as you find it.
+2. **Intercept off.** Open the root in the Burp browser and read the page source (Ctrl+U). Look for comments, hidden fields and `.js` paths yourself; this beats a regex.
+3. **Click everything once:** every link, menu and form. Submit each form with harmless data (search, login, register, contact) so the POST requests get recorded.
+4. **Target → Site map:** show only in-scope items and sort by URL. Greyed entries were linked but never requested, so visit them.
+5. **Proxy → HTTP history:** filter by status (3xx, 4xx, 5xx) and MIME type. Search the history for `api`, `token`, `password`, `admin`, `<!--`.
+6. **Interesting request → Send to Repeater** (Ctrl+R). Rename the tab. Change the method, a parameter or a header and compare the responses.
+7. **Record:** each GET parameter, POST body field, custom header, cookie and `.js` file.
 
-**If it fails →** cheatsheet: *DNS* (`dnsrecon`, `dig axfr`, gobuster dns).
-
-### C. Directory, file & backup brute force
-
-#### Directory and file brute force · `WSTG-CONF-05` · `ASYNC`
-
-On each web host, after whatweb gives `<EXT>`. This is the main content scan: `-e` adds the stack's extension to every word, and `-mc all -fc 404` keeps `401`, `403`, `405`, and `500` as leads.
-
-```bash
-ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt -e <EXT> -mc all -fc 404 -ac -t 10 -o recon/ffuf-dirs-<VHOST> -of all
-```
-
-> **Read:** `awk -F, 'NR>1 {print $5,$6,$2}' recon/ffuf-dirs-<VHOST>.csv | sort -n`. `200`/`301`/`302` are pages to open in Burp. `401` is basic auth. `403` goes to CONF-06. `405` and `500` are leads, often an API path or an error to read.
+> **Read:** The Site map is the entry-point list that later phases use. Each `.js` file is a block G lead. Each `Set-Cookie` goes to the session tests.
+> **Watch:** Intercept stays off except when you edit a request on purpose. A forgotten Intercept freezes the browser and looks like a dead target.
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Add each hit to the Burp Site map. A new directory repeats the scan on it. The admin-keyword curl loop in block H is redundant once this finishes. |
+| `[ ]` | Parameters go to the vuln-testing phases. Each `.js` file goes to block G. New hostnames go to `/etc/hosts` and Burp scope. |
 
-**If it fails →** cheatsheet: *ffuf*, *feroxbuster*, *wfuzz*, *gobuster*, *Wordlist fallbacks*.
+**If it fails →** the ZAP spider below, or check the browser proxy is `<PROXY>`.
 
-#### Backup and temp files · `WSTG-CONF-04` · `ASYNC`
+#### Spider the app in ZAP · `WSTG-INFO-06` · `MANUAL`
 
-On the root. For a known file (`index.php`), use the `index.phpFUZZ` variant in the cheatsheet.
+*When:* a question asks "how many pages, forms, or parameters", or the app is too big to walk by hand. ⚠️ Confirm ZAP is installed (`command -v zaproxy`).
 
 ```bash
-ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -e .bak,.old,.swp,.tmp,~,.zip,.tar.gz,.sql,.orig,.save -mc 200 -ac -t 10 -o recon/ffuf-backups-<VHOST> -of all
+zaproxy -port 8081 &
 ```
 
-> **Read:** `awk -F, 'NR>1 {print $5,$6,$2}' recon/ffuf-backups-<VHOST>.csv`. Each row is a file that exists. Archives and `.sql` files are the high-value ones.
+> **Read:** Port `8081` avoids clashing with Burp on `8080`. In ZAP, log in once with Manual Explore, then right-click the site in the Sites tree → Attack → Spider. The Sites tree lists every URL. The Params tab lists every GET/POST parameter. Passive Alerts are leads.
+> **Watch:** **Do not run Active Scan.** It is heavy and freezes the VM.
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Download each hit and read it before anything else. |
+| `[ ]` | Copy the URL and parameter counts into your notes. New URLs go into Burp scope. |
 
-**If it fails →** cheatsheet: *ffuf*, *feroxbuster* (backups), *Wordlist fallbacks*.
+**If it fails →** walk the app by hand in Burp.
 
-### D. Stack fingerprinting & known exploits
+***
+
+## D. Stack fingerprinting & known exploits
+
+The stack decides the extension for the directory scan and the version decides the exploits to check. Do this on every web port before block E.
 
 #### Tech stack · `WSTG-INFO-02` · `ASYNC`
 
@@ -197,9 +272,23 @@ whatweb -v "<SCHEME>://<VHOST>:<PORT>/" > recon/whatweb-<VHOST>-<PORT>.txt
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Set `<EXT>`. A CMS goes to block N. A product and version go to searchsploit. |
+| `[x]` | Set `<EXT>`. Headers next. A CMS goes to block L. A product and version go to searchsploit. |
 
 **If it fails →** cheatsheet: *Fingerprinting*.
+
+#### Headers · `WSTG-INFO-02`
+
+Once per vhost, right after whatweb. It uses GET, because some servers answer `HEAD` with `405` or fewer headers.
+
+```bash
+curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -iE "^(server|x-powered-by|x-aspnet-version|strict-transport-security|content-security-policy|x-frame-options|x-content-type-options|set-cookie)"
+```
+
+> **Read:** `Server` and `X-Powered-By` with version numbers are findings. Missing security headers are informational. `Set-Cookie` without `HttpOnly`, `Secure`, or `SameSite` is a lead for session tests.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | A version string goes to searchsploit. Cookie flags go to the auth and session tests. No version shown: verbose error below. |
 
 #### Known exploits for the detected version · `WSTG-INFO-02`
 
@@ -207,96 +296,180 @@ Run once per web product (web server, CMS, plugin, JS library, framework). The d
 
 ```bash
 searchsploit "<PRODUCT> <VERSION>" > recon/searchsploit-<PRODUCT>.txt
+searchsploit -t "<PRODUCT> 2.4" --exclude="dos|DoS"   # no hit: major version, titles only, no DoS
+searchsploit -x <EDB-ID>                               # read one entry
 ```
 
-> **Read:** Each line is an exploit title and path. Match the title to the exact version. **Layer 7 only:** skip OS-level services (ssh, smtp, samba, kernel). eWPTv2 tests the web application, so those are out of scope.
+> **Read:** Each line is an exploit title and path. Match the title to your exact version. **Layer 7 only:** skip OS-level services (ssh, smtp, samba, kernel).
+> **Watch:** Titles often show a range (`2.4.17 < 2.4.38`), so check that your version falls inside it. Too much noise: `-t` limits the match to titles.
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | A version-matched exploit is a lead to verify in Burp, not a finding. |
+| `[x]` | A version-matched exploit is a lead to verify in Burp, not a finding. Next: directory scan (block E). |
 
 **If it fails →** cheatsheet: *searchsploit*.
 
-#### Quick vulnerability scan · `WSTG-INFO-02` · `ASYNC` · run last, alone
+#### Verbose error · `WSTG-INFO-02`
 
-Completeness check once the other scans are done. Treat results as leads, not findings.
-
-```bash
-nikto -h "<SCHEME>://<VHOST>:<PORT>/" -o recon/nikto-<VHOST>-<PORT>.txt
-```
-
-> **Read:** `grep "^+" recon/nikto-<VHOST>-<PORT>.txt` shows the findings. Each one is a lead.
-
-| Save to file | Next |
-|:---:|---|
-| `[x]` | Verify each lead in Burp before it goes in your notes. |
-
-**If it fails →** cheatsheet: *Nikto*.
-
-### E. Application mapping & web services
-
-#### Walk the app in Burp · `WSTG-INFO-06` · `MANUAL`
-
-Start this while nmap runs. Proxy on. Build the list from Target → Site map. Read the page source (Ctrl+U) and look for comments, hidden fields, and script paths yourself; this beats a regex.
-
-> **Read:** Sort the Site map by URL. Note each GET parameter, POST body, custom header, and API path. Note every comment you spot, and every `.js` file to open.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Parameters go to the vuln-testing phases. Each `.js` file goes to the JS-secrets block (J). |
-
-**If it fails →** the ZAP spider below.
-
-#### Spider the app in ZAP · `WSTG-INFO-06` · `MANUAL`
-
-For "how many pages, forms, or parameters" questions, or an app too big to walk by hand. Burp Community has no crawler. ⚠️ Confirm ZAP is installed (`command -v zaproxy`).
+*When:* a 404 or 500 page looks custom, or whatweb and headers showed no version.
 
 ```bash
-zaproxy -port 8081 &
+curl -sk -i "<SCHEME>://<VHOST>:<PORT>/nohost-zz9.php" | grep -iE "apache|php|tomcat|nginx|version|exception"
 ```
 
-> **Read:** Port `8081` avoids clashing with Burp on `8080`. In ZAP, log in once with Manual Explore, then right-click the site in the Sites tree → Attack → Spider. The Sites tree lists every URL. The Params tab lists every GET/POST parameter. Passive Alerts are leads. **Do not run Active Scan:** it is heavy and freezes the VM.
+> **Read:** A stack trace or version in the body is a finding. Read the full body in Burp.
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Copy the URL and parameter counts into your notes. New URLs go into Burp scope. |
-
-**If it fails →** walk the app by hand in Burp.
-
-#### Web-service and API paths · `WSTG-INFO-06`
-
-Run on every web host. Web services are a large share of the exam. A page that you know serves SOAP can also be probed directly with `<PATH>?wsdl`.
-
-```bash
-for p in "?wsdl" service?wsdl swagger.json swagger/index.html openapi.json v2/api-docs v3/api-docs api-docs graphql services api; do curl -sk -o /dev/null -w "%{http_code} %{size_download} $p\n" "<SCHEME>://<VHOST>:<PORT>/$p"; done
-```
-
-> **Read:** `200` on a WSDL, Swagger, or OpenAPI path is a full endpoint list. `401`, `405`, and `415` mean the endpoint exists and wants other credentials, a different verb, or a different content type. `400` from `graphql` means GraphQL is there.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Open each live path in Burp Repeater. Endpoints go to the web service tests. |
-
-**If it fails →** cheatsheet: *Web services*.
+| `[ ]` | Record the version. A stack trace goes to the input validation tests. |
 
 ***
 
-## Context-Dependent & Extra Commands
+## E. Directory, file & backup brute force
 
-Run these only when a finding, blocker, or question points here.
+Start these as soon as `<EXT>` is known. They are the longest fuzz jobs, so run them in Terminal 3 and work on block G in the meantime.
 
-### F. Extra hosts & services
+#### Directory and file brute force · `WSTG-CONF-05` · `ASYNC`
+
+On each web host. This is the main content scan: `-e` adds the stack's extension to every word, and `-mc all -fc 404` keeps `401`, `403`, `405`, and `500` as leads.
+
+```bash
+ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt -e <EXT> -mc all -fc 404 -ac -t 10 -o recon/ffuf-dirs-<VHOST> -of all
+```
+
+> **Read:** `awk -F, 'NR>1 {print $5,$6,$2}' recon/ffuf-dirs-<VHOST>.csv | sort -n`. See the status table in Conventions: `200`/`301`/`302` open in Burp, `403` goes to block H, `401`/`405`/`500` are leads.
+> **Watch:** Hundreds of hits or none at all means the calibration is wrong (Conventions → *Calibration*).
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Add each hit to the Burp Site map. A new directory repeats the scan on it. `403` rows go to block H. |
+
+**If it fails →** cheatsheet: *ffuf*, *feroxbuster*, *wfuzz*, *gobuster*, *Wordlist fallbacks*.
+
+#### Backup and temp files · `WSTG-CONF-04` · `ASYNC`
+
+On the root, after or next to the directory scan (2 fuzzers at most). For a known file (`index.php`), use the `index.phpFUZZ` variant in the cheatsheet.
+
+```bash
+ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -e .bak,.old,.swp,.tmp,~,.zip,.tar.gz,.sql,.orig,.save -mc 200 -ac -t 10 -o recon/ffuf-backups-<VHOST> -of all
+```
+
+> **Read:** `awk -F, 'NR>1 {print $5,$6,$2}' recon/ffuf-backups-<VHOST>.csv`. Each row is a file that exists. Archives and `.sql` files are the high-value ones.
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Download each hit and read it before anything else. |
+
+**If it fails →** cheatsheet: *ffuf*, *feroxbuster* (backups), *Wordlist fallbacks*.
+
+#### Directory listing · `WSTG-CONF-04`
+
+*When:* the directory scan has returned `200` or `301` hits.
+
+```bash
+awk -F, 'NR>1 && $5~/^(200|301)$/ {print $2}' recon/ffuf-dirs-<VHOST>.csv | while read u; do curl -sk "${u%/}/" | grep -qi "<title>Index of" && echo "LISTING ${u%/}/"; done
+```
+
+> **Read:** Each `LISTING` line is a directory with indexing enabled. Browse it for backups, config, and uploads.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Open each listing in Burp and read the files in it. |
+
+#### Alternate extensions on a known page · `WSTG-CONF-03`
+
+*When:* you hold one specific page and want to see if the server also exposes its source or backup. This is the single-file version of the backup scan.
+
+```bash
+for e in php php7 phtml inc bak old; do curl -sk -o /dev/null -w "%{http_code} %{size_download} <NAME>.$e\n" "<SCHEME>://<VHOST>/<NAME>.$e"; done
+```
+
+> **Read:** Compare each line with the `php` line. A `200` on `php7`, `phtml`, `inc`, or `bak` with source in the body means that extension is served as plain text.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Open each `200` in Burp and read the body. Source code in the response is a finding. |
+
+#### Admin keywords · `WSTG-CONF-05`
+
+*When:* only if the directory scan has not finished and you want an instant read. **Skip it once the scan runs**, since `raft-medium-words.txt` already contains these words.
+
+```bash
+for p in admin manage dashboard phpmyadmin grafana jenkins; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p/"; done
+```
+
+> **Read:** `200`, `301`, `302`, `401`, and `403` are leads. `404` means nothing is there.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Open each lead in Burp. A login page goes to the auth tests. |
+
+***
+
+## F. Subdomains, DNS & certificates
+
+Needs a `<DOMAIN>`. Without one, skip this block. Every name you find goes to `/etc/hosts` and Burp scope, then gets the root checks.
+
+#### VHost fuzzing · `WSTG-INFO-04` · `ASYNC`
+
+Works without a DNS server: it sends `Host: FUZZ.<DOMAIN>` straight to the web server on `<IP>`, so it finds vhosts that have no DNS record. This is the primary subdomain tool. Repeat it for each web port, since each port can serve different vhosts.
+
+```bash
+ffuf -u "<SCHEME>://<IP>:<PORT>/" -H "Host: FUZZ.<DOMAIN>" -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -ac -t 10 -o recon/ffuf-vhosts-<DOMAIN> -of all
+```
+
+> **Read:** `awk -F, 'NR>1 {print $1,$5,$6}' recon/ffuf-vhosts-<DOMAIN>.csv`. Each row is a hostname (`$1`) whose response differs from the default site.
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Add each hit to `/etc/hosts` on the same line as the target and to Burp scope, then run the root checks on it. |
+
+**If it fails →** cheatsheet: *ffuf* (`-fs`), *wfuzz* (vhost), *gobuster* (vhost), *Wordlist fallbacks*.
+
+#### DNS brute force · `WSTG-INFO-04` · `ASYNC`
+
+*Only if port 53 is open on `<IP>` (TCP or UDP).* Finds names with DNS records and tries a zone transfer on its own, so no separate AXFR step is needed.
+
+```bash
+dnsenum --dnsserver <IP> --noreverse -f /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -o recon/dnsenum-<DOMAIN>.xml <DOMAIN>
+```
+
+> **Read:** `grep -oE "[a-z0-9.-]+\.<DOMAIN>" recon/dnsenum-<DOMAIN>.xml | sort -u` lists each unique name. A zone transfer shows as many records at once.
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Each new name goes to `/etc/hosts` and the root checks, the same as vhost hits. |
+
+**If it fails →** cheatsheet: *DNS* (`dnsrecon`, `dig axfr`, gobuster dns).
+
+#### DNS records · `WSTG-INFO-04`
+
+*When:* a question asks for a record type, a count, or a flag held in a record. Use the exam's name server. The mapping from lab question to query comes from your [notes](<./📝 notes.md>) (section 10), so verify it on a lab.
+
+```bash
+for t in A AAAA NS MX TXT SOA; do echo "== $t"; dig <DOMAIN> $t +short @<NAMESERVER>; done
+dig _ldap._tcp.<DOMAIN> SRV +short @<NAMESERVER>
+dig -x <IP> +short @<NAMESERVER>
+```
+
+> **Read:** `A` lines are hosts to map. `TXT` can hold flags and third-party services. `SRV` names service hosts. `-x` gives the PTR name of an IP, which is how you find a host that has only a reverse record.
+> **Watch:** `dig` uses UDP. No answer from a server that you know is up: retry with `+tcp`.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Each new hostname goes to `/etc/hosts` and the root checks. Answer the question from the output. |
 
 #### DNS zone transfer (AXFR) · `WSTG-CONF-01`
 
-*When:* nmap shows port 53 open and `dnsenum` is missing or you want a quick manual check.
+*When:* port 53 is open on TCP and `dnsenum` is missing, or you want a quick manual check. Try it once per name server; if refused, move on.
 
 ```bash
 dig axfr <DOMAIN> @<NAMESERVER> > recon/dns-axfr-<DOMAIN>.txt
 grep -c "IN" recon/dns-axfr-<DOMAIN>.txt
+dig axfr <REVERSE_ZONE>.in-addr.arpa @<NAMESERVER>   # reverse zone, for reverse-record counts
 ```
 
-> **Read:** The count is the record total. `Transfer failed.` in the file means it was refused.
+> **Read:** The count is the record total. `Transfer failed.` in the file means it was refused. A reverse zone is transferred by its `in-addr.arpa` name, not by a single IP.
 
 | Save to file | Next |
 |:---:|---|
@@ -330,40 +503,49 @@ echo | openssl s_client -connect <IP>:<PORT> -servername <DOMAIN> 2>/dev/null | 
 |:---:|---|
 | `[ ]` | Add each name to `/etc/hosts` and Burp scope, then run the root checks on it. |
 
-#### TLS weaknesses · `WSTG-CRYP-01`
+#### OSINT · `WSTG-INFO-01` · `MANUAL` · host PC only
 
-*When:* a host answers on HTTPS, or a question asks about TLS, ciphers, or certificates.
+*When:* the exam letter names an external domain, or a question asks about public exposure. Kali has no internet, so do this on the host PC and record the result in your notes.
 
-```bash
-nmap -Pn -n -sV -p <HTTPS_PORTS> --script ssl-enum-ciphers,ssl-cert,ssl-heartbleed <IP> -oN recon/nmap-tls-<IP>.txt
+```text
+site:<DOMAIN>
+site:<DOMAIN> inurl:admin
+site:<DOMAIN> filetype:sql OR filetype:env OR filetype:bak
+site:<DOMAIN> intitle:"index of"
 ```
 
-> **Read:** `grep -E "SSLv|TLSv1\.0|TLSv1\.1|least strength|VULNERABLE|RC4|3DES|Not valid after" recon/nmap-tls-<IP>.txt`. SSLv3, TLS 1.0 or 1.1 enabled, `least strength` of C or worse, RC4 or 3DES, or an expired cert are findings.
+Archived copies: `https://web.archive.org/web/*/<DOMAIN>/*`. Registration data: `whois <DOMAIN>`.
+
+> **Read:** A hit that names a path, backup, or admin page goes to the root checks on the lab host, if that host is in scope. Anything outside scope is noted, not tested.
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Record the port and the weak protocol or cipher. |
+| `[ ]` | Record the hits in your notes. |
 
-#### Non-web services that expose web content
+***
 
-*When:* nmap lists FTP, rsync, NFS, or a database port. This only matters when it leaks source code, config files, or credentials for the web app. Ignore other network services (layer 7 scope).
+## G. Metafiles, leaks & page content
+
+Quick curl probes. Run them in Terminal 2 while the fuzzers work. They find what wordlists miss (dotfiles) and what only a human reads (comments).
+
+#### Status of each metafile · `WSTG-INFO-03`
+
+Once per vhost. Skip `robots.txt` if the nmap `http-robots.txt` script already reported it.
 
 ```bash
-grep -A2 "ftp-anon" recon/nmap-full-<IP>.txt
-curl -s --user anonymous:anonymous "ftp://<IP>/"
+for f in robots.txt sitemap.xml .well-known/security.txt crossdomain.xml clientaccesspolicy.xml humans.txt; do curl -sk -o /dev/null -w "%{http_code} $f\n" "<SCHEME>://<VHOST>/$f"; done
+curl -sk "<SCHEME>://<VHOST>/robots.txt" | grep -i disallow
 ```
 
-> **Read:** An anonymous listing that contains web files (`index.php`, `wp-config.php`, `.sql`) means the web root or its backups are reachable.
+> **Read:** `200` means read the file. `404` means absent. The `Disallow:` lines are the paths to test.
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Download the file, read the config for credentials, and try them on the web login. |
-
-### G. Platform & config leaks
+| `[ ]` | Add every `Disallow:` path to Burp scope and test it like a discovered directory. |
 
 #### Source control and env leaks · `WSTG-CONF-02`
 
-*When:* once per web root. Directory wordlists skip dotfiles, so this finds what the ffuf scan won't.
+Once per web root. Directory wordlists skip dotfiles, so this finds what the ffuf scan won't.
 
 ```bash
 for p in .git/HEAD .svn/entries .env .DS_Store; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p"; done
@@ -383,162 +565,15 @@ for p in .git/HEAD .svn/entries .env .DS_Store; do curl -sk -o /dev/null -w "%{h
 for p in _profiler phpinfo.php actuator/env server-status console; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p"; done
 ```
 
-> **Read:** `200` means the endpoint is live. `403` means present but blocked, so send it to CONF-06.
+> **Read:** `200` means the endpoint is live. `403` means present but blocked, so send it to block H.
 
 | Save to file | Next |
 |:---:|---|
 | `[ ]` | Open each live endpoint in Burp. |
 
-#### Alternate extensions on a known page · `WSTG-CONF-03`
-
-*When:* you hold one specific page and want to see if the server also exposes its source or backup. This is the single-file version of the backup scan.
-
-```bash
-for e in php php7 phtml inc bak old; do curl -sk -o /dev/null -w "%{http_code} %{size_download} <NAME>.$e\n" "<SCHEME>://<VHOST>/<NAME>.$e"; done
-```
-
-> **Read:** Compare each line with the `php` line. A `200` on `php7`, `phtml`, `inc`, or `bak` with source in the body means that extension is served as plain text.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Open each `200` in Burp and read the body. Source code in the response is a finding. |
-
-#### Directory listing · `WSTG-CONF-04`
-
-*When:* the directory scan has returned `200` or `301` hits.
-
-```bash
-awk -F, 'NR>1 && $5~/^(200|301)$/ {print $2}' recon/ffuf-dirs-<VHOST>.csv | while read u; do curl -sk "${u%/}/" | grep -qi "<title>Index of" && echo "LISTING ${u%/}/"; done
-```
-
-> **Read:** Each `LISTING` line is a directory with indexing enabled. Browse it for backups, config, and uploads.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Open each listing in Burp and read the files in it. |
-
-### H. Admin paths, verbs & forbidden paths
-
-#### Admin keywords · `WSTG-CONF-05`
-
-*When:* only if the directory scan has not finished and you want an instant read. **Skip it once the scan runs**, since `raft-medium-words.txt` already contains these words.
-
-```bash
-for p in admin manage dashboard phpmyadmin grafana jenkins; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>/$p/"; done
-```
-
-> **Read:** `200`, `301`, `302`, `401`, and `403` are leads. `404` means nothing is there.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Open each lead in Burp. A login page goes to the auth tests. |
-
-#### Log every 403 · `WSTG-CONF-05`
-
-*When:* the directory scan returned `403` rows and you want them queued for verb tampering.
-
-```bash
-awk -F, 'NR>1 && $5==403 {print $2}' recon/ffuf-dirs-<VHOST>.csv > recon/forbidden-<VHOST>.txt
-```
-
-> **Read:** Each line is a path to test in CONF-06.
-
-| Save to file | Next |
-|:---:|---|
-| `[x]` | Run the verb tampering check below on each path. |
-
-#### Allowed methods · `WSTG-CONF-06`
-
-*When:* a path answered 403, a question asks about HTTP methods, or the nmap `http-methods` output looks odd.
-
-```bash
-curl -sk -i -X OPTIONS "<SCHEME>://<VHOST>:<PORT>/" | grep -i allow
-```
-
-> **Read:** The `Allow:` header lists the verbs the server accepts.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Verbs missing from `Allow:` but still working go to the verb tampering step. |
-
-#### Verb tampering on a restricted path · `WSTG-CONF-06`
-
-*When:* `Allow:` lists a verb beyond GET, HEAD, and POST, or a 403 path needs a bypass attempt.
-
-```bash
-for m in GET HEAD POST PUT DELETE TRACE; do curl -sk --max-time 10 -o /dev/null -w "$m %{http_code}\n" -X $m "<SCHEME>://<VHOST>:<PORT>/admin/"; done
-```
-
-> **Read:** Any code other than `403` is a lead. A `200` with a different verb is a bypass candidate.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | A `200` opens in Burp Repeater with that verb, and the body is checked. |
-
-### I. Headers, errors & metafiles
-
-#### Headers · `WSTG-INFO-02`
-
-*When:* once per vhost, right after whatweb. It uses GET, because some servers answer `HEAD` with `405` or fewer headers.
-
-```bash
-curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -iE "^(server|x-powered-by|x-aspnet-version|strict-transport-security|content-security-policy|x-frame-options|x-content-type-options|set-cookie)"
-```
-
-> **Read:** `Server` and `X-Powered-By` with version numbers are findings. Missing security headers are informational. `Set-Cookie` without `HttpOnly`, `Secure`, or `SameSite` is a lead for session tests.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | A version string goes to searchsploit. Cookie flags go to the auth and session tests. |
-
-#### HSTS header · `WSTG-CONF-07`
-
-*When:* a host answers on HTTPS.
-
-```bash
-curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -i "strict-transport-security"
-```
-
-> **Read:** No output means HSTS is missing. A `max-age` of 0 or a very short value is weak.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Missing or weak HSTS is a configuration finding to note. |
-
-#### Verbose error · `WSTG-INFO-02`
-
-*When:* a 404 or 500 page looks custom, or whatweb and headers showed no version.
-
-```bash
-curl -sk -i "<SCHEME>://<VHOST>:<PORT>/nohost-zz9.php" | grep -iE "apache|php|tomcat|nginx|version|exception"
-```
-
-> **Read:** A stack trace or version in the body is a finding. Read the full body in Burp.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Record the version. A stack trace goes to the input validation tests. |
-
-#### Status of each metafile · `WSTG-INFO-03`
-
-*When:* once per vhost. Skip `robots.txt` if the nmap `http-robots.txt` script already reported it.
-
-```bash
-for f in robots.txt sitemap.xml .well-known/security.txt crossdomain.xml clientaccesspolicy.xml humans.txt; do curl -sk -o /dev/null -w "%{http_code} $f\n" "<SCHEME>://<VHOST>/$f"; done
-curl -sk "<SCHEME>://<VHOST>/robots.txt" | grep -i disallow
-```
-
-> **Read:** `200` means read the file. `404` means absent. The `Disallow:` lines are the paths to test.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Add every `Disallow:` path to Burp scope and test it like a discovered directory. |
-
-### J. Page content
-
 #### Comments, JS, and hidden fields on the root page · `WSTG-INFO-05`
 
-*When:* a quick first pass while a scan runs. It does not replace reading the page source in the browser; a regex misses multi-line comments and minified JS.
+A quick first pass while a scan runs. It does not replace reading the page source in the browser (block C); a regex misses multi-line comments and minified JS.
 
 ```bash
 curl -sk "<SCHEME>://<VHOST>/" | grep -Eio '<!--.*-->|src="[^"]+\.js"|type="hidden"[^>]*' | sort -u
@@ -548,7 +583,7 @@ curl -sk "<SCHEME>://<VHOST>/" | grep -Eio '<!--.*-->|src="[^"]+\.js"|type="hidd
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Each JS URL goes to the next step. A hidden value is a parameter for INFO-06. |
+| `[ ]` | Each JS URL goes to the next step. A hidden value is a parameter for block J. |
 
 #### Secrets and internal IPs in a JS file · `WSTG-INFO-05`
 
@@ -564,9 +599,97 @@ curl -sk "<JS_URL>" | grep -Eio '(api_key|secret|token|jwt)[^,;]{0,60}|10\.[0-9]
 |:---:|---|
 | `[ ]` | A real secret gets tested. An internal IP goes to the SSRF tests. |
 
-### K. Parameter discovery
+***
 
-Parameters are usually visible in forms, links, and Burp. Fuzz names only when a page seems to accept input that you can't see.
+## H. HTTP methods & forbidden paths
+
+#### Log every 403 · `WSTG-CONF-05`
+
+*When:* the directory scan returned `403` rows. It queues them for verb tampering.
+
+```bash
+awk -F, 'NR>1 && $5==403 {print $2}' recon/ffuf-dirs-<VHOST>.csv > recon/forbidden-<VHOST>.txt
+```
+
+> **Read:** Each line is a path to test below.
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Run the verb tampering check on each path. |
+
+#### Allowed methods · `WSTG-CONF-06`
+
+*When:* a path answered 403, a question asks about HTTP methods, or the nmap `http-methods` output looks odd.
+
+```bash
+curl -sk -i -X OPTIONS "<SCHEME>://<VHOST>:<PORT>/" | grep -i allow
+```
+
+> **Read:** The `Allow:` header lists the verbs the server accepts. `PUT`, `DELETE` or `TRACE` listed are findings on their own.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Verbs missing from `Allow:` but still working go to the verb tampering step. |
+
+#### Verb tampering on a restricted path · `WSTG-CONF-06`
+
+*When:* `Allow:` lists a verb beyond GET, HEAD, and POST, or a 403 path needs a bypass attempt.
+
+```bash
+for m in GET HEAD POST PUT DELETE TRACE; do curl -sk --max-time 10 -o /dev/null -w "$m %{http_code}\n" -X $m "<SCHEME>://<VHOST>:<PORT>/admin/"; done
+```
+
+> **Read:** Any code other than `403` is a lead. A `200` with a different verb is a bypass candidate.
+> **Watch:** A verb that answers differently on every path means the server treats it specially. To replay one request by hand, use Burp Repeater: right-click → *Change request method*.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | A `200` opens in Burp Repeater with that verb, and the body is checked. |
+
+***
+
+## I. Web services & APIs
+
+Web services are a large share of the exam. The goal here is only to find the endpoints; testing them is a later phase.
+
+#### Web-service and API paths · `WSTG-INFO-06`
+
+Run on every web host. A page that you know serves SOAP can also be probed directly with `<PAGE>?wsdl`.
+
+```bash
+for p in "?wsdl" service?wsdl swagger.json swagger/index.html openapi.json v2/api-docs v3/api-docs api-docs graphql services api; do curl -sk -o /dev/null -w "%{http_code} %{size_download} $p\n" "<SCHEME>://<VHOST>:<PORT>/$p"; done
+```
+
+> **Read:** `200` on a WSDL, Swagger, or OpenAPI path is a full endpoint list. `401`, `405`, and `415` mean the endpoint exists and wants other credentials, a different verb, or a different content type. `400` from `graphql` means GraphQL is there.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Open each live path in Burp Repeater. An `/api` path goes to the endpoint brute force. Endpoints go to the web service tests. |
+
+**If it fails →** cheatsheet: *Web services*.
+
+#### API endpoint brute force · `WSTG-INFO-06` · `ASYNC`
+
+*When:* the web-service probe, Burp, JS, or robots.txt shows an `/api` path.
+
+```bash
+ffuf -u "<SCHEME>://<VHOST>/api/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -mc all -fc 404 -ac -t 10 -o recon/ffuf-api-<VHOST> -of all
+```
+
+> **Read:** `awk -F, 'NR>1 {print $5,$6,$2}' recon/ffuf-api-<VHOST>.csv | sort -n`. `200` is an endpoint. `401` and `405` also mean it exists.
+> **Watch:** For a `405` or `415` endpoint, retry the same path with the other verbs and with `Content-Type: application/json` or `text/xml` in Repeater.
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Each endpoint goes to Burp Repeater and the web service tests. |
+
+**If it fails →** cheatsheet: *Wordlist fallbacks*, *Web services*.
+
+***
+
+## J. Parameter discovery
+
+Parameters are usually visible in forms, links, and Burp. Fuzz names only when a page seems to accept input that you can't see. Keep `-t 5`: these requests hit application code, which is slower than static paths.
 
 #### GET parameter names · `WSTG-INFO-06` · `ASYNC`
 
@@ -613,41 +736,15 @@ ffuf -u "<SCHEME>://<VHOST>/<PAGE>" -X POST -d "id=FUZZ" -H "Content-Type: appli
 |:---:|---|
 | `[x]` | A record ID that exposes another user's data goes to the IDOR test. |
 
-#### API endpoint brute force · `WSTG-INFO-06` · `ASYNC`
+***
 
-*When:* the web-service probe, Burp, JS, or robots.txt shows an `/api` path.
+## K. Logged-in surface
 
-```bash
-ffuf -u "<SCHEME>://<VHOST>/api/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/api/api-endpoints.txt -mc all -fc 404 -ac -t 10 -o recon/ffuf-api-<VHOST> -of all
-```
-
-> **Read:** `awk -F, 'NR>1 {print $5,$6,$2}' recon/ffuf-api-<VHOST>.csv | sort -n`. `200` is an endpoint. `401` and `405` also mean it exists.
-
-| Save to file | Next |
-|:---:|---|
-| `[x]` | Each endpoint goes to Burp Repeater and the web service tests. |
-
-**If it fails →** cheatsheet: *Wordlist fallbacks*, *Web services*.
-
-### L. Execution paths
-
-#### Map the workflows · `WSTG-INFO-07` · `MANUAL`
-
-*When:* once you have a login. Do it while other scans run.
-
-Registration, login, profile edit, checkout, and password reset. Replay any request with the Appendix A template.
-
-> **Read:** In Burp HTTP history, note where session tokens change between steps.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Multi-step flows go to the logic tests. |
-
-### M. Authenticated re-scan
+Most of the application hides behind the login. Come back here as soon as you hold a cookie or credentials.
 
 #### Directory scan with a session · `WSTG-CONF-05` · `ASYNC`
 
-*When:* you hold a working session cookie or credentials. Repeat the API probe and parameter checks with the same header.
+*When:* you hold a working session cookie or credentials. Repeat the API probe (block I) and parameter checks with the same header.
 
 ```bash
 ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt -e <EXT> -H "Cookie: <COOKIE>" -mc all -fc 404 -ac -t 10 -o recon/ffuf-dirs-auth-<VHOST> -of all
@@ -662,9 +759,23 @@ comm -13 <(awk -F, 'NR>1{print $2}' recon/ffuf-dirs-<VHOST>.csv | sort) <(awk -F
 
 **If it fails →** cheatsheet: *Authenticated scans*.
 
-### N. CMS fingerprint & wpscan
+#### Map the workflows · `WSTG-INFO-07` · `MANUAL`
 
-Kali has no internet, so wpscan runs **without** an API token and **without** a vulnerability database: it lists versions, plugins, themes, and users. Match versions with searchsploit. ⚠️ Confirm the flags on the exam image.
+*When:* once you have a login. Do it while other scans run.
+
+Walk registration, login, profile edit, checkout, and password reset in the Burp browser. Replay any step in Repeater.
+
+> **Read:** In Burp HTTP history, note where session tokens change between steps.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Multi-step flows go to the logic tests. |
+
+***
+
+## L. CMS (WordPress)
+
+Kali has no internet, so wpscan runs **without** an API token and **without** a vulnerability database: it lists versions, plugins, themes, and users. Match versions with searchsploit. ⚠️ Confirm the flags on the exam image. Other CMS (Joomla, Drupal): cheatsheet → *CMS*.
 
 #### Check for WordPress markers · `WSTG-INFO-08`
 
@@ -679,7 +790,7 @@ for p in wp-login.php wp-json/ xmlrpc.php readme.html; do curl -sk -o /dev/null 
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | WordPress confirmed goes to the wpscan blocks. Another CMS goes to cheatsheet: *CMS*. |
+| `[ ]` | WordPress confirmed goes to the blocks below. Another CMS goes to cheatsheet: *CMS*. |
 
 #### WordPress version · `WSTG-INFO-08`
 
@@ -738,7 +849,7 @@ wpscan --url "<SCHEME>://<VHOST>/" --no-update --disable-tls-checks --plugins-de
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Each plugin and version goes to `searchsploit "<PLUGIN_NAME> <VERSION>"`. |
+| `[x]` | Each plugin and version goes to `searchsploit "<PRODUCT> <VERSION>"`. |
 
 #### Password test · `WSTG-INFO-09` · lab scope only
 
@@ -753,11 +864,41 @@ wpscan --url "<SCHEME>://<VHOST>/" --no-update --disable-tls-checks -U <USER> -P
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Log in. Check the theme and plugin editors and the upload page. |
+| `[x]` | Log in (then block K). Check the theme and plugin editors and the upload page. |
 
-**Other CMS** (Joomla, Drupal): see cheatsheet → *CMS*.
+***
 
-### O. WAF & architecture
+## M. TLS & HTTPS configuration
+
+*When:* a host answers on HTTPS, or a question asks about TLS, ciphers, certificates or HSTS. Certificate names (SANs) are in block F.
+
+#### TLS weaknesses · `WSTG-CRYP-01`
+
+```bash
+nmap -Pn -n -sV -p <HTTPS_PORTS> --script ssl-enum-ciphers,ssl-cert,ssl-heartbleed <IP> -oN recon/nmap-tls-<IP>.txt
+```
+
+> **Read:** `grep -E "SSLv|TLSv1\.0|TLSv1\.1|least strength|VULNERABLE|RC4|3DES|Not valid after" recon/nmap-tls-<IP>.txt`. SSLv3, TLS 1.0 or 1.1 enabled, `least strength` of C or worse, RC4 or 3DES, or an expired cert are findings.
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Record the port and the weak protocol or cipher. |
+
+#### HSTS header · `WSTG-CONF-07`
+
+```bash
+curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -i "strict-transport-security"
+```
+
+> **Read:** No output means HSTS is missing. A `max-age` of 0 or a very short value is weak.
+
+| Save to file | Next |
+|:---:|---|
+| `[ ]` | Missing or weak HSTS is a configuration finding to note. |
+
+***
+
+## N. WAF & architecture
 
 #### WAF detection · `WSTG-INFO-10`
 
@@ -791,7 +932,7 @@ curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>/" | grep -iE "via|x-cache|cf-ray|
 
 #### Map the architecture · `WSTG-INFO-10` · `MANUAL`
 
-*When:* after the Burp site map has enough pages.
+*When:* after the Burp site map has enough pages, or a question asks about components.
 
 Build a component list: front-end host, API hosts, third-party script hosts, and any reverse proxy or CDN.
 
@@ -807,52 +948,119 @@ curl -sk "<SCHEME>://<VHOST>/" | grep -Eo '(src|href)="https?://[^"/]+' | sort -
 
 ***
 
+## O. Close out
+
+#### Quick vulnerability scan · `WSTG-INFO-02` · `ASYNC` · run last, alone
+
+Completeness check once every other scan is done. It is the noisiest tool, so it runs by itself. Treat results as leads, not findings.
+
+```bash
+nikto -h "<SCHEME>://<VHOST>:<PORT>/" -o recon/nikto-<VHOST>-<PORT>.txt
+```
+
+> **Read:** `grep "^+" recon/nikto-<VHOST>-<PORT>.txt` shows the findings. Each one is a lead.
+
+| Save to file | Next |
+|:---:|---|
+| `[x]` | Verify each lead in Burp before it goes in your notes. |
+
+**If it fails →** cheatsheet: *Nikto*.
+
+#### Completeness pass · `MANUAL`
+
+One pass per target, not one per finding.
+
+- Each web port has: whatweb, headers, directories, backups, metafiles, web-service probe.
+- Each `403` was tested for verbs.
+- Each discovered hostname and port got the root checks.
+- Count questions: every endpoint was re-checked, not just the first one.
+- Each answer is submitted, and `recon/` and your notes are copied to the host PC (paste the output, since files cannot be uploaded).
+
+***
+
+## Question → where to look
+
+When a question mentions one of these, run the matching block. Skip the rest.
+
+| The question mentions | Run | WSTG |
+|---|---|---|
+| Open ports, what runs on a port, how many hosts | Full scan, host discovery (B) | CONF-01 |
+| FTP, rsync, NFS exposing files | Non-web services (B) | CONF-01 |
+| Web server, language, framework, version | whatweb, headers (D) | INFO-02 |
+| Known vulnerability for a version | searchsploit (D) | INFO-02 |
+| Error message, stack trace | Verbose error (D) | INFO-02 |
+| Hidden page, directory, admin panel | Directory scan (E), admin keywords (E) | CONF-05 |
+| Backup, old or source file | Backup scan, alternate extensions (E) | CONF-04, CONF-03 |
+| Directory listing, "Index of" | Directory listing (E) | CONF-04 |
+| Subdomain, vhost | VHost fuzzing, dnsenum (F) | INFO-04 |
+| DNS record, A/TXT/SRV/PTR, zone, name server | DNS records, AXFR, UDP 53 (F, B) | INFO-04, CONF-01 |
+| Takeover, CNAME | Dangling CNAME (F) | CONF-10 |
+| Certificate, SAN, HTTPS name | TLS SANs (F) | CONF-01 |
+| Public exposure, Google, archived pages | OSINT (F, host PC) | INFO-01 |
+| robots.txt, sitemap, security.txt | Metafiles (G) | INFO-03 |
+| Comments, hidden fields, JS, API keys, internal IPs | Page content, JS secrets (G) | INFO-05 |
+| `.git`, `.env`, debug, actuator, phpinfo, status page | Leaks, debug endpoints (G) | CONF-02 |
+| HTTP methods, TRACE, OPTIONS, PUT | Allowed methods (H) | CONF-06 |
+| Forbidden page, 403 bypass | Log 403s, verb tampering (H) | CONF-06, CONF-05 |
+| Security headers, cookie flags, server banner | Headers (D) | INFO-02 |
+| WSDL, SOAP, REST, Swagger, GraphQL, API endpoint | Web-service probe, API brute force (I) | INFO-06 |
+| How many pages, forms, parameters, entry points | Burp walk, ZAP spider (C) | INFO-06 |
+| Hidden parameter, ID values, IDOR | Parameter discovery (J) | INFO-06 |
+| Login, session, pages behind login | Logged-in surface (K) | CONF-05 |
+| Registration, checkout, reset, workflow | Map the workflows (K) | INFO-07 |
+| WordPress, plugin, theme, user, CMS version | CMS (L) | INFO-08, INFO-09 |
+| Cipher, TLS version, protocol | TLS weaknesses (M) | CRYP-01 |
+| HSTS | HSTS header (M) | CONF-07 |
+| WAF, blocked payload | WAF detection (N) | INFO-10 |
+| Third-party hosts, architecture, CDN | Map the architecture (N) | INFO-10 |
+
+***
+
 ## Discovery → next step
 
 | What you found | Do next |
 |---|---|
-| Open web port | whatweb, headers, then the directory scan on `<SCHEME>://<IP>:<PORT>` |
+| Subnet in scope | Host discovery, then a full scan per live host (B) |
+| Open web port | whatweb, headers, then the directory scan on `<SCHEME>://<IP>:<PORT>` (D, E) |
+| Port 53 open, or a domain question | dnsenum, DNS records (F). No TCP 53: UDP check (B) |
 | SAN, AXFR, or vhost hit | Add to `/etc/hosts` and Burp scope, then run the root checks on it |
 | 200 / 301 / 302 path | Open in Burp, add to Site map |
-| 401 / 405 / 500 path | An API or an error: read it in Burp Repeater, try other verbs |
-| 403 path | Verb tampering (block H) |
-| Login works, or you hold a cookie | Authenticated re-scan (block M) and the API probe with the cookie |
-| WSDL, Swagger, or `/api` | Web service tests |
-| HTTPS port | TLS weaknesses (block F) |
-| FTP anonymous or open rsync/NFS | Check for web files (block F) |
-| WAF or blocked payload | Lower `-t`, encode payloads, note the WAF |
+| 401 / 405 / 500 path | An API or an error: read it in Burp Repeater, try other verbs and content types |
+| 403 path | Verb tampering (H) |
+| Login works, or you hold a cookie | Logged-in surface (K) and the API probe with the cookie |
+| WSDL, Swagger, or `/api` | API endpoint brute force (I), then the web service tests |
+| HTTPS port | TLS weaknesses (M) |
+| FTP anonymous or open rsync/NFS | Check for web files (B) |
+| WAF or blocked payload | Lower `-t`, encode payloads, note the WAF (N) |
 | Backup, `.git`, `.env`, or an archive | Download it and read it before anything else |
-| WordPress fingerprint | Block N. Joomla or Drupal: cheatsheet → *CMS* |
+| WordPress fingerprint | Block L. Joomla or Drupal: cheatsheet → *CMS* |
 | Parameter that changes output | Note it for SQLi, XSS, IDOR, and logic tests |
-| Subdomain with a CNAME | Dangling CNAME check (block F) |
-| Architecture question | Map the architecture (block O) |
-| Exam names an external domain | OSINT on the host PC (Appendix B) |
+| Subdomain with a CNAME | Dangling CNAME check (F) |
+| Version string anywhere | searchsploit (D) |
+| Exam names an external domain | OSINT on the host PC (F) |
 
 ***
 
-## Appendix B – Host PC only (internet)
+## Troubleshooting
 
-Run these on the host PC, not Kali. Record the results in your notes.
-
-### OSINT · `WSTG-INFO-01` · `MANUAL`
-
-*When:* the exam letter names an external domain, or a question asks about public exposure.
-
-Search-engine dorks in a browser:
-
-```text
-site:<DOMAIN>
-site:<DOMAIN> inurl:admin
-site:<DOMAIN> filetype:sql OR filetype:env OR filetype:bak
-site:<DOMAIN> intitle:"index of"
-```
-
-Archived copies: `https://web.archive.org/web/*/<DOMAIN>/*`. Registration data: `whois <DOMAIN>`.
-
-> **Read:** A hit that names a path, backup, or admin page goes to the root checks on the lab host, if that host is in scope. Anything outside scope is noted, not tested.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Record the hits in your notes. |
+| What happens | What to do |
+|---|---|
+| nmap is slow or times out | Slow variant in the cheatsheet (`-T3 --max-retries 2 --host-timeout 20m`) |
+| Fuzzer gives hundreds of hits | The calibration is wrong. Measure a baseline and use `-fs <BASELINE>` instead of `-ac` |
+| Fuzzer gives nothing | Check the wordlist path, then try the small list, then the cheatsheet fallback |
+| Everything returns 403 | Verb tampering (H), then the API probe (I) |
+| Everything returns 200 | Custom error page. Use `-fs` with the size from the baseline command |
+| Tool or wordlist missing | Cheatsheet → *Wordlist fallbacks* and the substitute tool for that section. Do not install |
+| VM freezes | `htop`, stop the newest job, run fewer jobs |
+| Port 53 not visible in the TCP scan | UDP check (B). DNS is usually UDP |
+| Zone transfer refused or times out | AXFR needs TCP 53. Fall back to dnsenum brute force and DNS records (F) |
+| No web ports found | Re-read the full scan, then the UDP scan, then the non-web services (B), then the other hosts |
+| A name shows a different site than the IP | Add the name to `/etc/hosts`, or send the `Host` header by hand |
+| HTTPS certificate errors | Every command here already uses `-k` or `--disable-tls-checks` |
+| Burp history stays empty | Check the browser proxy is `<PROXY>`, Intercept is off, and the host is in scope |
+| wpscan asks for an API token | Expected without internet. Use `--no-update` and run searchsploit on each version |
+| Login page found | Logged-in surface (K) |
+| Anonymous FTP shows web files | Non-web services (B) |
+| Kali reset | Re-create `recon/` and `/etc/hosts`, restore notes from the host PC. Found flags stay valid |
 
 ***

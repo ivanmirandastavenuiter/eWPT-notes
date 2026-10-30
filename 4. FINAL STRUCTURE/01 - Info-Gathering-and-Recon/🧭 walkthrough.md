@@ -1,9 +1,5 @@
 # Phase 1 – Recon Walkthrough
 
-Read this once before the exam, then follow it in order. The commands live in [📋 checklist-and-commands.md](<./📋 checklist-and-commands.md>), alternatives in [📜 cheatsheet.md](<./📜 cheatsheet.md>), and the background in [📝 notes.md](<./📝 notes.md>). This file says **what to do, when, and why**.
-
----
-
 ## 1. The goal of recon
 
 Recon answers three questions before any attack:
