@@ -6,7 +6,7 @@
 │   └── 📋 exam_questions_tracker.md
 │
 ├── 🔍 01-Info-Gathering-and-Proxies/
-│   ├── 📋 checklist-and-commands.md
+│   ├── 🧭 phase-walkthrough.md
 │   ├── 📜 cheatsheet.md
 │   ├── 📝 notes.md
 │   ├── 🐳 Metasploitable2/

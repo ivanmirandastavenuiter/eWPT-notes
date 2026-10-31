@@ -1,8 +1,8 @@
 # 📜 Phase 1 Cheatsheet: Fallbacks and Variants
 
-**Primary playbook:** [📋 checklist-and-commands.md](<./📋 checklist-and-commands.md>). Use this file when a checklist command fails, a tool or wordlist is missing, or you need another flag, filter, proxy, or session header. Section names match the checklist's **If it fails** lines.
+**Primary playbook:** [🧭 phase-walkthrough.md](<./🧭 phase-walkthrough.md>). Use this file when a walkthrough command fails, a tool or wordlist is missing, or you need another flag, filter, proxy, or session header. Section names match the walkthrough's **If it fails** lines.
 
-Placeholders and output naming follow the checklist. Save output under `recon/`. Keep fuzzers at `-t 5` to `-t 10`. Kali has no internet, so nothing here needs it.
+Placeholders and output naming follow the walkthrough. Save output under `recon/`. Keep fuzzers at `-t 5` to `-t 10`. Kali has no internet, so nothing here needs it.
 
 ⚠️ marks a flag I could not confirm against your exam image. Test it once in the drill before relying on it.
 
@@ -37,7 +37,7 @@ find /usr/share -iname "*common*.txt" 2>/dev/null | head
 # Quick sanity check on top ports
 nmap -F -Pn -n <IP>
 
-# Full TCP, host blocks ping, no DNS lookups (the checklist default)
+# Full TCP, host blocks ping, no DNS lookups (the walkthrough default)
 nmap -Pn -n -sC -sV -p- --min-rate 1000 <IP> -oN recon/nmap-full-<IP>.txt
 
 # Slower, for a fragile or rate-limited host
@@ -267,6 +267,18 @@ searchsploit -w "<PRODUCT>"                    # show the exploit-db URL (read i
 
 Search the major version too (`apache 2.2`) when the exact version returns nothing. A match is a lead until a request in Burp confirms it.
 
+**Choosing among several results — in order:**
+
+1. **Product and component match exactly.** `Apache HTTP Server` is not `Apache Tomcat`; a plugin exploit must name that exact plugin, not just the parent CMS.
+2. **Your version sits inside the stated range.** A title reading `2.4.17 < 2.4.38` only fits a target in that range, read carefully in both directions.
+3. **Type is `webapps` or `remote`.** Skip `local` (needs shell access already) and `dos` (see below) — neither answers a recon or web-exploit question.
+4. **No prior auth needed**, unless you already hold credentials. An admin-only exploit is a later-phase lead, not a recon one.
+5. **Still several left?** Prefer the one with a public reference (`searchsploit -w`) you can read for confirmation, and the most recent EDB-ID (newer write-ups tend to be more reliable).
+
+Ties after all five: keep every remaining candidate as a lead and let Burp testing decide which one actually fires.
+
+**Why DoS is excluded:** a denial-of-service exploit crashes or hangs the service instead of returning information, so it cannot answer a recon question — and in a shared exam/lab environment, crashing the target just costs you a reset. `--exclude="dos|DoS"` removes that whole category up front.
+
 ---
 
 ## TLS & raw probes
@@ -292,6 +304,99 @@ nc -zv <IP> <PORT>
 nc -zvw10 <IP> 20-80
 printf "GET / HTTP/1.1\r\nHost: <VHOST>\r\nConnection: close\r\n\r\n" | nc -v <IP> <PORT>
 ```
+
+---
+
+## Non-web services
+
+*When:* the full nmap shows FTP, SMB, NFS, or a database port (walkthrough block B → *Non-web services*). Layer 7 only: the goal is web files, web credentials, or a web config — not an OS-level foothold. Try anonymous/default access first; never brute force without time budget left.
+
+```bash
+# FTP (21) — anonymous login, listing, download
+curl -s --user anonymous:anonymous "ftp://<IP>/"
+ftp -inv <IP> <<'EOF'
+user anonymous anonymous
+ls -la
+mget *
+bye
+EOF
+wget -r --no-parent --ftp-user anonymous --ftp-password anonymous "ftp://<IP>/"   # mirror the whole tree
+
+# SMB (139/445) — shares, null/guest session, files
+smbclient -L "//<IP>/" -N                                 # list shares, no password (-N)
+smbclient "//<IP>/<SHARE>" -N -c 'recurse ON; prompt OFF; mget *'
+smbmap -H <IP> -u '' -p ''                                # shares and permissions in one line
+enum4linux -a <IP> -oY recon/enum4linux-<IP>.txt           # users, groups, shares, policy
+crackmapexec smb <IP> -u '' -p '' --shares                 # or netexec on newer Kali
+
+# NFS (2049) — exported shares, mount, read
+showmount -e <IP>
+mkdir -p /tmp/nfs && sudo mount -t nfs <IP>:/<EXPORT> /tmp/nfs -o nolock && ls -la /tmp/nfs
+
+# MySQL/MariaDB (3306)
+mysql -h <IP> -u root                                     # try blank/root first
+mysql -h <IP> -u <USER> -p<PASSWORD> -e "show databases;"
+mysql -h <IP> -u <USER> -p<PASSWORD> -e "select load_file('/var/www/html/wp-config.php');"
+
+# MSSQL (1433)
+impacket-mssqlclient <USER>:<PASSWORD>@<IP> -windows-auth
+# once connected: EXEC xp_cmdshell 'whoami';
+
+# PostgreSQL (5432)
+psql -h <IP> -U postgres -l
+PGPASSWORD=<PASSWORD> psql -h <IP> -U <USER> -d <DB> -c "\dt"
+
+# Redis (6379) — often no auth
+redis-cli -h <IP> ping
+redis-cli -h <IP> keys '*'
+redis-cli -h <IP> config get dir                           # webroot write primitive
+
+# MongoDB (27017) — often no auth
+mongosh --host <IP> --eval "db.adminCommand('listDatabases')"
+```
+
+> Any credential pulled from a config file (`wp-config.php`, `web.config`, `.env`, a DB connection string) goes straight back to the web login and, for DB access, to `searchsploit "<DB> <VERSION>"`.
+
+---
+
+## Stack playbooks
+
+*When:* whatweb, headers, or a banner names one of these (walkthrough block D → *Stack playbooks*). Run only the block that matches; skip the rest.
+
+```bash
+# Tomcat / Java — manager app, often with default creds
+curl -sk -u tomcat:s3cret "<SCHEME>://<VHOST>:<PORT>/manager/text/list"
+curl -sk -o /dev/null -w "%{http_code}\n" "<SCHEME>://<VHOST>:<PORT>/manager/html"
+# A manager login + a .war upload = code execution; deploy with:
+curl -sk -u <USER>:<PASS> -T shell.war "<SCHEME>://<VHOST>:<PORT>/manager/text/deploy?path=/shell"
+
+# Spring Boot Actuator — information disclosure, sometimes RCE via /env or /jolokia
+for p in actuator actuator/health actuator/info actuator/env actuator/beans actuator/mappings actuator/heapdump; do curl -sk -o /dev/null -w "%{http_code} $p\n" "<SCHEME>://<VHOST>:<PORT>/$p"; done
+
+# Apache Struts — OGNL injection check (version first, searchsploit before firing payloads)
+curl -sk -i "<SCHEME>://<VHOST>:<PORT>/<PAGE>.action"
+curl -sk -H "Content-Type: %{(#test='OGNL-CHECK')}" "<SCHEME>://<VHOST>:<PORT>/<PAGE>.action"
+
+# IIS / ASP.NET — short filename disclosure, source via trailing dot/semicolon, web.config
+curl -sk -i -X OPTIONS "<SCHEME>://<VHOST>:<PORT>/" -H "Content-Length: 0"   # look for OPTIONS/PROPFIND, WebDAV
+curl -sk -i "<SCHEME>://<VHOST>:<PORT>/*~1*/.aspx"                           # IIS tilde enumeration probe
+curl -sk "<SCHEME>://<VHOST>:<PORT>/web.config"
+curl -sk "<SCHEME>://<VHOST>:<PORT>/<PAGE>.aspx::\$DATA"                     # source disclosure, older IIS
+
+# Node.js / Express
+curl -sk "<SCHEME>://<VHOST>:<PORT>/package.json"
+curl -sk "<SCHEME>://<VHOST>:<PORT>/<BUNDLE>.js.map" | head -c 500           # source map leaks original source
+
+# phpMyAdmin
+curl -sk -o /dev/null -w "%{http_code}\n" "<SCHEME>://<VHOST>:<PORT>/phpmyadmin/"
+curl -sk "<SCHEME>://<VHOST>:<PORT>/phpmyadmin/changelog.php" | head -5      # version string
+
+# Jenkins
+curl -sk "<SCHEME>://<VHOST>:<PORT>/api/json?pretty=true"                   # version, jobs, no auth needed if open
+curl -sk -o /dev/null -w "%{http_code}\n" "<SCHEME>://<VHOST>:<PORT>/script" # Groovy console, if accessible
+```
+
+Each stack name and version still goes through `searchsploit`; these probes only get you the version and the obvious misconfigurations faster than a generic directory scan would.
 
 ---
 
@@ -359,7 +464,7 @@ Other generic CMS scanners, if installed: `cmsmap`, `whatweb -a 3`.
 
 ## Authenticated scans
 
-Use these once you hold a session cookie. Compare against the unauthenticated run with the `comm` line in the checklist (block K).
+Use these once you hold a session cookie. Compare against the unauthenticated run with the `comm` line in the walkthrough (block K).
 
 ```bash
 ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt -e <EXT> -H "Cookie: <COOKIE>" -mc all -fc 404 -ac -t 10 -o recon/ffuf-dirs-auth-<VHOST> -of all
@@ -407,7 +512,9 @@ ip -br -c a; ip route; ip neighbour            # your own addresses and routes, 
 
 ---
 
-## Metasploit auxiliary recon **[optional]**
+## Metasploit auxiliary recon **[avoid on exam]**
+
+eWPTv2 is graded on manual methodology; INE's guidance and consistent candidate reports treat Metasploit (and other push-button frameworks) as off-limits for the exam itself, even for simple scanner modules. Everything below reproduces what these modules do with nmap/whatweb/curl, which are allowed — use those instead. Keep this section for lab practice only, not for exam day.
 
 ```text
 msfconsole -q

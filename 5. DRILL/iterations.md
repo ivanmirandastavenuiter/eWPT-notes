@@ -1,117 +1,150 @@
 ## Iterations
 
-### Iteration 1
+Each cycle reviews Phase 1 (recon) content and either runs it against a target or refines it. Every entry below uses the same shape: **Status**, **Goal**, **Changes made** (what actually got done), and **Carried forward** (what was left, and which later iteration — if any — picked it up).
 
-#### Status
+### Iteration 1 — First full run
 
-Completed
+| | |
+|---|---|
+| **Status** | ✅ Completed |
+| **Goal** | Run the existing checklist end to end against a lab target to see where it breaks down in practice. |
 
-#### Milestones
+**Changes made**
 
-- Phase 1 completed with attacks and steps indicated by checklist
-- Doubts noted
-- Command outputs stored in files
+| # | Change |
+|---|---|
+| 1 | Completed Phase 1 end to end, following the checklist's steps and attacks |
+| 2 | Logged the doubts that came up during the run |
+| 3 | Started saving command outputs to files instead of only reading them in the terminal |
 
-#### Pending
+**Carried forward**
 
-- Efficient and optimized way of storing content
-- Efficient and optimized way of analyzing command outputs
-- Decide whether eliminating tools or commands that are repetitive or not present in the exam's environment.
-- Best way to note down and take notes of the commands you execute while progressing
-- How to interpret results so they're used as anchors in order to leverage for further phases
+| Item | Picked up in |
+|---|---|
+| Efficient, optimized way of storing content | Iteration 2 — `target-report-template.md`, `recon/` convention |
+| Efficient way of analyzing command outputs | Iteration 2 — standard `awk`/`grep` read lines |
+| Decide whether to drop tools/commands not in the exam environment | Iteration 2 — trimmed the Kali tool list |
+| Best way to take notes while progressing | Iteration 2 — `target-report-template.md` |
+| How to interpret results as anchors for later phases | Iteration 3 — "what depends on what" table, branch/trigger model |
 
-### Iteration 2
+---
 
-#### Status
+### Iteration 2 — Consolidating the structure
 
-Completed
+| | |
+|---|---|
+| **Status** | ✅ Completed |
+| **Goal** | Refine `4. FINAL STRUCTURE` for eWPTv2 exam efficiency: merge the checklist and the payload file, trim the cheatsheet and notes, fix the lab setup, and decide the drill-report format. |
 
-#### Instructions
+**Scope set for this iteration**
 
-In order to understand the context of this project, first go to the root of the repository and read the following parts from the file `global-instructions.md`
+| Area | Instruction |
+|---|---|
+| `startup-checklist.md` | Free to edit |
+| `LABS/` | Out of scope, already refined |
+| `automation_and_scripting.md` | Delete if confirmed unusable in the exam |
+| `checklist-WSTG-INFO-CONF.md` + `attacks_and_payloads.md` | Merge into one practical, exam-usable file |
+| `cheatsheet.md` / `notes.md` | Improve and condense |
+| `docker-compose.yml` / `init.sh` | Move into a `Metasploitable2/` folder, improve |
+| Phase 2 | Do not touch |
+| Per-target folders | Replace with one target-agnostic file |
+| `7. DRILL` | Review the note-taking approach (raw output vs. files) |
+| `target-172.20.0.2.md` insights | Integrate points 1–8, 12–16, 18; ignore 9, 10, 11, 17 |
 
-- Repository structure and files
-- Status
+**Changes made**
 
-Once you've read that, analyze the whole content of the repository to understand what was previously explained.
-Next, refine as much as possible the content in '6. FINAL STRUCTURE', so it's maximized in terms of efficiency for the INE's eWPTv2 exam content.
-Next, read what's been done at iteration 1.
+| # | Change |
+|---|---|
+| 1 | Merged `checklist-WSTG-INFO-CONF.md` + `attacks_and_payloads.md` → `📋 checklist-and-commands.md` (WSTG order, appendix for variants) |
+| 2 | Deleted `automation_and_scripting.md`, `checklist-WSTG-INFO-CONF.md`, `attacks_and_payloads.md` |
+| 3 | Moved `docker-compose.yml`, `init.sh` → `Metasploitable2/`, improved both |
+| 4 | Condensed `📜 cheatsheet.md` (24 KB → ~8 KB), recreated from scratch |
+| 5 | Rebuilt `📝 notes.md` around a tool-decision table; removed citations/lab IPs, added a scenario table |
+| 6 | Added `7. DRILL/target-report-template.md`: target-agnostic, with a note-taking guide and a "where information goes" table |
+| 7 | Integrated insights 1–8, 12–16, 18 from `target-172.20.0.2.md`; ignored 9, 10, 11, 17 |
+| 8 | Startup checklist: tool check, `mkdir -p recon`, unified placeholders, Burp scope fix, single report file |
+| 9 | Grouped commands into relevance classes (critical vs. context-dependent) and by recon category (subdomains, brute force, etc.) |
+| 10 | Unified every ffuf command on `-of all`; documented reading the `.csv` with `awk`/`grep` instead |
+| 11 | Report template: replaced the log's time column with a title, removed the index number |
+| 12 | Scoped `searchsploit` guidance to layer-7 targets only |
+| 13 | Added explicit thread/concurrency limits to stop the Kali VM freezing |
+| 14 | Logging guidance: record only what's relevant, not full raw output |
+| 15 | Replaced "find it in comments via regex" commands with "inspect manually in Burp" where a human does it better |
+| 16 | Added a "When to use" trigger line per command, so it's clear when one can be skipped |
 
-**Very important**: at the time of performing this second iteration, bear in mind the following restrictions:
+**Open decisions**
 
-- startup-checklist.md was a checklist recently created in order to prepare the environment. You can add/modify whatever it's needed there if you consider so.
-- Ignore LABS. That content is already refined
-- automation_and_scripting.md aimed to be a set of automations to perform at the exam's day. Seems that's not possible in the exam. Delete if confirmed.
-- attacks_and_payloads.md and checklist-WSTG-INFO-CONF.md. The checklist is the series of the steps that must be followed according to the WSTG and the attacks_and_payloads contains the explicit commands harmonized with the checklist's ordering. I found this a bit annoying and difficult to handle. The reason is that you end up looking only at one file. I've thought it could be more efficient if we merge both files in just one single.md. Take into account that information needs to be summarized because the idea is that it's not a massive file, as it needs to be practical and easy to comprehend. Bear in mind this will be used and read during the exam. Offer me alternatives in this sense so we can accomplish this goal
-- cheatsheet.md and notes.md. First is a larger set of commands in case something is missing from the previous ones. Notes are my notes from the INE's tutorials. Consider improvements / optimizations here.
-- docker-compose.yml and init.sh. Configuration files for metasploitable2 deployment. Create a new folder called Metasploitable2 and save these files there. Consider improvements.
-- Don't do nothing for now with phase 2.
-- Regarding targets. I thought initially to separate the content for the different machines in several folders. I think that's not practical, and probably better to create just one md file for all.
-- Regarding '7.DRILL'. This is a simulation for the first phases. target-172.20.0.2.md represents the attempt of real reporting, using metasploitable as the target for practice. I started noting down the raw output of commands, but that demonstrated to be really cumbersome and time consuming. That's why I changed to a file approach: I just note the command and save the content in files. This, though, it's also really problematic in terms of time, as it takes a lot. The sections seem to be properly separated: I'm comfortable with the idea of noting first what I do, then writing the main discoverings and findings and continuing with vulnerabilities. Other categories, such as notes, pass registries and so on seem to be correct too. Offer guidance in how to efficiently approach the part of what to note down, and what not.
-- Read and integrate into your work the points established at file target-172.20.0.2.md at the `PHASE INSIGHTS AND ENHANCEMENTS` phase. From them, ignore points 9, 10, 11, 17.
+| Decision point | Resolution |
+|---|---|
+| `target-172.20.0.2.md` findings with no matching saved evidence (SQLi, LFI, flags, credentials) | Kept as-is |
+| Target report format | Converted to the target-agnostic template; the LOG reflects the saved outputs on disk |
+| Exam Kali tool list | Dropped `testssl.sh`, `subzy`, `amass`, `sublist3r`, `fierce`, `eyewitness`, `httrack`, `lynx`, `browsh`, `droopescan`. Kept `wafw00f`, `dnsenum`, `wpscan` |
+| `init.sh` CRLF handling | Compose strips CRs with `tr` at runtime, runs the script via `exec`; not yet tested in-container |
+| `global-instructions.md` file names | Updated |
+| `structure_example.md` phases 02–08 | Still reference the old file names; deferred |
 
-#### Outcome
+**Carried forward**
 
-- Merged `checklist-WSTG-INFO-CONF.md` and `attacks_and_payloads.md` into `📋 checklist-and-commands.md` (layout A: one file in WSTG ID order, appendices for variants).
-- Deleted `automation_and_scripting.md`, `checklist-WSTG-INFO-CONF.md`, `attacks_and_payloads.md`.
-- Moved `docker-compose.yml` and `init.sh` into `Metasploitable2/` and improved both.
-- Condensed `📜 cheatsheet.md` (24 KB → ~8 KB). The file was deleted and recreated, not edited. The original is in git HEAD.
-- Rebuilt `📝 notes.md` around a tool decision table. Citations and lab IPs removed; a scenario table added.
-- Added `7. DRILL/target-report-template.md`: target-agnostic, with a note-taking guide and a "where information goes" table.
-- Integrated insights 1–8, 12–16, 18. Ignored 9, 10, 11, 17.
-- Startup checklist: tool check, `mkdir -p recon`, placeholders unified, Burp scope fix, single report file.
+| Item | Picked up in |
+|---|---|
+| Merge study-plan and guideline into one file, workflow aligned strictly with eWPTv2 | Iteration 3 |
+| "What am I missing — does the exam require more?" | Still open |
+| Chain command outcomes into later steps (dependencies between commands) | Iteration 3 — "what depends on what" table |
+| Understand the exam's environment | Still open |
+| Targeted FAQs: inline per phase, or a separate exam-FAQ file | Iteration 3 — answered inline, no separate file needed |
+| Guideline/workflow for Burp Suite usage during recon | Iteration 3 — Burp-scope conventions, block C |
+| How to adapt when the command list isn't enough (e.g. curl/ffuf "angles" to try) | Still open |
+| Reduce noise in the checklist, prioritize quick access | Iteration 3 — colour-coded mandatory/optional steps |
+| Confirm every WSTG key the eWPTv2 addresses is covered | Still open |
+| Document command order/dependencies; merge that explanation into the checklist | Iteration 3 — `walkthrough.md`, later folded into the Summary |
 
-#### Open decisions
+---
 
-- `target-172.20.0.2.md` kept as-is (findings, credentials, scratchpad, tips and insights verbatim). Its SQLi and LFI findings, `FLAG{...}` values and credential rows have no matching evidence in the saved outputs. Decision: keep.
-- Target report converted to the target-agnostic template layout. The LOG reflects the saved outputs on disk. Decision: done.
-- Exam Kali tool list: optional tools dropped (`testssl.sh`, `subzy`, `amass`, `sublist3r`, `fierce`, `eyewitness`, `httrack`, `lynx`, `browsh`, `droopescan`). Kept: `wafw00f`, `dnsenum`, `wpscan`. Decision: done.
-- `init.sh` CRLF: the Metasploitable2 compose command strips CRs at runtime with `tr` and runs the script with `exec`. Not yet tested in the container.
-- `global-instructions.md` updated to the new file names. Decision: done.
-- `structure_example.md` Phases 02–08 still list the old file names. Deferred to a later iteration, per the user.
+### Iteration 3 — Theory, clarifications and the final merge
 
-#### Pending
+| | |
+|---|---|
+| **Status** | ✅ Completed |
+| **Goal** | Turn the checklist into a self-contained study-and-exam-day document: answer the open methodology questions from Iteration 2, add a real theory summary, colour-code mandatory vs. optional steps, and fold every separate explanatory file into one. |
 
-- Merge study-plan and guideline in the same file. Preserve and merge organically. Main, critical point: optimize the workflow aligning exactly with what eWPTv2 requires. Not more, not less.
-- What I'm missing in my current iteration? Is the exam requiring more?
-- Understand how to cohesively execute commands: how to chain outcomes with further steps.
-- Understand exam's environment
-- Targeted FAQ's. Decide if segregate into the phases or rather place it into the exam faq file.
+**Changes made**
 
-#### Improvements
+| # | Change | File(s) |
+|---|---|---|
+| 1 | Added `Summary`: one block merging the former "Big picture", "Exam rules" and "Run order" sections into a single 12-stage, start-to-finish narrative (goal, ground rules, root-checks/restart/branch rules, per-stage why/output/terminal/block, terminal map, foundational-techniques table, dependency table) | `🧭 phase-walkthrough.md` |
+| 2 | Colour-coded all 52 step headings — 🟩 mandatory / 🟨 optional — with a legend | `🧭 phase-walkthrough.md` |
+| 3 | Added **Non-web services** section: FTP, SMB, NFS, MySQL/MSSQL/PostgreSQL, Redis, MongoDB | `📜 cheatsheet.md` |
+| 4 | Added **Stack playbooks** section: Tomcat, Spring Actuator, Struts, IIS/ASP.NET, Node.js, phpMyAdmin, Jenkins | `📜 cheatsheet.md` |
+| 5 | Added `searchsploit` selection criteria (5-step tie-break order) and the DoS-exclusion rationale | `📜 cheatsheet.md` |
+| 6 | Clarified Burp scope: anchored regex vs. loose-keyword risk, and what "add a path to scope" actually means | `🧭 phase-walkthrough.md` |
+| 7 | Marked branch-only steps (e.g. DNS) explicitly as "don't block on this" | `🧭 phase-walkthrough.md` |
+| 8 | Downgraded Metasploit to "avoid on exam" per eWPTv2's manual-methodology rule | `📜 cheatsheet.md`, `📝 notes.md` |
+| 9 | Fixed the Burp scope regex example to the anchored form | `startup-checklist.md` |
+| 10 | Deleted `🧭 walkthrough.md`: its goal/terminal/step/FAQ/troubleshooting content is now fully covered by the Summary, the *Question → where to look* table and the *Troubleshooting* table, so merging it in added nothing the checklist didn't already have | `🧭 walkthrough.md` (removed) |
+| 11 | Renamed `📋 checklist-and-commands.md` → `🧭 phase-walkthrough.md` (it had stopped being just a checklist once the Summary and the colour code went in) and updated every live cross-reference to it (`📜 cheatsheet.md`, `📝 notes.md`, `2. REPORTS/target-report-template.md`, `structure_example.md`, `exam_doubts_faq.md`, `guideline.md`) | repo-wide |
 
-1. Mark or remove non-critical operations. Can be a flag set along with the 'Save to file' one. This decision relies in the fact that there seem to be operations that cover what other commands do, so we can skip steps and save time
-    - Note: all non-critical operations have been marked with the 'non-critical' tag at the bottom of each block.
-    - Analyze which commands are addressing the same in different ways and maintain just the optimal one. For example, I saw an intersection between ffuf and for + curl. The second one directly feeds a few keyword in order to find hidden files or directories, while ffuf feeds an entire list from a file. I see, in this case, ffuf option has way more possibilities, as the list is larger by far.
-2. Change output here in all ffuf commands to 'all'. Offer how to read csv with grep instead for each one
-3. In logs section of the report template, change time for title. Remove index number.
-4. Reframe searchsploit so it address only eWPTv2 potential targets (layer 7)
-5. Review threads to avoid Kali machine freezing
-6. Do not log everything: just what contains something relevant
-7. Some commands try to find something in comments. Wouldn't be better to manually inspect files when browsing?
-8. Think about commands: when are they needed / when not? That can allow you to skip some of them during the exam
-    - Maybe add a 'When to use flag'?
+**Questions resolved this iteration**
 
-#### Fixes
+| Question | Answer location |
+|---|---|
+| Which ports count as "web ports"? | Conventions table (`<WEB_PORTS>`, by nmap service name, not port number) |
+| Command-by-command or target-by-target? | Summary → "Command by command, or target by target?" |
+| Non-web services (FTP/SMB/NFS/DB) commands | Cheatsheet → *Non-web services* |
+| Loose vs. anchored Burp scope regex; what "a path in scope" means | Conventions → *Burp scope* |
+| Why DoS is excluded from searchsploit | Cheatsheet → *searchsploit* |
+| How to pick among several searchsploit hits | Cheatsheet → *searchsploit* |
+| Does `<DOMAIN>` ever mean an IP? | Conventions (`<DOMAIN>`: a name only, never an IP) |
+| Do "jump to block X" pointers block the main line? | Summary → "Branch, not gate" |
+| Is Metasploit allowed in the exam? | Cheatsheet / notes.md → "avoid on exam" |
 
-Apply fixes for the indicated points and take into account the following
+**Carried forward**
 
-- I want to relocate the commands that are critical to the top. For example, nmap scan, ffuf or dnsenum/dnsrecon for me are first class citizens here. Others, however, like some specific curl statements, the for loops and so on seem to be quite contextual. I want you to readdress this and split into critical commands and context-dependent. Move also to this second block the extra statements.
-- Instead of removing the non-critical, duplicated commands, what you can do is organize each of the tags in relevance classes. So it'd be like the following
-    - The key, most relevant commands for the three categories (async, manual and extra) go first. You can create a separate layer called 'Main commands' or just leave it as it is and include the rest, non crucial items in the Appendix, mixing it with the rest of the content is already there
-- Also group by category of the recon phase: subdomain enumeration, brute force, and so on. Whatever you find more suitable for better comprehension
-- Most of the 8 points above include fixes and enhancements to perform. Do it.
-- Maintain the previous structure for the commands: the sections of WSTG and the blocks of title - command - read method - flag
+| Item | Status |
+|---|---|
+| "What am I missing — does the exam require more?" | Still open |
+| How to adapt when the command list isn't enough (generalizing curl verbs, ffuf wordlist swaps, etc. as a reusable skill) | Still open |
+| Confirm every WSTG key the eWPTv2 addresses is covered | Still open |
 
-#### Pending
+---
 
-- Including guideline and workflow for burpsuite usage during recon phase
-- What if my list of commands is not enough? How can I adapt to a different scenario the day of the exam?
-    - In this sense, it'd be quite useful to know what are the crucial 'aspects' the commands can take. For example, what you can potentially do with curl if you change the method, with ffuf if you change the wordlist, ... and so on. To have a guide to quickly look up for action advice.
-- Quick access and understanding is an absolute priority. Reduce any noise in checklist file.
-- Remember we need to take into account all WSTG keys addressed by the eWPTv2.
-- While checklist executes commands blindly, when looking for information I've seen that the order and depencies matter. For example
-    - Running nmap first against the whole subnet, then against each IP
-    - Launch whatweb and ffuf commands after nmap
-    
-    These nuances are key. Organize checklist adding knowledge about the procedure. The idea would be to create a file that explains what to do, merging those explanations with the current content of the checklist. Align with eWPTv2
+*Next iteration: keep this same Status / Goal / Changes made / Carried forward shape, and resolve or re-carry every open item above instead of letting it silently drop.*

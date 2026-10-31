@@ -94,7 +94,7 @@ Start with standard payloads (`' OR 1=1-- -`, `<script>alert(1)</script>`, `../.
 
 ### 3.5 Hour 7:30 to 9:00: completeness
 
-1. One pass per target against the WSTG checklist (`📋 checklist-and-commands.md`), only the IDs that apply.
+1. One pass per target against the WSTG walkthrough (`🧭 phase-walkthrough.md`), only the IDs that apply.
 2. For count questions ("how many X"), re-test every endpoint, not only the first one you found.
 3. Finished targets get one completeness pass, not one per finding.
 

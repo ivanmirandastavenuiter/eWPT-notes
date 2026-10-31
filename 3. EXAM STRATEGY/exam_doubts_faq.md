@@ -101,9 +101,9 @@ Use it as a **practice range** for the commands, the notes workflow, and the tar
 
 ### 2.8 What is the approach and set of steps for each phase? How do I find each vulnerability type after enumeration?
 
-⚠️ Use the phase checklist and mapping:
+⚠️ Use the phase walkthrough and mapping:
 
-- Phase checklist: `4. FINAL STRUCTURE/01 - Info-Gathering-and-Recon/📋 checklist-and-commands.md`
+- Phase walkthrough: `4. FINAL STRUCTURE/01 - Info-Gathering-and-Recon/🧭 phase-walkthrough.md`
 - INE-to-WSTG mapping: `4. FINAL STRUCTURE/ine-to-wstg.md`
 
 Quick triggers (general method, not INE-specific):

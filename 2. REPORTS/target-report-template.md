@@ -2,7 +2,7 @@
 
 **Start:** `HH:MM` · **Stop:** `HH:MM` · **Passing score:** `35 / 50 (70%)`
 
-Command conventions, placeholders and output file naming are in [📋 checklist-and-commands.md](<../4. FINAL STRUCTURE/01 - Info-Gathering-and-Recon/📋 checklist-and-commands.md>). Do not repeat them here.
+Command conventions, placeholders and output file naming are in [🧭 phase-walkthrough.md](<../4. FINAL STRUCTURE/01 - Info-Gathering-and-Recon/🧭 phase-walkthrough.md>). Do not repeat them here.
 
 ***
 

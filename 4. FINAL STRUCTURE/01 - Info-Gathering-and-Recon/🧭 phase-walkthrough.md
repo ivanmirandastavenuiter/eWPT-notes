@@ -1,46 +1,105 @@
-# Phase 1 – WSTG Recon: Checklist + Guide
+# Phase 1 – WSTG Recon: Walkthrough + Guide
 
 **Tags:** `ASYNC` start at once, read later · `MANUAL` Burp/ZAP/browser while scans run · `EXTRA` only when a question or a blocker points to it. Every block keeps its WSTG ID.
 
-**How to use it:** *Study* by reading the context lines and **Watch** notes. *Execute* by jumping to the commands and reading only the **Read** line. Blocks A–O follow the order you work in. Inside each block, core commands come first and the ones with a *When* line are triggered extras. Every block ends with a **Next** column. **If it fails** points to a section of [📜 cheatsheet.md](<./📜 cheatsheet.md>). The question lookup, the discovery map and troubleshooting are at the end.
+**Colour code (on every step heading):** <span style="background:#b7e4c7;color:#000">&nbsp;🟩 Green = mandatory&nbsp;</span> run it on every target, or as soon as the fact that triggers it appears (a branch, queued without waiting). <span style="background:#fff9b0;color:#000">&nbsp;🟨 Light yellow = optional&nbsp;</span> run it only when a question points to it, as a fallback, or if time allows. The emoji squares keep the code visible in viewers that ignore background colours.
+
+**How to use it:** *Study* by reading the context lines and **Watch** notes. *Execute* by jumping to the commands and reading only the **Read** line. Blocks A–O follow the order you work in. Inside each block, core commands come first and the ones with a *When* line are triggered extras. Every block ends with a **Next** column. It is a pointer, not a gate: the numbered stages in the *Summary* set the sequence, and a branch (DNS, CMS, 403s) is queued when its trigger shows, without waiting for it. **If it fails** points to a section of [📜 cheatsheet.md](<./📜 cheatsheet.md>). The question lookup, the discovery map and troubleshooting are at the end.
 
 ***
 
-## Exam rules that shape this checklist
+## Summary
 
-- **Read all 50 questions first** (10–15 min). Note target, answer type, and count questions. They decide which triggered blocks you run.
-- **Wide first, deep later.** Run steps 1–7 below on every target before going deep on one.
+**Goal.** Turn "an IP" into a map: every host, every web port, every vhost, and for each of them the stack, files, directories, parameters and APIs. Recon outputs **targets and leads**, not findings. Every later phase (XSS, SQLi, auth, uploads) attacks an entry point that recon found, so a missed entry point is a missed question.
+
+**Ground rules (they apply to every stage).**
+- **Read all 50 questions first** (10–15 min). Note the target, the answer type and which ones are count questions. They decide which triggered blocks you run and how deep you go.
+- **Wide first, deep later.** Run the main line (stages 1–6 and 8) on every target before going deep on one.
 - **Layer 7 only.** The exam tests web applications. OS services (SSH, SMB, kernel) matter only when they leak web files.
-- **Kali has no internet.** Everything here runs against internal hosts. `searchsploit` is local, `wpscan` has no API token, OSINT is done on the host PC.
+- **Kali has no internet.** Everything runs against internal hosts. `searchsploit` is local, `wpscan` has no API token, OSINT is done on the host PC.
 - **Count questions** ("how many pages, parameters, subdomains") need the scans finished and every endpoint re-checked, not the first hit.
 - **Answers are exact strings.** Copy the value from the output.
-- **A lead is not a finding.** Verify each one in Burp before it goes in your notes.
-- **A Kali reset wipes everything.** Copy `recon/` and notes to the host PC as you go.
+- **A Kali reset wipes everything.** Copy `recon/` and your notes to the host PC as you go.
 
-***
+**Three ideas hold the process together.**
+- **Root checks.** What every web host, every vhost and every web port gets, in this order: fingerprint (whatweb) → headers → known-exploit lookup (searchsploit) → directory and backup scan → metafiles → web-service probe (blocks D, E, G, I).
+- **Restart rule.** Every new hostname, web port or credential re-enters the process at the root checks. That loop is what makes recon complete.
+- **Branch, not gate.** Many steps point to a further block (DNS, CMS, 403s, TLS). That is a pointer: queue the branch in a free slot and keep going with the main line. The **Next** column at the end of each block works the same way. The only real order is the one in the stages below.
 
-## Run order
+**The process in twelve stages.** Each one says why it exists, what it hands to the next, where it runs and which block holds its commands. Read it once before the exam and again when you feel lost.
 
-**Root checks** = what you run on every web host, every vhost and every web port: whatweb → headers → searchsploit (D) → directory + backup scan (E) → metafiles (G) → web-service probe (I). Every new hostname or port you discover gets the same.
+**Stage 0 · Prepare (before touching anything; block A).** Read all 50 questions first (10–15 min), because they tell you which parts of the app matter, which answers are counts, names or exact strings, and which triggered blocks you will need. Then create the working folder for evidence, check which tools and wordlists exist (a missing one is replaced from the cheatsheet, never installed), tell Burp which hosts are allowed (scope), and write the hosts file, one line per IP with every name found so far. This is the only stage with no target traffic. Its purpose is to make everything afterwards repeatable and safe: you never test a host that is not yours to test, and nothing you find is lost.
 
-| Where | What | When |
+**Stage 1 · Know the targets (block B, host discovery).** If the scope is a network range, find which machines are alive first; each live machine is a separate target. If you were given a single address, skip this. Output: the complete list of targets. Everything that follows is repeated per target.
+
+**Stage 2 · Find every door (the slow job; block B, terminal 1).** A full scan of all ports on each target tells you what is listening and which program answers. It is the longest job, so it starts first, in terminal 1, and runs without you. Targets are scanned one after another, not in parallel. Web servers do not always live on the usual ports, which is why every port is scanned and why a port is called "web" by the service it speaks, not by its number. Output: the web ports (each one is a separate website to test), the non-web services, and whether a DNS server exists. Every later step needs these ports, which is why this job goes first. With many hosts and little time, sweep only the usual web ports first so Burp can start on every host while the full scans queue.
+
+**Stage 3 · Use the waiting time (the human channel; block C, Burp browser).** While the scan runs, you open the application in the Burp browser and walk it by hand: read the page source, click every link, submit every form harmlessly. Burp records everything, and that record (the Site map) becomes your list of entry points. This is the one thing no tool replicates, because only a person notices odd comments, hidden fields, workflows and parameters. It continues in the background of the whole exam, one target at a time and completely. A spider (ZAP) is only a fallback for "how many" questions or apps too big to walk by hand, and its active scan is never run.
+
+**Stage 4 · Sort what the scan found (block B).** When the scan ends, split the findings into three piles. *Web ports* continue down the main line. A *DNS server* opens a side branch (names and records). *Other services* (file sharing, databases) are checked only for what they leak about the web application: source code, configuration, credentials. These side branches are queued in a free slot and never block the main line. In this stage you also build the list of web ports (by the service nmap reports, not by number) and run a few quick HTTP scripts on them. If the TCP scan shows no DNS server but a domain is in play, check UDP too, since DNS is normally UDP.
+
+**Stage 5 · Identify each website (block D; the start of the root checks, terminal 2).** For every web port, ask the server what it is: language, framework, product, version, CMS, and what it says in its headers. These checks take seconds, so run them across all targets in one sweep to see the whole attack surface before choosing where to dig. Two outputs matter most: the **file extension** of the stack (it tunes the next stage) and the **product + version** (looked up offline for known weaknesses, as leads only). A recognised stack or CMS also unlocks its own specialised checks.
+
+**Stage 6 · Discover hidden content (brute forcing; block E).** Now you guess names: directories, files, backups and leftovers, using wordlists and watching which guesses the server answers differently from its default "not found". Calibration is what makes this reliable; without it you drown in false hits. Each answer code means something (exists, redirects, needs login, forbidden, wrong method, error), and each class has its own follow-up. This stage is the longest after the port scan, so it runs in terminal 3, and never more than two fuzzers run together or the machine freezes. New directories found here are scanned again, one level at a time, only when the previous level gave something.
+
+**Stage 7 · Discover more hosts (block F).** One IP can serve many sites, selected by the name in the request. If a domain name is known (it must be a real name, never an IP), you look for other names through three independent routes: guessing names against the web server, asking the DNS server (records, zone transfer, guessing), and reading names that certificates, redirects and page content give away. Every new name is a new target and **re-enters the process at Stage 5**. This is the loop that makes recon complete. Guessing names against the web server needs only a domain and a web port, and counts as a fuzzer; the DNS routes need an open DNS port and are not fuzzers, since they query DNS, not the web server. Both are branches: start them in a free slot while Stage 6 runs. If no domain name is known, look for one in redirects, the TLS certificate and reverse lookups; if none shows up, skip these routes.
+
+**Stage 8 · Collect the cheap, high-reward files (blocks G and I).** In parallel with the fuzzers, in terminal 2, fetch the files that owners publish or forget: robots and sitemap, security contact, version-control folders, environment files, debug and status pages, comments and scripts in the page. They are single requests with no wordlist, and they leak the most per second spent. Anything that looks like a secret or an internal address is noted as a lead. The same quick probes also look for web-service and API entry points (service descriptions, API documentation, GraphQL, `/api`).
+
+**Stage 9 · Follow the triggers (branches; blocks H, I, J, L, M, N).** Some results open a branch, and each branch starts only when its trigger appears:
+- *Forbidden paths* lead to checking which HTTP methods are allowed and whether another method gets through.
+- *An API or web-service path* leads to finding its endpoints and the verbs and content types they accept.
+- *A page that takes input* leads to discovering parameter names and, for IDs, values.
+- *A recognised CMS* leads to its dedicated enumeration (version, plugins, themes, users).
+- *An HTTPS port* leads to a look at the certificate, protocol and headers.
+- *Blocked or altered requests* lead to identifying a firewall and slowing down.
+A branch is a **parallel task, not a gate**: you queue it in a free terminal and keep going with the main line.
+
+**Stage 10 · Go behind the login (block K).** The moment you hold a cookie or credentials, the whole discovery is repeated with that identity, and the new results are compared with the anonymous run. Most of the application usually hides here. Workflows (registration, checkout, reset) are walked by hand in Burp and their tokens observed.
+
+**Stage 11 · Close out (block O).** Last, and alone because it is noisy, a general scanner gives a final set of leads. Then a completeness pass asks, per target and not per finding: did every web port get the basic set, was every forbidden path tested, did every new name and port go through the loop, were count questions re-checked on every endpoint. Finally, answers are copied exactly as shown by the output, and evidence is copied to the host PC, because a reset of the Kali machine erases everything.
+
+**Where things run (never more than four channels).**
+- **Terminal 1, the slow queue:** port scans, one target after another. When they finish, it becomes the free slot for a second fuzzer or a branch.
+- **Terminal 2, the quick probes (from the moment nmap gives the web ports):** fingerprinting, headers, metafiles, API paths, DNS queries and anything that finishes in seconds. It is also where branches are fired.
+- **Terminal 3, the fuzzers (once whatweb has given the extension):** directories first, then backups, then vhosts and parameters as they apply. At most two fuzzers at the same time across terminals 1 and 3.
+- **Burp browser, the human channel:** the manual walk, which starts with the port scan and never stops.
+- **Last, alone:** the noisy general scanner, with nothing else running.
+
+**Three questions to ask after every result.** (1) *What did this give me?* A host, a port, a name, a path, a version, a credential. (2) *What does it unlock?* Which stage or branch should now start. (3) *Is it new?* A new host, port, name or login goes back to the start of the per-target process.
+
+**What recon is not.** It does not exploit, and it does not prove anything. Every output is a **lead** that becomes a finding only after you reproduce it in Burp, and every lead is judged against the questions you read in Stage 0.
+
+**Five foundational techniques.** Every block below is one of them.
+
+| Technique | What it is | Tools | Blocks |
+|---|---|---|---|
+| Enumeration | Asking the target what it is: open ports, services, versions, stack, allowed methods, DNS records | nmap, whatweb, curl headers, dig | B, D, H |
+| Brute forcing (content discovery) | Replacing `FUZZ` with wordlist words and reading which requests the server answers differently: directories, files, backups, vhosts, parameter names, API endpoints, IDs. Quality = wordlist + calibration (`-ac`) | ffuf (feroxbuster, wfuzz, gobuster as fallbacks) | E, F, I, J |
+| Subdomain / vhost discovery | Three independent sources: **vhost fuzzing** (`Host` header sent to the IP, needs no DNS), **DNS** (records, zone transfer, brute force) and **certificates / page content** (SANs, redirects). Every new name is a new host | ffuf, dnsenum, dig, openssl | F |
+| Config and metafiles | Files the owner publishes or forgets: `robots.txt`, `sitemap.xml`, `security.txt`, `.git`, `.env`, `phpinfo.php`, actuator, backups. One request each, no wordlist, best reward per second | curl | G, E |
+| Manual mapping | A human reads the page source, comments, JS, forms and parameters, and walks the workflows. This is what finds logic and multi-step features and fills the Burp Site map, which is the entry-point list | Burp, ZAP | C, K |
+
+On top of these sit **version → known exploit lookup** (searchsploit) and **triggered specialisations** (CMS, TLS, WAF, stack playbooks). They run only when a result points to them.
+
+**What depends on what.** This is why the stage order above is fixed, not arbitrary.
+
+| Step | Needs | Produces |
 |---|---|---|
-| Terminal 1 | Host discovery, full nmap (`ASYNC`) | First, leave it running |
-| Terminal 2 | HTTP scripts, whatweb, headers, curl probes | After nmap gives the web ports |
-| Terminal 3 | Fuzzers (directories, backups, vhosts) | After whatweb gives `<EXT>` |
-| Burp browser | Manual walk (`MANUAL`) | Right away, during nmap |
+| Full nmap | `<IP>` | Web ports, non-web services, DNS yes/no |
+| whatweb + headers | A web port | Stack, `<EXT>`, versions, CMS |
+| searchsploit | A product and version | Exploit leads |
+| Directory + backup scan | A web port and `<EXT>` | Pages, `403`s, listings, API paths, backups |
+| VHost fuzzing / dnsenum | `<DOMAIN>` (and a web port / port 53) | New hostnames, each one a new host |
+| Verb tampering, API brute force, parameter fuzzing | A `403`, an `/api` path, a page that takes input | Bypasses, endpoints, parameter names |
+| Authenticated re-scan | A cookie or credentials | The surface behind the login |
 
-1. **Setup (A).** `recon/` folder, tool check, `/etc/hosts`.
-2. **Subnet in scope?** Host discovery first (B), so you know every target. Otherwise skip.
-3. **Full nmap** (B, `ASYNC`) on every live host. It is the slowest job, and every later step needs its web ports.
-4. **While nmap runs:** walk the app in Burp (C).
-5. **Nmap done:** build `<WEB_PORTS>`. Check port 53 and the non-web services. Run the HTTP scripts (B).
-6. **Fingerprint** each web port (D). Set `<EXT>`.
-7. **Directory + backup scans** (E). At most 2 fuzzers at once.
-8. **`<DOMAIN>` given?** VHost fuzzing. **Port 53 open?** dnsenum (F). Repeat the root checks on each new name.
-9. **While fuzzers run:** metafiles, leaks and page content (G), web-service probe (I).
-10. **Triggers:** methods and 403s (H), parameters (J), CMS (L), TLS (M), WAF (N). Once you hold a login: logged-in surface (K).
-11. **Close out (O):** nikto last and alone, completeness pass, copy `recon/` and notes to the host PC.
+**Command by command, or target by target?** Both, by speed:
+
+- **Seconds-long commands (whatweb, headers, metafiles, web-service probe):** go wide. Loop over every web host and port in one pass (`whatweb --no-errors -i recon/urls.txt`, a `for` loop for curl). You see the whole attack surface before choosing where to dig.
+- **Slow commands (full nmap, ffuf, nikto):** go target by target, queued in one terminal. Never run the same fuzzer on several targets in parallel: the VM freezes and the results blur. Each target needs its own `<EXT>`, so read its whatweb result first.
+- **Burp walk:** one target at a time, completely.
+- **Then go deep** on the target and block that the exam questions point to.
 
 ***
 
@@ -50,10 +109,10 @@
 |---|---|
 | `<IP>` | Exam IP |
 | `<SUBNET>` | CIDR range from the scope, only when a subnet is in scope |
-| `<DOMAIN>` | Domain from the exam letter or questions. No domain means skip vhost fuzzing and DNS |
+| `<DOMAIN>` | A DNS **name** from the exam letter or questions (`target.com`), never an IP. No name yet: look for one in redirects, the TLS certificate and `dig -x` (block F). Still none: skip vhost fuzzing and DNS |
 | `<VHOST>` | Host to request (`app.target.com`, or `<IP>` if none) |
 | `<SCHEME>` / `<PORT>` | `http`/`https` and port. A service shown as `https` or `ssl/http` by nmap is `https` |
-| `<WEB_PORTS>` | Comma list of open HTTP(S) ports, built from the full scan |
+| `<WEB_PORTS>` | Comma list of ports that speak HTTP(S), picked by the **service** nmap reports, not by number (80, 443, 8080, 8180, 8443, 9443 are only the usual ones) |
 | `<HTTPS_PORTS>` | Subset of `<WEB_PORTS>` that speaks TLS (`ssl/http` or `https` in nmap) |
 | `<EXT>` | `-e` value for the stack: `.php,.txt` (PHP), `.aspx,.txt` (ASP.NET), `.jsp,.txt` (Java) |
 | `<BASELINE>` | Size of a non-existent page. Only needed when `-ac` misbehaves |
@@ -78,6 +137,9 @@
 | 500 | Exists, server error | Read the body, it may leak data |
 | 404 | Not found | Ignore |
 
+- **Burp scope:** Target → Scope → Include: `<IP>` and `^(.*\.)?<DOMAIN>$` (the bare domain and every subdomain; `.*\.<DOMAIN>` alone misses the bare domain). Leave Port and File empty: then every port and path on those hosts is already in scope, so new ports, vhosts under `<DOMAIN>` and every discovered path need no scope edit. Add an entry only for a host outside both patterns.
+  - **Anchor the regex, don't loosen it.** A bare keyword like `.*meta2.*` is *not* safer: it matches anywhere in the hostname, so it silently pulls in unrelated hosts that happen to contain the word (another student's VM, a shared lab box, a third-party domain in a redirect) and you'd be sending requests to them without meaning to — a scope violation, not a convenience. `^(.*\.)?<DOMAIN>$` matches only the exact domain and its subdomains, nothing else, so it is both wider (catches every real subdomain) and safer (catches nothing extra).
+  - **A "path" is never a scope entry.** The Scope dialog only takes host/port/file patterns, not navigation history. "Adding a path to scope" means *opening it through Burp* (browser, Repeater, `curl -x http://<PROXY>`, or ffuf `-replay-proxy`) so the request lands in the Site map — the path is then just another row under a host that's already in scope, no scope edit required.
 - **Calibration:** every ffuf command uses `-ac`, which hides responses that look like the server's default one (a custom 404 that returns 200). If `-ac` hides real hits or lets noise through, measure a baseline and swap `-ac` for `-fs <BASELINE>`:
   ```bash
   curl -sk -o /dev/null -w "%{size_download}\n" "<SCHEME>://<VHOST>/nohost-zz9"
@@ -106,7 +168,7 @@
 
 ## A. Setup & scope
 
-#### Workspace, tools and hosts file
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Workspace, tools and hosts file&nbsp;</span>
 
 Two minutes, before any scan. Everything below writes to `recon/`.
 
@@ -127,7 +189,7 @@ ls -d /usr/share/seclists /usr/share/wordlists/dirb /usr/share/wordlists/dirbust
 
 ## B. Network & port discovery
 
-#### Host discovery · `WSTG-CONF-01` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Host discovery&nbsp;</span> · `WSTG-CONF-01` · `ASYNC`
 
 *When:* the scope lists a subnet (`<SUBNET>`) instead of single IPs. It goes first so you know every target before scanning ports. Skip it for a single IP.
 
@@ -143,7 +205,7 @@ wc -l recon/live_hosts.txt
 |:---:|---|
 | `[x]` | Run the full port scan on each live host. |
 
-#### Full port scan · `WSTG-CONF-01` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Full port scan&nbsp;</span> · `WSTG-CONF-01` · `ASYNC`
 
 Most important async job. It covers non-standard web ports, and `-sC` already runs `ftp-anon` and similar default scripts. Start it first and do other work while it runs.
 
@@ -156,6 +218,7 @@ nmap -Pn -n -sC -sV -p- --min-rate 1000 <IP> -oN recon/nmap-full-<IP>.txt
 > **Watch:** Every web port is a separate host to test. Several hosts: run them one after another in the same terminal, not in parallel:
 > `for ip in $(cat recon/live_hosts.txt); do nmap -Pn -n -sC -sV -p- --min-rate 1000 $ip -oN recon/nmap-full-$ip.txt; done`
 > Many hosts and little time: sweep only the usual web ports first (cheatsheet → *Nmap*), so you can start Burp on every host while the full scans queue.
+> A web port is any port whose service is `http`, `https`, `ssl/http`, `http-proxy` or `http-alt`; the grep above catches them all. A port shown as `unknown` or `tcpwrapped` can still be web, so probe it: `for s in http https; do curl -sk -m5 -o /dev/null -w "$s %{http_code}\n" "$s://<IP>:<PORT>/"; done` (`000` means no HTTP answer).
 
 | Save to file | Next |
 |:---:|---|
@@ -163,7 +226,7 @@ nmap -Pn -n -sC -sV -p- --min-rate 1000 <IP> -oN recon/nmap-full-<IP>.txt
 
 **If it fails →** cheatsheet: *Nmap*.
 
-#### UDP 53 check · `WSTG-CONF-01`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;UDP 53 check&nbsp;</span> · `WSTG-CONF-01`
 
 *When:* a `<DOMAIN>` is in scope or a question mentions names, zones or DNS records, and the TCP scan shows no port 53. DNS is normally **UDP**, so the default TCP scan can miss it.
 
@@ -177,9 +240,9 @@ dig @<IP> <DOMAIN> +short
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | DNS is live: dnsenum and DNS records (block F). Set `<NAMESERVER>` to `<IP>`. |
+| `[x]` | DNS is live: dnsenum and DNS records (block F) — *branch*: start it in a free slot and keep moving through whatweb/headers/ffuf below, don't wait for it to finish. Set `<NAMESERVER>` to `<IP>`. |
 
-#### HTTP scripts on the open web ports · `WSTG-CONF-01` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;HTTP scripts on the open web ports&nbsp;</span> · `WSTG-CONF-01` · `ASYNC`
 
 Run after the full scan, using its ports.
 
@@ -191,11 +254,11 @@ nmap -Pn -n -sV -p <WEB_PORTS> --script http-enum,http-title,http-methods,http-r
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Add every found path to Burp scope and test it. Then whatweb on each web port. |
+| `[x]` | Open every found path through Burp so it lands in the Site map. Then whatweb on each web port. |
 
 **If it fails →** cheatsheet: *Nmap*.
 
-#### Non-web services that expose web content · `WSTG-CONF-01`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Non-web services that expose web content&nbsp;</span> · `WSTG-CONF-01`
 
 *When:* nmap lists FTP, rsync, NFS, or a database port. It matters only when it leaks source code, config files, or credentials for the web app. Ignore other network services (layer 7 scope).
 
@@ -208,7 +271,7 @@ curl -s --user anonymous:anonymous "ftp://<IP>/"
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Download the file, read the config for credentials, and try them on the web login. |
+| `[ ]` | Download the file, read the config for credentials, and try them on the web login. Commands per service: cheatsheet → *Non-web services*. |
 
 ***
 
@@ -216,11 +279,11 @@ curl -s --user anonymous:anonymous "ftp://<IP>/"
 
 Burp is your notebook for the whole exam: everything you open through it is recorded in the Site map and HTTP history.
 
-#### Burp Suite walk · `WSTG-INFO-06` · `MANUAL`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Burp Suite walk&nbsp;</span> · `WSTG-INFO-06` · `MANUAL`
 
 Start it while nmap runs, since the browser is idle anyway. Burp Community has no crawler, no scanner and a throttled Intruder, so the mapping is manual. Scope and browser setup are in the [startup checklist](<../00-Exam-Setup-and-Proxies/startup-checklist.md>).
 
-1. **Scope:** Target → Scope holds `<IP>` and `.*\.<DOMAIN>`. Add each new vhost or port as you find it.
+1. **Scope:** Target → Scope holds `<IP>` and `^(.*\.)?<DOMAIN>$` (see Conventions → *Burp scope*). New vhosts under `<DOMAIN>` and new ports are already covered.
 2. **Intercept off.** Open the root in the Burp browser and read the page source (Ctrl+U). Look for comments, hidden fields and `.js` paths yourself; this beats a regex.
 3. **Click everything once:** every link, menu and form. Submit each form with harmless data (search, login, register, contact) so the POST requests get recorded.
 4. **Target → Site map:** show only in-scope items and sort by URL. Greyed entries were linked but never requested, so visit them.
@@ -233,11 +296,11 @@ Start it while nmap runs, since the browser is idle anyway. Burp Community has n
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Parameters go to the vuln-testing phases. Each `.js` file goes to block G. New hostnames go to `/etc/hosts` and Burp scope. |
+| `[ ]` | Parameters go to the vuln-testing phases. Each `.js` file goes to block G. New hostnames go to `/etc/hosts` (and to Burp scope only if outside the `<DOMAIN>` pattern). |
 
 **If it fails →** the ZAP spider below, or check the browser proxy is `<PROXY>`.
 
-#### Spider the app in ZAP · `WSTG-INFO-06` · `MANUAL`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Spider the app in ZAP&nbsp;</span> · `WSTG-INFO-06` · `MANUAL`
 
 *When:* a question asks "how many pages, forms, or parameters", or the app is too big to walk by hand. ⚠️ Confirm ZAP is installed (`command -v zaproxy`).
 
@@ -250,7 +313,7 @@ zaproxy -port 8081 &
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Copy the URL and parameter counts into your notes. New URLs go into Burp scope. |
+| `[ ]` | Copy the URL and parameter counts into your notes. Open new URLs in Burp so they show in the Site map. |
 
 **If it fails →** walk the app by hand in Burp.
 
@@ -260,7 +323,7 @@ zaproxy -port 8081 &
 
 The stack decides the extension for the directory scan and the version decides the exploits to check. Do this on every web port before block E.
 
-#### Tech stack · `WSTG-INFO-02` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Tech stack&nbsp;</span> · `WSTG-INFO-02` · `ASYNC`
 
 Run first on each web port (about 5 seconds). CMS, frameworks, plugins, and the language that sets `<EXT>`.
 
@@ -272,11 +335,11 @@ whatweb -v "<SCHEME>://<VHOST>:<PORT>/" > recon/whatweb-<VHOST>-<PORT>.txt
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Set `<EXT>`. Headers next. A CMS goes to block L. A product and version go to searchsploit. |
+| `[x]` | Set `<EXT>`. Headers next. A CMS goes to block L. A product and version go to searchsploit. A known stack or framework: cheatsheet → *Stack playbooks*. |
 
 **If it fails →** cheatsheet: *Fingerprinting*.
 
-#### Headers · `WSTG-INFO-02`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Headers&nbsp;</span> · `WSTG-INFO-02`
 
 Once per vhost, right after whatweb. It uses GET, because some servers answer `HEAD` with `405` or fewer headers.
 
@@ -290,7 +353,7 @@ curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -iE "^(server|x-p
 |:---:|---|
 | `[ ]` | A version string goes to searchsploit. Cookie flags go to the auth and session tests. No version shown: verbose error below. |
 
-#### Known exploits for the detected version · `WSTG-INFO-02`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Known exploits for the detected version&nbsp;</span> · `WSTG-INFO-02`
 
 Run once per web product (web server, CMS, plugin, JS library, framework). The database is local, so it works offline.
 
@@ -302,6 +365,7 @@ searchsploit -x <EDB-ID>                               # read one entry
 
 > **Read:** Each line is an exploit title and path. Match the title to your exact version. **Layer 7 only:** skip OS-level services (ssh, smtp, samba, kernel).
 > **Watch:** Titles often show a range (`2.4.17 < 2.4.38`), so check that your version falls inside it. Too much noise: `-t` limits the match to titles.
+> **Choose:** keep entries with the same product and component, a version range that contains yours, type `webapps` or `remote`, and no login needed first. Skip other products with a similar name, `local`/privesc entries and DoS: a DoS exploit crashes the target (a reset risk in a shared lab) and answers no recon question. Full criteria: cheatsheet → *searchsploit*.
 
 | Save to file | Next |
 |:---:|---|
@@ -309,7 +373,7 @@ searchsploit -x <EDB-ID>                               # read one entry
 
 **If it fails →** cheatsheet: *searchsploit*.
 
-#### Verbose error · `WSTG-INFO-02`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Verbose error&nbsp;</span> · `WSTG-INFO-02`
 
 *When:* a 404 or 500 page looks custom, or whatweb and headers showed no version.
 
@@ -329,7 +393,7 @@ curl -sk -i "<SCHEME>://<VHOST>:<PORT>/nohost-zz9.php" | grep -iE "apache|php|to
 
 Start these as soon as `<EXT>` is known. They are the longest fuzz jobs, so run them in Terminal 3 and work on block G in the meantime.
 
-#### Directory and file brute force · `WSTG-CONF-05` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Directory and file brute force&nbsp;</span> · `WSTG-CONF-05` · `ASYNC`
 
 On each web host. This is the main content scan: `-e` adds the stack's extension to every word, and `-mc all -fc 404` keeps `401`, `403`, `405`, and `500` as leads.
 
@@ -346,7 +410,7 @@ ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/r
 
 **If it fails →** cheatsheet: *ffuf*, *feroxbuster*, *wfuzz*, *gobuster*, *Wordlist fallbacks*.
 
-#### Backup and temp files · `WSTG-CONF-04` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Backup and temp files&nbsp;</span> · `WSTG-CONF-04` · `ASYNC`
 
 On the root, after or next to the directory scan (2 fuzzers at most). For a known file (`index.php`), use the `index.phpFUZZ` variant in the cheatsheet.
 
@@ -362,7 +426,7 @@ ffuf -u "<SCHEME>://<VHOST>/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/r
 
 **If it fails →** cheatsheet: *ffuf*, *feroxbuster* (backups), *Wordlist fallbacks*.
 
-#### Directory listing · `WSTG-CONF-04`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Directory listing&nbsp;</span> · `WSTG-CONF-04`
 
 *When:* the directory scan has returned `200` or `301` hits.
 
@@ -376,7 +440,7 @@ awk -F, 'NR>1 && $5~/^(200|301)$/ {print $2}' recon/ffuf-dirs-<VHOST>.csv | whil
 |:---:|---|
 | `[ ]` | Open each listing in Burp and read the files in it. |
 
-#### Alternate extensions on a known page · `WSTG-CONF-03`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Alternate extensions on a known page&nbsp;</span> · `WSTG-CONF-03`
 
 *When:* you hold one specific page and want to see if the server also exposes its source or backup. This is the single-file version of the backup scan.
 
@@ -390,7 +454,7 @@ for e in php php7 phtml inc bak old; do curl -sk -o /dev/null -w "%{http_code} %
 |:---:|---|
 | `[ ]` | Open each `200` in Burp and read the body. Source code in the response is a finding. |
 
-#### Admin keywords · `WSTG-CONF-05`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Admin keywords&nbsp;</span> · `WSTG-CONF-05`
 
 *When:* only if the directory scan has not finished and you want an instant read. **Skip it once the scan runs**, since `raft-medium-words.txt` already contains these words.
 
@@ -408,9 +472,9 @@ for p in admin manage dashboard phpmyadmin grafana jenkins; do curl -sk -o /dev/
 
 ## F. Subdomains, DNS & certificates
 
-Needs a `<DOMAIN>`. Without one, skip this block. Every name you find goes to `/etc/hosts` and Burp scope, then gets the root checks.
+Needs a `<DOMAIN>`: a DNS **name** such as `target.com`, not an IP, because fuzzing builds `Host: FUZZ.<DOMAIN>` and DNS queries ask about a name. It comes from the exam letter or questions, or from a hostname that a redirect (`Location:`), the TLS certificate or `dig -x <IP>` reveals. No name from any of these: skip vhost fuzzing and dnsenum. Every name you find goes to `/etc/hosts` (and to Burp scope if it is outside the `<DOMAIN>` pattern), then gets the root checks.
 
-#### VHost fuzzing · `WSTG-INFO-04` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;VHost fuzzing&nbsp;</span> · `WSTG-INFO-04` · `ASYNC`
 
 Works without a DNS server: it sends `Host: FUZZ.<DOMAIN>` straight to the web server on `<IP>`, so it finds vhosts that have no DNS record. This is the primary subdomain tool. Repeat it for each web port, since each port can serve different vhosts.
 
@@ -422,11 +486,11 @@ ffuf -u "<SCHEME>://<IP>:<PORT>/" -H "Host: FUZZ.<DOMAIN>" -w /usr/share/seclist
 
 | Save to file | Next |
 |:---:|---|
-| `[x]` | Add each hit to `/etc/hosts` on the same line as the target and to Burp scope, then run the root checks on it. |
+| `[x]` | Add each hit to `/etc/hosts` on the same line as the target, then run the root checks on it. |
 
 **If it fails →** cheatsheet: *ffuf* (`-fs`), *wfuzz* (vhost), *gobuster* (vhost), *Wordlist fallbacks*.
 
-#### DNS brute force · `WSTG-INFO-04` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;DNS brute force&nbsp;</span> · `WSTG-INFO-04` · `ASYNC`
 
 *Only if port 53 is open on `<IP>` (TCP or UDP).* Finds names with DNS records and tries a zone transfer on its own, so no separate AXFR step is needed.
 
@@ -442,7 +506,7 @@ dnsenum --dnsserver <IP> --noreverse -f /usr/share/seclists/Discovery/DNS/subdom
 
 **If it fails →** cheatsheet: *DNS* (`dnsrecon`, `dig axfr`, gobuster dns).
 
-#### DNS records · `WSTG-INFO-04`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;DNS records&nbsp;</span> · `WSTG-INFO-04`
 
 *When:* a question asks for a record type, a count, or a flag held in a record. Use the exam's name server. The mapping from lab question to query comes from your [notes](<./📝 notes.md>) (section 10), so verify it on a lab.
 
@@ -459,7 +523,7 @@ dig -x <IP> +short @<NAMESERVER>
 |:---:|---|
 | `[ ]` | Each new hostname goes to `/etc/hosts` and the root checks. Answer the question from the output. |
 
-#### DNS zone transfer (AXFR) · `WSTG-CONF-01`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;DNS zone transfer (AXFR)&nbsp;</span> · `WSTG-CONF-01`
 
 *When:* port 53 is open on TCP and `dnsenum` is missing, or you want a quick manual check. Try it once per name server; if refused, move on.
 
@@ -475,7 +539,7 @@ dig axfr <REVERSE_ZONE>.in-addr.arpa @<NAMESERVER>   # reverse zone, for reverse
 |:---:|---|
 | `[x]` | Each hostname goes to `/etc/hosts` and the root checks. |
 
-#### Dangling CNAME check · `WSTG-CONF-10`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Dangling CNAME check&nbsp;</span> · `WSTG-CONF-10`
 
 *When:* a `<DOMAIN>` is in scope and a discovered subdomain has a CNAME record.
 
@@ -489,7 +553,7 @@ for s in <SUBDOMAIN>; do t=$(dig +short CNAME "$s"); [ -n "$t" ] && echo "$s -> 
 |:---:|---|
 | `[ ]` | Record the subdomain and target. Do not claim the name. |
 
-#### TLS certificate SANs · `WSTG-CONF-01`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;TLS certificate SANs&nbsp;</span> · `WSTG-CONF-01`
 
 *When:* a host answers on HTTPS. It can surface hostnames that vhost fuzzing misses.
 
@@ -498,12 +562,13 @@ echo | openssl s_client -connect <IP>:<PORT> -servername <DOMAIN> 2>/dev/null | 
 ```
 
 > **Read:** Each `DNS:` entry is a hostname. Keep it as a `<SUBDOMAIN>` candidate.
+> **Watch:** No `<DOMAIN>` yet: drop `-servername <DOMAIN>`. The certificate still lists its names, and that is one way to obtain a domain.
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Add each name to `/etc/hosts` and Burp scope, then run the root checks on it. |
+| `[ ]` | Add each name to `/etc/hosts`, then run the root checks on it. |
 
-#### OSINT · `WSTG-INFO-01` · `MANUAL` · host PC only
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;OSINT&nbsp;</span> · `WSTG-INFO-01` · `MANUAL` · host PC only
 
 *When:* the exam letter names an external domain, or a question asks about public exposure. Kali has no internet, so do this on the host PC and record the result in your notes.
 
@@ -528,7 +593,7 @@ Archived copies: `https://web.archive.org/web/*/<DOMAIN>/*`. Registration data: 
 
 Quick curl probes. Run them in Terminal 2 while the fuzzers work. They find what wordlists miss (dotfiles) and what only a human reads (comments).
 
-#### Status of each metafile · `WSTG-INFO-03`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Status of each metafile&nbsp;</span> · `WSTG-INFO-03`
 
 Once per vhost. Skip `robots.txt` if the nmap `http-robots.txt` script already reported it.
 
@@ -541,9 +606,9 @@ curl -sk "<SCHEME>://<VHOST>/robots.txt" | grep -i disallow
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Add every `Disallow:` path to Burp scope and test it like a discovered directory. |
+| `[ ]` | Open every `Disallow:` path through Burp and test it like a discovered directory. |
 
-#### Source control and env leaks · `WSTG-CONF-02`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Source control and env leaks&nbsp;</span> · `WSTG-CONF-02`
 
 Once per web root. Directory wordlists skip dotfiles, so this finds what the ffuf scan won't.
 
@@ -557,7 +622,7 @@ for p in .git/HEAD .svn/entries .env .DS_Store; do curl -sk -o /dev/null -w "%{h
 |:---:|---|
 | `[ ]` | `.git/HEAD` at `200`: dump the repo with `wget -r` and read its config. `.env` at `200`: read it for credentials. |
 
-#### Debug and default endpoints · `WSTG-CONF-02`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Debug and default endpoints&nbsp;</span> · `WSTG-CONF-02`
 
 *When:* whatweb or headers point to a framework that ships these paths (Spring, Symfony, PHP), or a question mentions debug exposure.
 
@@ -571,7 +636,7 @@ for p in _profiler phpinfo.php actuator/env server-status console; do curl -sk -
 |:---:|---|
 | `[ ]` | Open each live endpoint in Burp. |
 
-#### Comments, JS, and hidden fields on the root page · `WSTG-INFO-05`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Comments, JS, and hidden fields on the root page&nbsp;</span> · `WSTG-INFO-05`
 
 A quick first pass while a scan runs. It does not replace reading the page source in the browser (block C); a regex misses multi-line comments and minified JS.
 
@@ -585,7 +650,7 @@ curl -sk "<SCHEME>://<VHOST>/" | grep -Eio '<!--.*-->|src="[^"]+\.js"|type="hidd
 |:---:|---|
 | `[ ]` | Each JS URL goes to the next step. A hidden value is a parameter for block J. |
 
-#### Secrets and internal IPs in a JS file · `WSTG-INFO-05`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Secrets and internal IPs in a JS file&nbsp;</span> · `WSTG-INFO-05`
 
 *When:* a `.js` file was found and is too large to read in Burp.
 
@@ -603,7 +668,7 @@ curl -sk "<JS_URL>" | grep -Eio '(api_key|secret|token|jwt)[^,;]{0,60}|10\.[0-9]
 
 ## H. HTTP methods & forbidden paths
 
-#### Log every 403 · `WSTG-CONF-05`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Log every 403&nbsp;</span> · `WSTG-CONF-05`
 
 *When:* the directory scan returned `403` rows. It queues them for verb tampering.
 
@@ -617,7 +682,7 @@ awk -F, 'NR>1 && $5==403 {print $2}' recon/ffuf-dirs-<VHOST>.csv > recon/forbidd
 |:---:|---|
 | `[x]` | Run the verb tampering check on each path. |
 
-#### Allowed methods · `WSTG-CONF-06`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Allowed methods&nbsp;</span> · `WSTG-CONF-06`
 
 *When:* a path answered 403, a question asks about HTTP methods, or the nmap `http-methods` output looks odd.
 
@@ -631,7 +696,7 @@ curl -sk -i -X OPTIONS "<SCHEME>://<VHOST>:<PORT>/" | grep -i allow
 |:---:|---|
 | `[ ]` | Verbs missing from `Allow:` but still working go to the verb tampering step. |
 
-#### Verb tampering on a restricted path · `WSTG-CONF-06`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Verb tampering on a restricted path&nbsp;</span> · `WSTG-CONF-06`
 
 *When:* `Allow:` lists a verb beyond GET, HEAD, and POST, or a 403 path needs a bypass attempt.
 
@@ -652,7 +717,7 @@ for m in GET HEAD POST PUT DELETE TRACE; do curl -sk --max-time 10 -o /dev/null 
 
 Web services are a large share of the exam. The goal here is only to find the endpoints; testing them is a later phase.
 
-#### Web-service and API paths · `WSTG-INFO-06`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Web-service and API paths&nbsp;</span> · `WSTG-INFO-06`
 
 Run on every web host. A page that you know serves SOAP can also be probed directly with `<PAGE>?wsdl`.
 
@@ -668,7 +733,7 @@ for p in "?wsdl" service?wsdl swagger.json swagger/index.html openapi.json v2/ap
 
 **If it fails →** cheatsheet: *Web services*.
 
-#### API endpoint brute force · `WSTG-INFO-06` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;API endpoint brute force&nbsp;</span> · `WSTG-INFO-06` · `ASYNC`
 
 *When:* the web-service probe, Burp, JS, or robots.txt shows an `/api` path.
 
@@ -691,7 +756,7 @@ ffuf -u "<SCHEME>://<VHOST>/api/FUZZ" -w /usr/share/seclists/Discovery/Web-Conte
 
 Parameters are usually visible in forms, links, and Burp. Fuzz names only when a page seems to accept input that you can't see. Keep `-t 5`: these requests hit application code, which is slower than static paths.
 
-#### GET parameter names · `WSTG-INFO-06` · `ASYNC`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;GET parameter names&nbsp;</span> · `WSTG-INFO-06` · `ASYNC`
 
 *When:* a page behaves differently with unknown input, or you suspect hidden functionality.
 
@@ -705,7 +770,7 @@ ffuf -u "<SCHEME>://<VHOST>/<PAGE>?FUZZ=test" -w /usr/share/seclists/Discovery/W
 |:---:|---|
 | `[x]` | Note it for SQLi and XSS tests. Fuzz its values below. |
 
-#### POST parameter names · `WSTG-INFO-06` · `ASYNC`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;POST parameter names&nbsp;</span> · `WSTG-INFO-06` · `ASYNC`
 
 *When:* as above, for a form-encoded POST.
 
@@ -721,7 +786,7 @@ ffuf -u "<SCHEME>://<VHOST>/<PAGE>" -X POST -d "FUZZ=test" -H "Content-Type: app
 
 **If it fails →** cheatsheet: *Wordlist fallbacks* (parameter names), *wfuzz*.
 
-#### Parameter values once a parameter is confirmed · `WSTG-INFO-06`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Parameter values once a parameter is confirmed&nbsp;</span> · `WSTG-INFO-06`
 
 *When:* a numeric ID parameter is confirmed and you suspect IDOR.
 
@@ -742,7 +807,7 @@ ffuf -u "<SCHEME>://<VHOST>/<PAGE>" -X POST -d "id=FUZZ" -H "Content-Type: appli
 
 Most of the application hides behind the login. Come back here as soon as you hold a cookie or credentials.
 
-#### Directory scan with a session · `WSTG-CONF-05` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Directory scan with a session&nbsp;</span> · `WSTG-CONF-05` · `ASYNC`
 
 *When:* you hold a working session cookie or credentials. Repeat the API probe (block I) and parameter checks with the same header.
 
@@ -759,7 +824,7 @@ comm -13 <(awk -F, 'NR>1{print $2}' recon/ffuf-dirs-<VHOST>.csv | sort) <(awk -F
 
 **If it fails →** cheatsheet: *Authenticated scans*.
 
-#### Map the workflows · `WSTG-INFO-07` · `MANUAL`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Map the workflows&nbsp;</span> · `WSTG-INFO-07` · `MANUAL`
 
 *When:* once you have a login. Do it while other scans run.
 
@@ -777,7 +842,7 @@ Walk registration, login, profile edit, checkout, and password reset in the Burp
 
 Kali has no internet, so wpscan runs **without** an API token and **without** a vulnerability database: it lists versions, plugins, themes, and users. Match versions with searchsploit. ⚠️ Confirm the flags on the exam image. Other CMS (Joomla, Drupal): cheatsheet → *CMS*.
 
-#### Check for WordPress markers · `WSTG-INFO-08`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Check for WordPress markers&nbsp;</span> · `WSTG-INFO-08`
 
 *When:* whatweb or headers hint at WordPress without confirming it.
 
@@ -792,7 +857,7 @@ for p in wp-login.php wp-json/ xmlrpc.php readme.html; do curl -sk -o /dev/null 
 |:---:|---|
 | `[ ]` | WordPress confirmed goes to the blocks below. Another CMS goes to cheatsheet: *CMS*. |
 
-#### WordPress version · `WSTG-INFO-08`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;WordPress version&nbsp;</span> · `WSTG-INFO-08`
 
 *When:* WordPress is confirmed and `readme.html` still exists.
 
@@ -806,7 +871,7 @@ curl -sk "<SCHEME>://<VHOST>/readme.html" | grep -i "version"
 |:---:|---|
 | `[ ]` | The version goes to searchsploit. |
 
-#### Full wpscan enumeration · `WSTG-INFO-09` · `ASYNC`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Full wpscan enumeration&nbsp;</span> · `WSTG-INFO-09` · `ASYNC`
 
 *When:* WordPress is confirmed.
 
@@ -822,7 +887,7 @@ wpscan --url "<SCHEME>://<VHOST>/" --no-update --disable-tls-checks -e u,ap,at,c
 
 **If it fails →** cheatsheet: *CMS* (wpscan variants).
 
-#### Users only · `WSTG-INFO-09`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Users only&nbsp;</span> · `WSTG-INFO-09`
 
 *When:* the full enumeration listed no users, or you want them on their own.
 
@@ -837,7 +902,7 @@ curl -sk "<SCHEME>://<VHOST>/wp-json/wp/v2/users" | grep -Eo '"slug":"[^"]+"'
 |:---:|---|
 | `[ ]` | Usernames go to the password test. Lab scope only. |
 
-#### Aggressive plugin detection · `WSTG-INFO-09`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Aggressive plugin detection&nbsp;</span> · `WSTG-INFO-09`
 
 *When:* the default scan found few or no plugins, yet the site clearly uses some. Heavy: run it alone.
 
@@ -851,7 +916,7 @@ wpscan --url "<SCHEME>://<VHOST>/" --no-update --disable-tls-checks --plugins-de
 |:---:|---|
 | `[x]` | Each plugin and version goes to `searchsploit "<PRODUCT> <VERSION>"`. |
 
-#### Password test · `WSTG-INFO-09` · lab scope only
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Password test&nbsp;</span> · `WSTG-INFO-09` · lab scope only
 
 *When:* a username is confirmed and brute force is in scope. Brute force is rarely the answer, so try it after the other leads.
 
@@ -872,7 +937,7 @@ wpscan --url "<SCHEME>://<VHOST>/" --no-update --disable-tls-checks -U <USER> -P
 
 *When:* a host answers on HTTPS, or a question asks about TLS, ciphers, certificates or HSTS. Certificate names (SANs) are in block F.
 
-#### TLS weaknesses · `WSTG-CRYP-01`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;TLS weaknesses&nbsp;</span> · `WSTG-CRYP-01`
 
 ```bash
 nmap -Pn -n -sV -p <HTTPS_PORTS> --script ssl-enum-ciphers,ssl-cert,ssl-heartbleed <IP> -oN recon/nmap-tls-<IP>.txt
@@ -884,7 +949,7 @@ nmap -Pn -n -sV -p <HTTPS_PORTS> --script ssl-enum-ciphers,ssl-cert,ssl-heartble
 |:---:|---|
 | `[x]` | Record the port and the weak protocol or cipher. |
 
-#### HSTS header · `WSTG-CONF-07`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;HSTS header&nbsp;</span> · `WSTG-CONF-07`
 
 ```bash
 curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -i "strict-transport-security"
@@ -900,7 +965,7 @@ curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -i "strict-transp
 
 ## N. WAF & architecture
 
-#### WAF detection · `WSTG-INFO-10`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;WAF detection&nbsp;</span> · `WSTG-INFO-10`
 
 *When:* payloads get blocked or altered, or every request returns an identical page.
 
@@ -914,7 +979,7 @@ wafw00f "<SCHEME>://<VHOST>/" > recon/wafw00f-<VHOST>.txt
 |:---:|---|
 | `[x]` | A WAF found means: lower `-t`, encode payloads, and note it. |
 
-#### Compare a benign and a suspicious request · `WSTG-INFO-10`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Compare a benign and a suspicious request&nbsp;</span> · `WSTG-INFO-10`
 
 *When:* `wafw00f` was inconclusive, or you want to confirm a WAF before changing tactics.
 
@@ -930,7 +995,7 @@ curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>/" | grep -iE "via|x-cache|cf-ray|
 |:---:|---|
 | `[ ]` | Same as above. |
 
-#### Map the architecture · `WSTG-INFO-10` · `MANUAL`
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Map the architecture&nbsp;</span> · `WSTG-INFO-10` · `MANUAL`
 
 *When:* after the Burp site map has enough pages, or a question asks about components.
 
@@ -944,13 +1009,13 @@ curl -sk "<SCHEME>://<VHOST>/" | grep -Eo '(src|href)="https?://[^"/]+' | sort -
 
 | Save to file | Next |
 |:---:|---|
-| `[ ]` | Write the component list in your notes. Each separate host goes to Burp scope and the root checks. |
+| `[ ]` | Write the component list in your notes. Each separate in-scope host gets the root checks. |
 
 ***
 
 ## O. Close out
 
-#### Quick vulnerability scan · `WSTG-INFO-02` · `ASYNC` · run last, alone
+#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Quick vulnerability scan&nbsp;</span> · `WSTG-INFO-02` · `ASYNC` · run last, alone
 
 Completeness check once every other scan is done. It is the noisiest tool, so it runs by itself. Treat results as leads, not findings.
 
@@ -966,7 +1031,7 @@ nikto -h "<SCHEME>://<VHOST>:<PORT>/" -o recon/nikto-<VHOST>-<PORT>.txt
 
 **If it fails →** cheatsheet: *Nikto*.
 
-#### Completeness pass · `MANUAL`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Completeness pass&nbsp;</span> · `MANUAL`
 
 One pass per target, not one per finding.
 
@@ -1023,7 +1088,7 @@ When a question mentions one of these, run the matching block. Skip the rest.
 | Subnet in scope | Host discovery, then a full scan per live host (B) |
 | Open web port | whatweb, headers, then the directory scan on `<SCHEME>://<IP>:<PORT>` (D, E) |
 | Port 53 open, or a domain question | dnsenum, DNS records (F). No TCP 53: UDP check (B) |
-| SAN, AXFR, or vhost hit | Add to `/etc/hosts` and Burp scope, then run the root checks on it |
+| SAN, AXFR, or vhost hit | Add to `/etc/hosts`, then run the root checks on it |
 | 200 / 301 / 302 path | Open in Burp, add to Site map |
 | 401 / 405 / 500 path | An API or an error: read it in Burp Repeater, try other verbs and content types |
 | 403 path | Verb tampering (H) |

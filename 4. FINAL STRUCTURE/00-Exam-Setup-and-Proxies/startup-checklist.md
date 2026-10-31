@@ -47,7 +47,7 @@
 * [ ] Navigate to **Target > Scope settings** and check **Use advanced scope control**.
 * [ ] Click **Add** under "Include in scope". Leave protocol as `Any`.
 * [ ] Add the raw target IP: `<IP>`
-* [ ] Add the wildcard for the root domain, with dots escaped: `.*\.<DOMAIN>` (e.g. `.*\.target\.com`)
+* [ ] Add the root domain and all its subdomains, dots escaped: `^(.*\.)?<DOMAIN>$` (e.g. `^(.*\.)?target\.com$`). Leave Port and File empty so every port and path is covered.
 * [ ] Navigate to **Proxy > HTTP history**. Click the filter bar at the top.
 * [ ] Check **Show only in-scope items**.
 * [ ] Check **Hide uninteresting content** (filters out CSS, JS, images).

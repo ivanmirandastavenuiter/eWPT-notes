@@ -1,6 +1,6 @@
 # 📝 Phase 1: Information Gathering – Study Notes
 
-Theory, tool purpose, and "when to use" from the INE tutorials and OWASP WSTG 4.2 (INFO / CONF). Commands for the exam live in [📋 checklist-and-commands.md](<./📋 checklist-and-commands.md>). Variants live in [📜 cheatsheet.md](<./📜 cheatsheet.md>). This file explains *why* and *when*.
+Theory, tool purpose, and "when to use" from the INE tutorials and OWASP WSTG 4.2 (INFO / CONF). Commands for the exam live in [🧭 phase-walkthrough.md](<./🧭 phase-walkthrough.md>). Variants live in [📜 cheatsheet.md](<./📜 cheatsheet.md>). This file explains *why* and *when*.
 
 Placeholders: `<DOMAIN>`, `<IP>`, `<URL>`, `<NAMESERVER>`.
 
@@ -62,14 +62,14 @@ Placeholders: `<DOMAIN>`, `<IP>`, `<URL>`, `<NAMESERVER>`.
 ## 4. Subdomains
 
 - **SecLists** `Discovery/DNS/` provides the wordlists. Feed the results into vhost fuzzing and `/etc/hosts`.
-- **Use when:** a domain has many possible hosts. Results feed directly into the checklist's VHost step.
+- **Use when:** a domain has many possible hosts. Results feed directly into the walkthrough's VHost step.
 
 ---
 
 ## 5. Metafiles
 
 - `robots.txt`, `sitemap.xml`, `.well-known/security.txt`, `crossdomain.xml`, `humans.txt`.
-- Disallowed paths are often the most interesting. Each path goes into Burp scope and the directory brute force list.
+- Disallowed paths are often the most interesting. Each path is opened through Burp and goes into the directory brute force list.
 - **Use when:** always, early. It costs one request per file.
 
 ---
@@ -88,7 +88,7 @@ Placeholders: `<DOMAIN>`, `<IP>`, `<URL>`, `<NAMESERVER>`.
 - **Browser add-ons** (BuiltWith, Wappalyzer): fast passive hints at server, framework, or CMS.
 - **WhatWeb:** CLI stack detection. Run it once per host or VHost.
 - **Nmap banners:** `--script=banner` for service versions. `http-enum` and `http-methods` for the web layer.
-- **Metasploit auxiliary modules:** `http_version`, `http_header`, `robots_txt`, `brute_dirs`. Use them only when Metasploit is available.
+- **Metasploit auxiliary modules:** `http_version`, `http_header`, `robots_txt`, `brute_dirs`. Lab/training use only — avoid on the eWPTv2 exam itself, which expects manual methodology; nmap/whatweb/curl cover the same ground with allowed tools.
 - **curl:** raw headers and HTML without a browser. `curl -I` shows the server header, `curl -i` shows error pages.
 - **wafw00f:** identifies a WAF. Run it when payloads start getting blocked, so you can adjust fuzzing speed and payloads.
 
@@ -137,4 +137,4 @@ These repeat across the labs. The exam will be similar.
 | TLS on 443 | `openssl s_client` | Check SANs for new hosts |
 | Mentions WordPress or Drupal | `wpscan` | Check author enumeration and REST endpoints |
 
-Exact commands for each row are in the checklist, with variants in the cheatsheet.
+Exact commands for each row are in the walkthrough, with variants in the cheatsheet.
