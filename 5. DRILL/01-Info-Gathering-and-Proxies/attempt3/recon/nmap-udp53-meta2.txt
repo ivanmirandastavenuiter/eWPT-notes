@@ -1,0 +1,9 @@
+# Nmap 7.99 scan initiated Sun Nov  1 12:29:46 2026 as: /usr/lib/nmap/nmap --privileged -Pn -n -sU -p 53 -oN recon/nmap-udp53-meta2.txt meta2
+Nmap scan report for meta2 (172.20.0.2)
+Host is up (0.000059s latency).
+
+PORT   STATE  SERVICE
+53/udp closed domain
+MAC Address: EA:58:3F:7A:17:98 (Unknown)
+
+# Nmap done at Sun Nov  1 12:29:46 2026 -- 1 IP address (1 host up) scanned in 0.27 seconds
