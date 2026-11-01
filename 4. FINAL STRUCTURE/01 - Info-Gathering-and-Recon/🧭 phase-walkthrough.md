@@ -4,7 +4,7 @@
 
 **Colour code (on every step heading):** <span style="background:#b7e4c7;color:#000">&nbsp;🟩 Green = mandatory&nbsp;</span> run it on every target, or as soon as the fact that triggers it appears (a branch, queued without waiting). <span style="background:#fff9b0;color:#000">&nbsp;🟨 Light yellow = optional&nbsp;</span> run it only when a question points to it, as a fallback, or if time allows. The emoji squares keep the code visible in viewers that ignore background colours.
 
-**How to use it:** *Study* by reading the context lines and **Watch** notes. *Execute* by jumping to the commands and reading only the **Read** line. Blocks A–O follow the order you work in. Inside each block, core commands come first and the ones with a *When* line are triggered extras. Every block ends with a **Next** column. It is a pointer, not a gate: the numbered stages in the *Summary* set the sequence, and a branch (DNS, CMS, 403s) is queued when its trigger shows, without waiting for it. **If it fails** points to a section of [📜 cheatsheet.md](<./📜 cheatsheet.md>). The question lookup, the discovery map and troubleshooting are at the end.
+**How to use it:** *Study* by reading the context lines and **Watch** notes. *Execute* by jumping to the commands and reading only the **Read** line. Blocks A–N follow the order you work in. Inside each block, core commands come first and the ones with a *When* line are triggered extras. Every block ends with a **Next** column. It is a pointer, not a gate: the numbered stages in the *Summary* set the sequence, and a branch (DNS, CMS, 403s) is queued when its trigger shows, without waiting for it. **If it fails** points to a section of [📜 cheatsheet.md](<./📜 cheatsheet.md>). The question lookup, the discovery map and troubleshooting are at the end.
 
 ***
 
@@ -57,7 +57,7 @@ A branch is a **parallel task, not a gate**: you queue it in a free terminal and
 
 **Stage 10 · Go behind the login (block K).** The moment you hold a cookie or credentials, the whole discovery is repeated with that identity, and the new results are compared with the anonymous run. Most of the application usually hides here. Workflows (registration, checkout, reset) are walked by hand in Burp and their tokens observed.
 
-**Stage 11 · Close out (block O).** Last, and alone because it is noisy, a general scanner gives a final set of leads. Then a completeness pass asks, per target and not per finding: did every web port get the basic set, was every forbidden path tested, did every new name and port go through the loop, were count questions re-checked on every endpoint. Finally, answers are copied exactly as shown by the output, and evidence is copied to the host PC, because a reset of the Kali machine erases everything.
+**Stage 11 · Close out (block N).** Last, and alone because it is noisy, a general scanner gives a final set of leads. Then a completeness pass asks, per target and not per finding: did every web port get the basic set, was every forbidden path tested, did every new name and port go through the loop, were count questions re-checked on every endpoint. Finally, answers are copied exactly as shown by the output, and evidence is copied to the host PC, because a reset of the Kali machine erases everything.
 
 **Where things run (never more than four channels).**
 - **Terminal 1, the slow queue:** port scans, one target after another. When they finish, it becomes the free slot for a second fuzzer or a branch.
@@ -539,20 +539,6 @@ dig axfr <REVERSE_ZONE>.in-addr.arpa @<NAMESERVER>   # reverse zone, for reverse
 |:---:|---|
 | `[x]` | Each hostname goes to `/etc/hosts` and the root checks. |
 
-#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Dangling CNAME check&nbsp;</span> · `WSTG-CONF-10`
-
-*When:* a `<DOMAIN>` is in scope and a discovered subdomain has a CNAME record.
-
-```bash
-for s in <SUBDOMAIN>; do t=$(dig +short CNAME "$s"); [ -n "$t" ] && echo "$s -> $t resolves to: $(dig +short "$t" | head -1)"; done
-```
-
-> **Read:** An empty `resolves to:` value means the CNAME target does not exist. That is a takeover candidate, recorded as a lead only.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Record the subdomain and target. Do not claim the name. |
-
 #### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;TLS certificate SANs&nbsp;</span> · `WSTG-CONF-01`
 
 *When:* a host answers on HTTPS. It can surface hostnames that vhost fuzzing misses.
@@ -933,37 +919,7 @@ wpscan --url "<SCHEME>://<VHOST>/" --no-update --disable-tls-checks -U <USER> -P
 
 ***
 
-## M. TLS & HTTPS configuration
-
-*When:* a host answers on HTTPS, or a question asks about TLS, ciphers, certificates or HSTS. Certificate names (SANs) are in block F.
-
-#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;TLS weaknesses&nbsp;</span> · `WSTG-CRYP-01`
-
-```bash
-nmap -Pn -n -sV -p <HTTPS_PORTS> --script ssl-enum-ciphers,ssl-cert,ssl-heartbleed <IP> -oN recon/nmap-tls-<IP>.txt
-```
-
-> **Read:** `grep -E "SSLv|TLSv1\.0|TLSv1\.1|least strength|VULNERABLE|RC4|3DES|Not valid after" recon/nmap-tls-<IP>.txt`. SSLv3, TLS 1.0 or 1.1 enabled, `least strength` of C or worse, RC4 or 3DES, or an expired cert are findings.
-
-| Save to file | Next |
-|:---:|---|
-| `[x]` | Record the port and the weak protocol or cipher. |
-
-#### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;HSTS header&nbsp;</span> · `WSTG-CONF-07`
-
-```bash
-curl -sk -D - -o /dev/null "<SCHEME>://<VHOST>:<PORT>/" | grep -i "strict-transport-security"
-```
-
-> **Read:** No output means HSTS is missing. A `max-age` of 0 or a very short value is weak.
-
-| Save to file | Next |
-|:---:|---|
-| `[ ]` | Missing or weak HSTS is a configuration finding to note. |
-
-***
-
-## N. WAF & architecture
+## M. WAF & architecture
 
 #### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;WAF detection&nbsp;</span> · `WSTG-INFO-10`
 
@@ -1013,7 +969,7 @@ curl -sk "<SCHEME>://<VHOST>/" | grep -Eo '(src|href)="https?://[^"/]+' | sort -
 
 ***
 
-## O. Close out
+## N. Close out
 
 #### 🟨 <span style="background:#fff9b0;color:#000">&nbsp;Quick vulnerability scan&nbsp;</span> · `WSTG-INFO-02` · `ASYNC` · run last, alone
 
@@ -1059,7 +1015,6 @@ When a question mentions one of these, run the matching block. Skip the rest.
 | Directory listing, "Index of" | Directory listing (E) | CONF-04 |
 | Subdomain, vhost | VHost fuzzing, dnsenum (F) | INFO-04 |
 | DNS record, A/TXT/SRV/PTR, zone, name server | DNS records, AXFR, UDP 53 (F, B) | INFO-04, CONF-01 |
-| Takeover, CNAME | Dangling CNAME (F) | CONF-10 |
 | Certificate, SAN, HTTPS name | TLS SANs (F) | CONF-01 |
 | Public exposure, Google, archived pages | OSINT (F, host PC) | INFO-01 |
 | robots.txt, sitemap, security.txt | Metafiles (G) | INFO-03 |
@@ -1074,10 +1029,8 @@ When a question mentions one of these, run the matching block. Skip the rest.
 | Login, session, pages behind login | Logged-in surface (K) | CONF-05 |
 | Registration, checkout, reset, workflow | Map the workflows (K) | INFO-07 |
 | WordPress, plugin, theme, user, CMS version | CMS (L) | INFO-08, INFO-09 |
-| Cipher, TLS version, protocol | TLS weaknesses (M) | CRYP-01 |
-| HSTS | HSTS header (M) | CONF-07 |
-| WAF, blocked payload | WAF detection (N) | INFO-10 |
-| Third-party hosts, architecture, CDN | Map the architecture (N) | INFO-10 |
+| WAF, blocked payload | WAF detection (M) | INFO-10 |
+| Third-party hosts, architecture, CDN | Map the architecture (M) | INFO-10 |
 
 ***
 
@@ -1094,13 +1047,11 @@ When a question mentions one of these, run the matching block. Skip the rest.
 | 403 path | Verb tampering (H) |
 | Login works, or you hold a cookie | Logged-in surface (K) and the API probe with the cookie |
 | WSDL, Swagger, or `/api` | API endpoint brute force (I), then the web service tests |
-| HTTPS port | TLS weaknesses (M) |
 | FTP anonymous or open rsync/NFS | Check for web files (B) |
-| WAF or blocked payload | Lower `-t`, encode payloads, note the WAF (N) |
+| WAF or blocked payload | Lower `-t`, encode payloads, note the WAF (M) |
 | Backup, `.git`, `.env`, or an archive | Download it and read it before anything else |
 | WordPress fingerprint | Block L. Joomla or Drupal: cheatsheet → *CMS* |
 | Parameter that changes output | Note it for SQLi, XSS, IDOR, and logic tests |
-| Subdomain with a CNAME | Dangling CNAME check (F) |
 | Version string anywhere | searchsploit (D) |
 | Exam names an external domain | OSINT on the host PC (F) |
 
