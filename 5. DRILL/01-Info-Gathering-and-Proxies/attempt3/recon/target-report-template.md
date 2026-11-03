@@ -50,7 +50,7 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
 
 | Target | App / role | Stack (web, lang, DB, OS) | Status |
 | :----- | :--------- | :------------------------ | :----- |
-| `<IP>` | `<app>` | `<stack>` | [ ] |
+| `172.20.0.2` | `Metasploitable2` | `` | [ ] |
 
 ***
 
@@ -60,23 +60,47 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
 
 | Title | Command (short) | Result (one line) | Output file |
 | :---- | :--------------- | :----------------- | :----------- |
-| `Full port scan` | `nmap -sC -sV <IP>` | `21 ftp, 80 http Apache 2.2.8` | `recon/nmap-full-<IP>.txt` |
+| `Full port scan` | `nmap -Pn -n -sC -sV -p- --min-rate 1000 meta2 -oN recon/nmap-full-meta2.txt` | `Main services: ftp, http, mysql, postgresql, ` | `recon/nmap-full-meta2.txt` |
+| `Web ports scan` | `nmap -Pn -n -sV -p 80,514 --script http-enum,http-title,http-methods,http-robots.txt meta2 -oN recon/nmap-http-meta2.txt` | `Apache, methods allowed, ` | `recon/nmap-http-meta2.txt` |
 
 ***
 
-## 🛠 TARGET: `<IP>`
+## 🛠 TARGET: `172.20.0.2 (meta2)`
 
 ### 0. Overview & questions
 
-- **Role / description:** `<role>`
+- **Role / description:** `Entry point for further services / apps / db's`
 - **Related questions:** `Qxx, Qyy`
 
-### 1. Discoveries
+### 1. Discoveries Metasploitable 2
+
+- **Server banner:** `Apache httpd 2.2.8 ((Ubuntu) DAV/2)`
+- **Title**: `Metasploitable2 - Linux`
+- **Accepted methods:** `GET HEAD POST OPTIONS`
+- **Hidden paths**:
+```markdown
+|   /test/: Test page
+|   /phpinfo.php: Possible information file
+|   /phpMyAdmin/: phpMyAdmin
+|   /doc/: Potentially interesting directory w/ listing on 'apache/2.2.8 (ubuntu) dav/2'
+|   /icons/: Potentially interesting folder w/ directory listing
+|_  /index/: Potentially interesting folder
+```
+- **Stack**: 
+    - `PHP Version 5.2.4-2ubuntu5.10`    
+    - `FTP enabled`
+    - `MySQL 5.0.51a`
+    - `OpenSSL 0.9.8g 19 Oct 2007`
+    - `Session cookie: PHPSESSID=a894c3102d120b1a9d5c9cddaef5eb9f`
+
+
+#### 1.1 Discoveries Mutillidae
 
 *Facts that look like exam material: versions, paths, headers, error messages, parameters. Each one carries its pivot.*
 
-- **Server banner:** `<banner>` → pivot: `<next step>`
-- **Accepted methods:** `<methods>` (from `curl -i -X OPTIONS`)
+- **Server banner:** `Apache httpd 2.2.8 ((Ubuntu) DAV/2)` → pivot: `<next step>`
+- **Title**: `Metasploitable2 - Linux`
+- **Accepted methods:** `GET HEAD POST OPTIONS` (from `curl -i -X OPTIONS`)
 - **Framework / tech:** `<tech>` → pivot: `<next step>`
 - **Hidden paths / files:** `<path>` (status `<code>`, size `<size>`) → pivot: `<next step>`
 - **Metafiles:** `robots.txt` Disallow `<paths>` → pivot: `<next step>`
