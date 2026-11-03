@@ -70,9 +70,17 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
 ### 0. Overview & questions
 
 - **Role / description:** `Entry point for further services / apps / db's`
+- **Underlying machines and services**:
+    - DVWA
+    - Mutillidae
+    - DAV
+    - Twiki
+    - phpMyAdmin
 - **Related questions:** `Qxx, Qyy`
 
-### 1. Discoveries Metasploitable 2
+### 1. Discoveries
+
+#### 1.1. Metasploitable 2
 
 - **Server banner:** `Apache httpd 2.2.8 ((Ubuntu) DAV/2)`
 - **Title**: `Metasploitable2 - Linux`
@@ -94,17 +102,84 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
     - `Session cookie: PHPSESSID=a894c3102d120b1a9d5c9cddaef5eb9f`
 
 
-#### 1.1 Discoveries Mutillidae
+#### 1.2 Mutillidae
 
 *Facts that look like exam material: versions, paths, headers, error messages, parameters. Each one carries its pivot.*
 
-- **Server banner:** `Apache httpd 2.2.8 ((Ubuntu) DAV/2)` → pivot: `<next step>`
-- **Title**: `Metasploitable2 - Linux`
-- **Accepted methods:** `GET HEAD POST OPTIONS` (from `curl -i -X OPTIONS`)
-- **Framework / tech:** `<tech>` → pivot: `<next step>`
-- **Hidden paths / files:** `<path>` (status `<code>`, size `<size>`) → pivot: `<next step>`
-- **Metafiles:** `robots.txt` Disallow `<paths>` → pivot: `<next step>`
-- **Parameters:** `<METHOD> <PATH>?<param>=` → pivot: `<next step>`
+- **Server banner:** `Apache httpd 2.2.8 ((Ubuntu) DAV/2)`
+- **Title**: `Mutillidae`
+- **Accepted methods:** `-`
+- **Framework / tech:**
+    - `Apache httpd 2.2.8 ((Ubuntu) DAV/2)`
+    - `PHP Version 5.2.4-2ubuntu5.10`
+    - `FTP enabled`
+    - `MySQL 5.0.51a`
+    - `OpenSSL 0.9.8g 19 Oct 2007`
+- **Hidden paths / files:** 
+    - `/example`
+- **Metafiles:** `robots.txt` Disallow `<paths>`
+- **Parameters:** `/mutillidae?page=credits.php`
+- **Parameters:** `/mutillidae?page=credits.php`
+- **Interesting paths**:
+    - GET
+        - Authentication: `?page=login.php`
+        - Registration: `?page=register.php`
+        - Database: `/mutillidae/index.php?page=set-up-database.php`
+        - User info: `http://meta2/mutillidae/index.php?page=user-info.php&username=dsa&password=das&user-info-php-submit-button=View+Account+Details`
+    - POST
+        - `/mutillidae/index.php?page=add-to-your-blog.php`
+        - `/mutillidae/index.php?page=dns-lookup.php`
+        - `/mutillidae/index.php?page=pen-test-tool-lookup.php`
+        - `/mutillidae/index.php?page=rset-background-color.php`
+        - `/mutillidae/index.php?page=source-viewer.php`
+        - `/mutillidae/index.php?page=text-file-viewer.php`
+        - `/mutillidae/index.php?page=view-someones-blog.php`
+- **Entry points**:
+    - User info form
+    - Login form
+    - Register form
+    - View someones blog form
+    - Add new blog
+    - Pages:
+        - site-footer-xss-discussion.php
+        - html5-storage.php
+        - capture-data.php
+        - dns-lookup.php
+        - password-generator.php
+        - user-poll.php
+        - set-background-color.php
+        - pentest-lookup.php
+
+#### 1.3 DVWA
+
+*Facts that look like exam material: versions, paths, headers, error messages, parameters. Each one carries its pivot.*
+
+- **Server banner:** `Apache httpd 2.2.8 ((Ubuntu) DAV/2)`
+- **Title**: `Damn Vulnerable Web Application`
+- **Accepted methods:** `-`
+- **Framework / tech:**
+- **Hidden paths / files:** 
+    - `/example`
+- **Metafiles:** `robots.txt` Disallow `<paths>`
+- **Parameters:** `?placeholder`
+- **Interesting paths**:
+    - GET
+        - Authentication: `example.php`
+
+#### 1.4 phpMyAdmin
+
+*Facts that look like exam material: versions, paths, headers, error messages, parameters. Each one carries its pivot.*
+
+- **Server banner:** `Apache httpd 2.2.8 ((Ubuntu) DAV/2)`
+- **Title**: `Damn Vulnerable Web Application`
+- **Accepted methods:** `-`
+- **Framework / tech:**
+- **Hidden paths / files:** 
+    - `/example`
+- **Metafiles:** `robots.txt` Disallow `<paths>`
+- **Parameters:** `?placeholder`
+- **Interesting paths**:
+    - GET
 
 ### 2. Findings
 
