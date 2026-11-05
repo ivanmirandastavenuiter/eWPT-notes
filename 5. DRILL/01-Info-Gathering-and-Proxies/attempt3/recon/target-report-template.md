@@ -115,11 +115,27 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
     - `FTP enabled`
     - `MySQL 5.0.51a`
     - `OpenSSL 0.9.8g 19 Oct 2007`
-- **Hidden paths / files:** 
+- **Hidden paths / files / fields:** 
     - `/example`
+- **Comments**:
+    - `example`
+- **JS files**:
+    - `http://meta2/mutillidae/javascript/html5-secrets.js`
 - **Metafiles:** `robots.txt` Disallow `<paths>`
-- **Parameters:** `/mutillidae?page=credits.php`
-- **Parameters:** `/mutillidae?page=credits.php`
+- **Parameters:**   
+    - GET: 
+        - `?page`
+        - `?do`
+        - `?username`
+        - `?password`
+        - `?choice`
+        - `?initials`
+
+    - POST:
+        - `username`
+        - `password`
+        - `(login|dns-lookup|source-php.submit-button`
+        - `username`
 - **Interesting paths**:
     - GET
         - Authentication: `?page=login.php`
@@ -128,12 +144,31 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
         - User info: `http://meta2/mutillidae/index.php?page=user-info.php&username=dsa&password=das&user-info-php-submit-button=View+Account+Details`
     - POST
         - `/mutillidae/index.php?page=add-to-your-blog.php`
+            - `DOMStorageKey`
+            - `DOMStorageItem`
+            - `SessionStorageType`
+            - more...
         - `/mutillidae/index.php?page=dns-lookup.php`
+            - more...
         - `/mutillidae/index.php?page=pen-test-tool-lookup.php`
-        - `/mutillidae/index.php?page=rset-background-color.php`
+            - `ToolID`
+            - `pen-test-tool-lookup-php-submit-button`
+            - more...
+        - `/mutillidae/index.php?page=set-background-color.php`
+            - `background_color`
+            - `set-background-color-php-submit-button`
+            - more...
         - `/mutillidae/index.php?page=source-viewer.php`
+            - more...
         - `/mutillidae/index.php?page=text-file-viewer.php`
+            - more...
         - `/mutillidae/index.php?page=view-someones-blog.php`
+            - `author`
+            - `view-someones-blog-php-submit-button`
+        `mutillidae/index.php?page=add-to-your-blog.php`
+            - `csrf-token`
+            - `blog_entry`
+            - `add-to-your-blog-php-submit-button`
 - **Entry points**:
     - User info form
     - Login form
@@ -210,7 +245,8 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
 
 | Username | Password / hash / token | Source | Works on | Notes |
 | :------- | :---------------------- | :----- | :------- | :---- |
-| `<user>` | `<secret>` | `<where it came from>` | `<URL or service>` | `<access level>` |
+| `None` | `DU837HHFYTEYUE9S1934` | `JS hidden file` | `http://meta2/mutillidae/javascript/html5-secrets.js` | `-` |
+| `<user>` | `<secret>` | `<source>` | `<url or service>` | `<access level>` |
 
 ***
 
