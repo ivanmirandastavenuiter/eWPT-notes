@@ -121,54 +121,91 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
     - `example`
 - **JS files**:
     - `http://meta2/mutillidae/javascript/html5-secrets.js`
+- **Cookies**:
+    - `PHPSESSID`
 - **Metafiles:** `robots.txt` Disallow `<paths>`
-- **Parameters:**   
-    - GET: 
-        - `?page`
-        - `?do`
-        - `?username`
-        - `?password`
-        - `?choice`
-        - `?initials`
-
-    - POST:
-        - `username`
-        - `password`
-        - `(login|dns-lookup|source-php.submit-button`
-        - `username`
-- **Interesting paths**:
+- **Paths and parameters**:
     - GET
-        - Authentication: `?page=login.php`
-        - Registration: `?page=register.php`
-        - Database: `/mutillidae/index.php?page=set-up-database.php`
-        - User info: `http://meta2/mutillidae/index.php?page=user-info.php&username=dsa&password=das&user-info-php-submit-button=View+Account+Details`
+        - Authentication (**important**): `?page=login.php`
+        - Registration (**important**): `?page=register.php`
+        - Database (**important**): `/mutillidae/index.php?page=set-up-database.php`
+        - `http://meta2/mutillidae/index.php?page=user-info.php&username=dsa&password=das&user-info-php-submit-button=View+Account+Details`
+        - `http://meta2/mutillidae/`
+        - `http://meta2/mutillidae/index.php`
+        - `http://meta2/mutillidae/index.php?page`
+            - home
+            - notes
+            - change-log.htm
+            - php-errors
+            - usage-instructions
+            - login
+            - show-log
+            - add-to-your-blog
+            - browser-info
+            - capture-data
+            - credits
+            - dns-lookup
+            - documentation
+            - html5-storage
+            - installation
+            - password-generator
+            - pen-test-tool-lookup
+            - register
+            - secret-administrative-pages
+            - set-background-color
+            - site-footer-xss-discussion
+            - source-viewer
+            - text-file-viewer
+            - user-info
+                - username
+                - password
+                - user-info-php-submit-button
+            - view-someones-blog
+            - user-poll
+                - choice
+                - initials
+                - user-poll-php-submit-button
+            - redirectandlog
+                - forwardurl
+        - `http://meta2/mutillidae/index.php?do`
     - POST
-        - `/mutillidae/index.php?page=add-to-your-blog.php`
+        - `/mutillidae/index.php`
             - `DOMStorageKey`
             - `DOMStorageItem`
             - `SessionStorageType`
-            - more...
         - `/mutillidae/index.php?page=dns-lookup.php`
-            - more...
+            - `target_host`
+            - `dns-lookup-php-submit-button`
         - `/mutillidae/index.php?page=pen-test-tool-lookup.php`
             - `ToolID`
             - `pen-test-tool-lookup-php-submit-button`
-            - more...
         - `/mutillidae/index.php?page=set-background-color.php`
             - `background_color`
             - `set-background-color-php-submit-button`
-            - more...
-        - `/mutillidae/index.php?page=source-viewer.php`
-            - more...
+        - `/mutillidae/index.php`
+            - `page`
+            - `phpfile`
+            - `source-file-viewer-php-submit-button`
         - `/mutillidae/index.php?page=text-file-viewer.php`
-            - more...
+            - `textfile`
+            - `text-file-viewer-php-submit-button`
         - `/mutillidae/index.php?page=view-someones-blog.php`
             - `author`
             - `view-someones-blog-php-submit-button`
-        `mutillidae/index.php?page=add-to-your-blog.php`
+        - `mutillidae/index.php?page=add-to-your-blog.php`
             - `csrf-token`
             - `blog_entry`
             - `add-to-your-blog-php-submit-button`
+        - `mutillidae/index.php?page=login.php`
+            - `username`
+            - `password`
+            - `login-php-submit-button`
+        - `mutillidae/index.php?page=register.php`
+            - `username`
+            - `password`
+            - `confirm_password`
+            - `my_signature`
+            - `register-php-submit-button`
 - **Entry points**:
     - User info form
     - Login form
@@ -184,6 +221,19 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
         - user-poll.php
         - set-background-color.php
         - pentest-lookup.php
+- **Headers**:
+    - Request
+        - `Referer`
+        - `Host`
+        - `Cookie`
+            - showhints
+            - PHPSESSID
+        - `Origin`
+    - Response
+        - `X-Powered-By`
+        - `Server`
+        - `Set-Cookie`
+        - `Logged-In-User`
 
 #### 1.3 DVWA
 
