@@ -62,6 +62,9 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
 | :---- | :--------------- | :----------------- | :----------- |
 | `Full port scan` | `nmap -Pn -n -sC -sV -p- --min-rate 1000 meta2 -oN recon/nmap-full-meta2.txt` | `Main services: ftp, http, mysql, postgresql, ` | `recon/nmap-full-meta2.txt` |
 | `Web ports scan` | `nmap -Pn -n -sV -p 80,514 --script http-enum,http-title,http-methods,http-robots.txt meta2 -oN recon/nmap-http-meta2.txt` | `Apache, methods allowed, ` | `recon/nmap-http-meta2.txt` |
+| `Fingerprinting` | `whatweb -v "http://meta2/mutillidae" > recon/whatweb-mutillidae-80.txt` | `Stack and versions` | `recon/whatweb-,utillidae-80.txt` |
+| `Bruteforcing` | `ffuf -u "http://meta2/mutillidae/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt -e php -mc all -fc 404 -ac -t 10 -o recon/ffuf-dirs-mutillidae -of all` | `Hidden directories and files` | `ffuf-dirs-mutillidae.html` |
+| `Backups` | `ffuf -u "ffuf -u "http://meta2/mutillidae/FUZZ" -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -e .bak,.old,.swp,.tmp,~,.zip,.tar.gz,.sql,.orig,.save,.env -mc 200 -ac -t 10 -o recon/ffuf-backups-mutillidae -of all` | `Hidden backup files` | `ffuf-backups-mutillidae.html` |
 
 ***
 
@@ -115,15 +118,25 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
     - `FTP enabled`
     - `MySQL 5.0.51a`
     - `OpenSSL 0.9.8g 19 Oct 2007`
+    - `JQuery`
 - **Hidden paths / files / fields:** 
-    - `/example`
+    - Vulnerabilities declared: `http://meta2/mutillidae/documentation/vulnerabilities.php`
+    - Test scripts: `http://meta2/mutillidae/documentation/Mutillidae-Test-Scripts.txt`
 - **Comments**:
     - `example`
 - **JS files**:
     - `http://meta2/mutillidae/javascript/html5-secrets.js`
 - **Cookies**:
     - `PHPSESSID`
-- **Metafiles:** `robots.txt` Disallow `<paths>`
+- **Metafiles:**
+    - robots.txt
+        - User-agent: *
+        - `Disallow: ./passwords/`
+        - `Disallow: ./config.inc`
+        - `Disallow: ./classes/`
+        - `Disallow: ./javascript/`
+        - `Disallow: ./owasp-esapi-php/`
+        - `Disallow: ./documentation/`
 - **Paths and parameters**:
     - GET
         - Authentication (**important**): `?page=login.php`
@@ -296,6 +309,12 @@ Command conventions, placeholders and output file naming are in [🧭 phase-walk
 | Username | Password / hash / token | Source | Works on | Notes |
 | :------- | :---------------------- | :----- | :------- | :---- |
 | `None` | `DU837HHFYTEYUE9S1934` | `JS hidden file` | `http://meta2/mutillidae/javascript/html5-secrets.js` | `-` |
+| `dbHost=localhost, dbUser=root, dbName=metasploit` | `' '` | `mutillidae/inc` | `http://meta2/mutillidae/inc` | `root` |
+| `admin` | `adminpass, phrase=Monkey!!!` | `/passwords/accounts.txt` | `http://meta2/mutillidae/passwords/accounts.txt` | `user` 
+| `adrian` | `somepassword, phrase=Zombie Films Rock!!!` | `/passwords/accounts.txt` | `http://meta2/mutillidae/passwords/accounts.txt` | `user` 
+| `john` | `monkey, phrase=I like the smell of confunk` | `/passwords/accounts.txt` | `http://meta2/mutillidae/passwords/accounts.txt` | `user` 
+| `ed` | `pentest, phrase=Commandline KungFu anyone?` | `/passwords/accounts.txt` | `http://meta2/mutillidae/passwords/accounts.txt` | `user` 
+| `dbHost=localhost,dbUser=root,dbName=owasp10` | `root` | `mutillidae/config.inc` | `http://meta2/mutillidae/config.inc` | `admin` |
 | `<user>` | `<secret>` | `<source>` | `<url or service>` | `<access level>` |
 
 ***

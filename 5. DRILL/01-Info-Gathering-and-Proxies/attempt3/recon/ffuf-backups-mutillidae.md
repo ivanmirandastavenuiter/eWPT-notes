@@ -1,0 +1,27 @@
+# FFUF Report
+
+  Command line : `ffuf -u http://meta2/mutillidae/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-small-words.txt -e .bak,.old,.swp,.tmp,~,.zip,.tar.gz,.sql,.orig,.save,.env -mc 200 -ac -t 10 -o recon/ffuf-backups-mutillidae -of all`
+  Time: 2026-11-06T13:15:09&#43;01:00
+
+  | FUZZ | URL | Redirectlocation | Position | Status Code | Content Length | Content Words | Content Lines | Content Type | Duration | ResultFile | ScraperData | Ffufhash
+  | :- | :-- | :--------------- | :---- | :------- | :---------- | :------------- | :------------ | :--------- | :----------- | :------------ | :-------- |
+  | login | http://meta2/mutillidae/login |  | 97 | 200 | 4102 | 225 | 130 | text/html | 15.968847ms |  |  | 7ba1961
+  | register | http://meta2/mutillidae/register |  | 289 | 200 | 1823 | 92 | 60 | text/html | 17.656176ms |  |  | 7ba19121
+  | installation | http://meta2/mutillidae/installation |  | 409 | 200 | 8138 | 978 | 150 | text/html | 15.498848ms |  |  | 7ba19199
+  | index | http://meta2/mutillidae/index |  | 181 | 200 | 24216 | 1035 | 564 | text/html | 61.60314ms |  |  | 7ba19b5
+  | inc | http://meta2/mutillidae/inc |  | 1165 | 200 | 386260 | 38538 | 9004 | text/plain | 127.702µs |  |  | 7ba1948d
+  | home | http://meta2/mutillidae/home |  | 1669 | 200 | 2930 | 141 | 54 | text/html | 15.116369ms |  |  | 7ba19685
+  | header | http://meta2/mutillidae/header |  | 3733 | 200 | 19879 | 764 | 481 | text/html | 15.024091ms |  |  | 7ba19e95
+  | footer | http://meta2/mutillidae/footer |  | 3769 | 200 | 450 | 21 | 16 | text/html | 16.525706ms |  |  | 7ba19eb9
+  | favicon | http://meta2/mutillidae/favicon |  | 4633 | 200 | 1150 | 4 | 5 | image/x-icon | 245.476µs |  |  | 7ba191219
+  | . | http://meta2/mutillidae/. |  | 4789 | 200 | 24216 | 1035 | 564 | text/html | 58.936975ms |  |  | 7ba1912b5
+  | phpMyAdmin | http://meta2/mutillidae/phpMyAdmin |  | 5689 | 200 | 174 | 7 | 10 | text/html | 15.305199ms |  |  | 7ba191639
+  | robots | http://meta2/mutillidae/robots |  | 7909 | 200 | 160 | 8 | 7 | text/plain | 849.894µs |  |  | 7ba191ee5
+  | page-not-found | http://meta2/mutillidae/page-not-found |  | 10429 | 200 | 705 | 52 | 25 | text/html | 15.178759ms |  |  | 7ba1928bd
+  | phpinfo | http://meta2/mutillidae/phpinfo |  | 11377 | 200 | 48785 | 2449 | 677 | text/html | 16.65266ms |  |  | 7ba192c71
+  | notes | http://meta2/mutillidae/notes |  | 19909 | 200 | 1721 | 176 | 38 | text/html | 16.424051ms |  |  | 7ba194dc5
+  | credits | http://meta2/mutillidae/credits |  | 30025 | 200 | 509 | 39 | 20 | text/html | 13.588624ms |  |  | 7ba197549
+  | framing | http://meta2/mutillidae/framing |  | 301009 | 200 | 1426 | 96 | 49 | text/html | 17.818336ms |  |  | 7ba19497d1
+  | .project | http://meta2/mutillidae/.project |  | 399745 | 200 | 712 | 3 | 29 | text/plain | 259.21µs |  |  | 7ba1961981
+  | framer | http://meta2/mutillidae/framer |  | 462349 | 200 | 1437 | 87 | 41 | text/html | 276.299µs |  |  | 7ba1970e0d
+  
