@@ -1,0 +1,22 @@
+## FAQ
+
+- How to act against the different http codes?
+- Does nmap work with application paths, such as http://meta2/mutillidae or root only? Does it work with subnets, such as 172.20.0.0/16?
+- Metasploitable could be good for certain actions done in the pentest, but might not be so for the overall. Which app/tool can I really use in order to practice in an environment like the eWPTv2?
+- Taking notes with a curated report template seems nice in the paper, but while performing the test, you really lose a lot of time in it. Wouldn't be better, based on the need for efficiency, to simplify as much as possible the template so it would ideally be just pasting the data. Little more than that.
+- Shouldn't the non web services check be more extensive? Right now, it only covers FTP. What about mysql, postgresql, ssh, SMB, NFS...?
+- What should I look at when inspecting and browsing html source code?
+- What happens to 'only code' php files such as 'config.php' that do not render any HTML but execute? How can I access to the content?
+- I understand that, in recon phase, you don't try SQLi or JS payloads, you just enumerate weak, potential attack vectors, right?
+- Which should be exactly the steps with BurpSuite manual inspection? (PENDING COMPLETION)
+- How can I filter with more precision in searchsploit?
+- How to quickly read keywords in a large file?
+- Sometimes, directory listing is enabled for source, backend code. Should I pay attention to those? They can be endless.
+- Shouldn't we add more keywords also for brute forcing source code files? Also, it's worth to remark some of them need .ext (index.php.bak) and others don't (index.php7)
+- Curl case insensitivity? It can throw 400's instead of valid 200's (phpmyadmin vs phpMyAdmin)
+- Shouldn't curl command for searching keywords in large files add the insecure parsing with -a? It'd be -aEi instead of -Eio.
+- Manually trying a few keywords is always worse than using wordlists. Why doing this then? It's used in many commands in the walkthrough.
+- Extend web services with more keywords?
+- How to deal with complex baselining? Sometimes, server can return 200 for not found pages, resembling exactly like valid ones. This happens in mutillidae with index.php?page=whatever.php, for example. 
+- What's the action protocol when wafw00f returns positive?
+- Which headers are crucial for the eWPTv2 exam?
