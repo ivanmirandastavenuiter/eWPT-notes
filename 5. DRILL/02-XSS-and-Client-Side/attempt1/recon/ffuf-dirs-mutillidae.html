@@ -1,0 +1,656 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1.0"
+    />
+    <title>FFUF Report - </title>
+
+    
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+	/>
+	<link 
+	  rel="stylesheet" 
+	  type="text/css" 
+	  href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css"
+	/>
+  
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo">FFUF</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+        </ul>
+      </div>
+    </nav>
+
+    <main class="section no-pad-bot" id="index-banner">
+      <div class="container">
+        <br /><br />
+        <h1 class="header center ">FFUF Report</h1>
+        <div class="row center">
+
+		<pre>ffuf -u http://meta2/mutillidae/FUZZ -w /usr/share/seclists/Discovery/Web-Content/raft-medium-words.txt -e php -mc all -fc 404 -ac -t 10 -o recon/ffuf-dirs-mutillidae -of all</pre>
+		<pre>2026-11-06T12:21:37&#43;01:00</pre>
+
+   <table id="ffufreport">
+        <thead>
+        <div style="display:none">
+|result_raw|StatusCode|FUZZ|Url|RedirectLocation|Position|ContentLength|ContentWords|ContentLines|ContentType|Duration|Resultfile|ScraperData|FfufHash|
+        </div>
+          <tr>
+              <th>Status</th>
+              <th>FUZZ</th>
+			  <th>URL</th>
+			  <th>Redirect location</th>
+              <th>Position</th>
+              <th>Length</th>
+              <th>Words</th>
+			  <th>Lines</th>
+			  <th>Type</th>
+              <th>Duration</th>
+			  <th>Resultfile</th>
+              <th>Scraper data</th>
+              <th>Ffuf Hash</th>
+          </tr>
+        </thead>
+
+        <tbody>
+			
+                <div style="display:none">
+|result_raw|301|.htaccesscAVjPDIu|http://meta2/mutillidae/includes|http://meta2/mutillidae/includes/|9|317|21|10|text/html; charset=iso-8859-1|278.183µs|||0c38d9|
+                </div>
+                <tr class="result-301" style="background-color: #bbbbe6;">
+                    <td><font color="black" class="status-code">301</font></td>
+                    
+                        <td>.htaccesscAVjPDIu</td>
+                    
+                    <td><a href="http://meta2/mutillidae/includes">http://meta2/mutillidae/includes</a></td>
+                    <td><a href="http://meta2/mutillidae/includes/">http://meta2/mutillidae/includes/</a></td>
+                    <td>9</td>
+                    <td>317</td>
+                    <td>21</td>
+					<td>10</td>
+					<td>text/html; charset=iso-8859-1</td>
+					<td>278.183µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d9</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|login|http://meta2/mutillidae/login||17|4102|225|130|text/html|21.479116ms|||0c38d11|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>login</td>
+                    
+                    <td><a href="http://meta2/mutillidae/login">http://meta2/mutillidae/login</a></td>
+                    <td><a href=""></a></td>
+                    <td>17</td>
+                    <td>4102</td>
+                    <td>225</td>
+					<td>130</td>
+					<td>text/html</td>
+					<td>21.479116ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d11</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|installation|http://meta2/mutillidae/installation||69|8138|978|150|text/html|17.124013ms|||0c38d45|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>installation</td>
+                    
+                    <td><a href="http://meta2/mutillidae/installation">http://meta2/mutillidae/installation</a></td>
+                    <td><a href=""></a></td>
+                    <td>69</td>
+                    <td>8138</td>
+                    <td>978</td>
+					<td>150</td>
+					<td>text/html</td>
+					<td>17.124013ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d45</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|register|http://meta2/mutillidae/register||49|1823|92|60|text/html|18.083848ms|||0c38d31|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>register</td>
+                    
+                    <td><a href="http://meta2/mutillidae/register">http://meta2/mutillidae/register</a></td>
+                    <td><a href=""></a></td>
+                    <td>49</td>
+                    <td>1823</td>
+                    <td>92</td>
+					<td>60</td>
+					<td>text/html</td>
+					<td>18.083848ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d31</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|inc|http://meta2/mutillidae/inc||195|386260|38538|9004|text/plain|969.502µs|||0c38dc3|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>inc</td>
+                    
+                    <td><a href="http://meta2/mutillidae/inc">http://meta2/mutillidae/inc</a></td>
+                    <td><a href=""></a></td>
+                    <td>195</td>
+                    <td>386260</td>
+                    <td>38538</td>
+					<td>9004</td>
+					<td>text/plain</td>
+					<td>969.502µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38dc3</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|301|styles|http://meta2/mutillidae/styles|http://meta2/mutillidae/styles/|295|315|21|10|text/html; charset=iso-8859-1|113.104µs|||0c38d127|
+                </div>
+                <tr class="result-301" style="background-color: #bbbbe6;">
+                    <td><font color="black" class="status-code">301</font></td>
+                    
+                        <td>styles</td>
+                    
+                    <td><a href="http://meta2/mutillidae/styles">http://meta2/mutillidae/styles</a></td>
+                    <td><a href="http://meta2/mutillidae/styles/">http://meta2/mutillidae/styles/</a></td>
+                    <td>295</td>
+                    <td>315</td>
+                    <td>21</td>
+					<td>10</td>
+					<td>text/html; charset=iso-8859-1</td>
+					<td>113.104µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d127</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|301|classes|http://meta2/mutillidae/classes|http://meta2/mutillidae/classes/|377|316|21|10|text/html; charset=iso-8859-1|100.347µs|||0c38d179|
+                </div>
+                <tr class="result-301" style="background-color: #bbbbe6;">
+                    <td><font color="black" class="status-code">301</font></td>
+                    
+                        <td>classes</td>
+                    
+                    <td><a href="http://meta2/mutillidae/classes">http://meta2/mutillidae/classes</a></td>
+                    <td><a href="http://meta2/mutillidae/classes/">http://meta2/mutillidae/classes/</a></td>
+                    <td>377</td>
+                    <td>316</td>
+                    <td>21</td>
+					<td>10</td>
+					<td>text/html; charset=iso-8859-1</td>
+					<td>100.347µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d179</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|301|javascript|http://meta2/mutillidae/javascript|http://meta2/mutillidae/javascript/|417|319|21|10|text/html; charset=iso-8859-1|102.716µs|||0c38d1a1|
+                </div>
+                <tr class="result-301" style="background-color: #bbbbe6;">
+                    <td><font color="black" class="status-code">301</font></td>
+                    
+                        <td>javascript</td>
+                    
+                    <td><a href="http://meta2/mutillidae/javascript">http://meta2/mutillidae/javascript</a></td>
+                    <td><a href="http://meta2/mutillidae/javascript/">http://meta2/mutillidae/javascript/</a></td>
+                    <td>417</td>
+                    <td>319</td>
+                    <td>21</td>
+					<td>10</td>
+					<td>text/html; charset=iso-8859-1</td>
+					<td>102.716µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d1a1</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|home|http://meta2/mutillidae/home||279|2930|141|54|text/html|15.672077ms|||0c38d117|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>home</td>
+                    
+                    <td><a href="http://meta2/mutillidae/home">http://meta2/mutillidae/home</a></td>
+                    <td><a href=""></a></td>
+                    <td>279</td>
+                    <td>2930</td>
+                    <td>141</td>
+					<td>54</td>
+					<td>text/html</td>
+					<td>15.672077ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d117</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|301|images|http://meta2/mutillidae/images|http://meta2/mutillidae/images/|5|315|21|10|text/html; charset=iso-8859-1|61.073287ms|||0c38d5|
+                </div>
+                <tr class="result-301" style="background-color: #bbbbe6;">
+                    <td><font color="black" class="status-code">301</font></td>
+                    
+                        <td>images</td>
+                    
+                    <td><a href="http://meta2/mutillidae/images">http://meta2/mutillidae/images</a></td>
+                    <td><a href="http://meta2/mutillidae/images/">http://meta2/mutillidae/images/</a></td>
+                    <td>5</td>
+                    <td>315</td>
+                    <td>21</td>
+					<td>10</td>
+					<td>text/html; charset=iso-8859-1</td>
+					<td>61.073287ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d5</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|index|http://meta2/mutillidae/index||31|24216|1035|564|text/html|61.720846ms|||0c38d1f|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>index</td>
+                    
+                    <td><a href="http://meta2/mutillidae/index">http://meta2/mutillidae/index</a></td>
+                    <td><a href=""></a></td>
+                    <td>31</td>
+                    <td>24216</td>
+                    <td>1035</td>
+					<td>564</td>
+					<td>text/html</td>
+					<td>61.720846ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d1f</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|favicon|http://meta2/mutillidae/favicon||773|1150|4|5|image/x-icon|603.684µs|||0c38d305|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>favicon</td>
+                    
+                    <td><a href="http://meta2/mutillidae/favicon">http://meta2/mutillidae/favicon</a></td>
+                    <td><a href=""></a></td>
+                    <td>773</td>
+                    <td>1150</td>
+                    <td>4</td>
+					<td>5</td>
+					<td>image/x-icon</td>
+					<td>603.684µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d305</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|footer|http://meta2/mutillidae/footer||629|450|21|16|text/html|16.424783ms|||0c38d275|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>footer</td>
+                    
+                    <td><a href="http://meta2/mutillidae/footer">http://meta2/mutillidae/footer</a></td>
+                    <td><a href=""></a></td>
+                    <td>629</td>
+                    <td>450</td>
+                    <td>21</td>
+					<td>16</td>
+					<td>text/html</td>
+					<td>16.424783ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d275</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|header|http://meta2/mutillidae/header||623|19879|764|481|text/html|16.604096ms|||0c38d26f|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>header</td>
+                    
+                    <td><a href="http://meta2/mutillidae/header">http://meta2/mutillidae/header</a></td>
+                    <td><a href=""></a></td>
+                    <td>623</td>
+                    <td>19879</td>
+                    <td>764</td>
+					<td>481</td>
+					<td>text/html</td>
+					<td>16.604096ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d26f</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|phpMyAdmin|http://meta2/mutillidae/phpMyAdmin||949|174|7|10|text/html|17.216566ms|||0c38d3b5|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>phpMyAdmin</td>
+                    
+                    <td><a href="http://meta2/mutillidae/phpMyAdmin">http://meta2/mutillidae/phpMyAdmin</a></td>
+                    <td><a href=""></a></td>
+                    <td>949</td>
+                    <td>174</td>
+                    <td>7</td>
+					<td>10</td>
+					<td>text/html</td>
+					<td>17.216566ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d3b5</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|robots|http://meta2/mutillidae/robots||1319|160|8|7|text/plain|715.93µs|||0c38d527|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>robots</td>
+                    
+                    <td><a href="http://meta2/mutillidae/robots">http://meta2/mutillidae/robots</a></td>
+                    <td><a href=""></a></td>
+                    <td>1319</td>
+                    <td>160</td>
+                    <td>8</td>
+					<td>7</td>
+					<td>text/plain</td>
+					<td>715.93µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d527</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|.|http://meta2/mutillidae/.||799|24216|1035|564|text/html|64.873311ms|||0c38d31f|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>.</td>
+                    
+                    <td><a href="http://meta2/mutillidae/.">http://meta2/mutillidae/.</a></td>
+                    <td><a href=""></a></td>
+                    <td>799</td>
+                    <td>24216</td>
+                    <td>1035</td>
+					<td>564</td>
+					<td>text/html</td>
+					<td>64.873311ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d31f</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|page-not-found|http://meta2/mutillidae/page-not-found||1739|705|52|25|text/html|23.416714ms|||0c38d6cb|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>page-not-found</td>
+                    
+                    <td><a href="http://meta2/mutillidae/page-not-found">http://meta2/mutillidae/page-not-found</a></td>
+                    <td><a href=""></a></td>
+                    <td>1739</td>
+                    <td>705</td>
+                    <td>52</td>
+					<td>25</td>
+					<td>text/html</td>
+					<td>23.416714ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d6cb</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|phpinfo|http://meta2/mutillidae/phpinfo||1897|48785|2449|677|text/html|16.224161ms|||0c38d769|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>phpinfo</td>
+                    
+                    <td><a href="http://meta2/mutillidae/phpinfo">http://meta2/mutillidae/phpinfo</a></td>
+                    <td><a href=""></a></td>
+                    <td>1897</td>
+                    <td>48785</td>
+                    <td>2449</td>
+					<td>677</td>
+					<td>text/html</td>
+					<td>16.224161ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d769</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|301|documentation|http://meta2/mutillidae/documentation|http://meta2/mutillidae/documentation/|2335|322|21|10|text/html; charset=iso-8859-1|86.51µs|||0c38d91f|
+                </div>
+                <tr class="result-301" style="background-color: #bbbbe6;">
+                    <td><font color="black" class="status-code">301</font></td>
+                    
+                        <td>documentation</td>
+                    
+                    <td><a href="http://meta2/mutillidae/documentation">http://meta2/mutillidae/documentation</a></td>
+                    <td><a href="http://meta2/mutillidae/documentation/">http://meta2/mutillidae/documentation/</a></td>
+                    <td>2335</td>
+                    <td>322</td>
+                    <td>21</td>
+					<td>10</td>
+					<td>text/html; charset=iso-8859-1</td>
+					<td>86.51µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d91f</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|notes|http://meta2/mutillidae/notes||3319|1721|176|38|text/html|19.222898ms|||0c38dcf7|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>notes</td>
+                    
+                    <td><a href="http://meta2/mutillidae/notes">http://meta2/mutillidae/notes</a></td>
+                    <td><a href=""></a></td>
+                    <td>3319</td>
+                    <td>1721</td>
+                    <td>176</td>
+					<td>38</td>
+					<td>text/html</td>
+					<td>19.222898ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38dcf7</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|credits|http://meta2/mutillidae/credits||5007|509|39|20|text/html|19.349867ms|||0c38d138f|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>credits</td>
+                    
+                    <td><a href="http://meta2/mutillidae/credits">http://meta2/mutillidae/credits</a></td>
+                    <td><a href=""></a></td>
+                    <td>5007</td>
+                    <td>509</td>
+                    <td>39</td>
+					<td>20</td>
+					<td>text/html</td>
+					<td>19.349867ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d138f</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|301|passwords|http://meta2/mutillidae/passwords|http://meta2/mutillidae/passwords/|8903|318|21|10|text/html; charset=iso-8859-1|130.645µs|||0c38d22c7|
+                </div>
+                <tr class="result-301" style="background-color: #bbbbe6;">
+                    <td><font color="black" class="status-code">301</font></td>
+                    
+                        <td>passwords</td>
+                    
+                    <td><a href="http://meta2/mutillidae/passwords">http://meta2/mutillidae/passwords</a></td>
+                    <td><a href="http://meta2/mutillidae/passwords/">http://meta2/mutillidae/passwords/</a></td>
+                    <td>8903</td>
+                    <td>318</td>
+                    <td>21</td>
+					<td>10</td>
+					<td>text/html; charset=iso-8859-1</td>
+					<td>130.645µs</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d22c7</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|framing|http://meta2/mutillidae/framing||50161|1426|96|49|text/html|19.181591ms|||0c38dc3f1|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>framing</td>
+                    
+                    <td><a href="http://meta2/mutillidae/framing">http://meta2/mutillidae/framing</a></td>
+                    <td><a href=""></a></td>
+                    <td>50161</td>
+                    <td>1426</td>
+                    <td>96</td>
+					<td>49</td>
+					<td>text/html</td>
+					<td>19.181591ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38dc3f1</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|.project|http://meta2/mutillidae/.project||66617|712|3|29|text/plain|4.776105ms|||0c38d10439|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>.project</td>
+                    
+                    <td><a href="http://meta2/mutillidae/.project">http://meta2/mutillidae/.project</a></td>
+                    <td><a href=""></a></td>
+                    <td>66617</td>
+                    <td>712</td>
+                    <td>3</td>
+					<td>29</td>
+					<td>text/plain</td>
+					<td>4.776105ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d10439</td>
+                </tr>
+            
+                <div style="display:none">
+|result_raw|200|framer|http://meta2/mutillidae/framer||77051|1437|87|41|text/html|4.546603ms|||0c38d12cfb|
+                </div>
+                <tr class="result-200" style="background-color: #adea9e;">
+                    <td><font color="black" class="status-code">200</font></td>
+                    
+                        <td>framer</td>
+                    
+                    <td><a href="http://meta2/mutillidae/framer">http://meta2/mutillidae/framer</a></td>
+                    <td><a href=""></a></td>
+                    <td>77051</td>
+                    <td>1437</td>
+                    <td>87</td>
+					<td>41</td>
+					<td>text/html</td>
+					<td>4.546603ms</td>
+                    <td></td>
+					<td></td>
+					<td>0c38d12cfb</td>
+                </tr>
+            
+        </tbody>
+      </table>
+
+        </div>
+        <br /><br />
+      </div>
+    </main>
+
+    
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#ffufreport').DataTable(
+            {
+                "aLengthMenu": [
+                    [250, 500, 1000, 2500, -1],
+                    [250, 500, 1000, 2500, "All"]
+                ]
+            }
+        )
+        $('select').formSelect();
+        });
+    </script>
+    <style>
+      body {
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      main {
+        flex: 1 0 auto;
+      }
+    </style>
+  </body>
+</html>
+
+	

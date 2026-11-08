@@ -200,7 +200,7 @@ curl -sk --data-urlencode "<PARAM>=zzXSS9f2a'\"<>\`\\\${{7*7}}" "<SCHEME>://<VHO
 
 ## D. Reflected XSS payloads by context
 
-#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Context-matched payload table&nbsp;</span> · `WSTG-INPV-01`
+#### 🟩 <span style="background:#b7e4c7;color:#000">&nbsp;Context-matched payload table&nbsp;</span> ·    `WSTG-INPV-01`
 
 Pick the row that matches block C's result. Replace the marker with the real payload and resend in Burp Repeater.
 
